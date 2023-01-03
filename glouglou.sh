@@ -6,9 +6,21 @@
 # https://github.com/Jocker666z/glouglou/
 # Licence : unlicense
 
+# Test dependencies
+command_test() {
+n=0;
+for command in "${core_dependencies[@]}"; do
+	if hash "$command" &>/dev/null; then
+		(( c++ )) || true
+	else
+		echo "You shall not pass without installing: $command" && exit
+		(( n++ )) || true
+	fi
+done
+}
 # Test argument
 test_argument() {
-# If no argument set $PWD for search vgm
+# If no argument set $PWD for search vgm (take a coffee)
 if [[ -d "$arg" ]]; then
 	vgm_dir="$arg"
 elif [[ -z "${vgm_dir}" ]]; then
@@ -32,14 +44,20 @@ for file in "${lst_vgm[@]}"; do
 done
 }
 
-# Variables
+# Argument
 arg="$1"
+# Need Dependencies
+core_dependencies=(vgmplay zxtune123)
+# Paths
+export PATH=$PATH:/home/$USER/.local/bin
+# Type of files allowed
 ext_spcplay="spc"
 ext_psfplay="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_vgmplay="s98|vgm|vgz"
 ext_allplay="${ext_spcplay}|${ext_psfplay}|${ext_vgmplay}"
 
 # Main
+command_test
 test_argument
 search_vgm
 main_loop
