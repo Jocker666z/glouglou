@@ -11,9 +11,6 @@ Enter : `glouglou /dir` or just `glouglou` (it will recursively search files)
 `curl https://raw.githubusercontent.com/Jocker666z/glouglou/main/glouglou.sh > /home/$USER/.local/bin/glouglou && chmod +rx /home/$USER/.local/bin/glouglou`
 
 ### vgmplay
-For:
-* NEC PC-Engine, Sharp X1, Fujitsu FM: s98
-* Various machines: vgm, vgz
 https://github.com/ValleyBell/vgmplay-libvgm
 ```
 git clone --recurse-submodules https://github.com/ValleyBell/vgmplay-libvgm && cd vgmplay-libvgm
@@ -24,8 +21,17 @@ cd ..
 cd ..
 rm -R vgmplay-libvgm
 ```
+For:
+* NEC PC-Engine, Sharp X1, Fujitsu FM: s98
+* Various machines: vgm, vgz
 
 ### zxtune123
+https://zxtune.bitbucket.io/
+```
+cd /home/$USER/.local/bin/
+wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5020.tar.bz2
+tar -xf zxtune123_r5020.tar.bz2 && rm zxtune123_r5020.tar.bz2
+```
 For:
 * Nintendo DS: 2sf, mini2sf, ncsf, minincsf
 * Nintendo GBA: gsf, minigsf
@@ -35,9 +41,3 @@ For:
 * Sega Dreamcast: dsf
 * Sony Playstation: psf, minipsf
 * Sony Playstation 2: psf2, minipsf2
-https://zxtune.bitbucket.io/
-```
-cd /home/$USER/.local/bin/
-wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5020.tar.bz2
-tar -xf zxtune123_r5020.tar.bz2 && rm zxtune123_r5020.tar.bz2
-```
