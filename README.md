@@ -1,7 +1,7 @@
 # glouglou
 Bad bash script for no brain, also play vgm in shuffle.
 
-glouglou just play in shuffle, all the vgm files it found. Nothing else.
+glouglou just play in shuffle and repeat, all the vgm files it found. Nothing else.
 
 ## Use
 Enter : `glouglou /dir` or just `glouglou` (it will recursively search files)

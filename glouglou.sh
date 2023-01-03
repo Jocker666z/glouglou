@@ -33,14 +33,17 @@ mapfile -t lst_vgm < <(find "$vgm_dir" -type f -regextype posix-egrep -iregex '.
 }
 # Play loop
 main_loop () {
-for file in "${lst_vgm[@]}"; do
-	clear
-	echo "======= glouglou ======="
-	if [[ "${file##*.}" = "vgz" ]]; then
-		vgmplay "${file}"
-	else
-		zxtune123 --alsa --file "${file}"
-	fi
+while true
+do
+	for file in "${lst_vgm[@]}"; do
+		clear
+		echo "======= glouglou ======="
+		if [[ "${file##*.}" = "vgz" ]]; then
+			vgmplay "${file}"
+		else
+			zxtune123 --alsa --file "${file}"
+		fi
+	done
 done
 }
 
