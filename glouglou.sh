@@ -36,6 +36,7 @@ main_loop () {
 while true
 do
 	for file in "${lst_vgm[@]}"; do
+		vgm_counter=$(( vgm_counter + 1 ))
 		clear
 		echo "======= glouglou ======="
 		if [[ "${file##*.}" = "vgz" ]]; then
@@ -46,6 +47,30 @@ do
 	done
 done
 }
+# Kill stat
+kill_stat () {
+local diff_in_s
+local time_formated
+
+# End time counter of process
+stop_process_time=$(date +%s)
+
+# Duration fomarted
+diff_in_s=$(( stop_process_time - start_process_time ))
+time_formated="$((diff_in_s/3600))h$((diff_in_s%3600/60))m$((diff_in_s%60))s"
+
+# Print stats
+echo
+echo "--------------------"
+echo "glouglou was exited."
+echo "You have listened to ${vgm_counter} tracks".
+echo "The duration of your crazy listening was ${time_formated}".
+
+# Proper exit
+stty sane
+exit
+}
+trap 'kill_stat' SIGINT
 
 # Argument
 arg="$1"
@@ -59,6 +84,8 @@ ext_psfplay="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniu
 ext_vgmplay="s98|vgm|vgz"
 ext_allplay="${ext_spcplay}|${ext_psfplay}|${ext_vgmplay}"
 
+# Start time counter of process
+start_process_time=$(date +%s)
 # Main
 command_test
 test_argument
