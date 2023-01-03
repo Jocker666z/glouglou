@@ -11,7 +11,9 @@ Enter : `glouglou /dir` or just `glouglou` (it will recursively search files)
 `curl https://raw.githubusercontent.com/Jocker666z/glouglou/main/glouglou.sh > /home/$USER/.local/bin/glouglou && chmod +rx /home/$USER/.local/bin/glouglou`
 
 ### vgmplay
-For files in: s98|vgm|vgz
+For:
+* NEC PC-Engine, Sharp X1, Fujitsu FM: s98
+* Various machines: vgm, vgz
 https://github.com/ValleyBell/vgmplay-libvgm
 ```
 git clone --recurse-submodules https://github.com/ValleyBell/vgmplay-libvgm && cd vgmplay-libvgm
@@ -24,7 +26,15 @@ rm -R vgmplay-libvgm
 ```
 
 ### zxtune123
-For files in: 2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf
+For:
+* Nintendo DS: 2sf, mini2sf, ncsf, minincsf
+* Nintendo GBA: gsf, minigsf
+* Nintendo N64: usf, miniusf
+* Nintendo SNES: spc
+* Sega Saturn: minissf, ssf
+* Sega Dreamcast: dsf
+* Sony Playstation: psf, minipsf
+* Sony Playstation 2: psf2, minipsf2
 https://zxtune.bitbucket.io/
 ```
 cd /home/$USER/.local/bin/
