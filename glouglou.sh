@@ -63,7 +63,7 @@ time_formated="$((diff_in_s/3600))h$((diff_in_s%3600/60))m$((diff_in_s%60))s"
 echo
 echo "--------------------"
 echo "glouglou was exited."
-echo "You have listened to ${vgm_counter} tracks".
+echo "You have listened ${vgm_counter} tracks".
 echo "The duration of your crazy listening was ${time_formated}".
 
 # Proper exit
