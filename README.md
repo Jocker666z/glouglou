@@ -4,13 +4,14 @@ Bad bash script for no brain, also play vgm in shuffle.
 glouglou just play in shuffle, all the vgm files it found. Nothing else.
 
 ## Use
-Ender : `glouglou /dir` or just `glouglou` (it will recursively search the files)
+Enter : `glouglou /dir` or just `glouglou` (it will recursively search files)
 
 ## Install & update
 ### Glouglou :
 `curl https://raw.githubusercontent.com/Jocker666z/glouglou/main/glouglou.sh > /home/$USER/.local/bin/glouglou && chmod +rx /home/$USER/.local/bin/glouglou`
 
 ### vgmplay
+For files in: s98|vgm|vgz
 https://github.com/ValleyBell/vgmplay-libvgm
 ```
 git clone --recurse-submodules https://github.com/ValleyBell/vgmplay-libvgm && cd vgmplay-libvgm
@@ -23,6 +24,7 @@ rm -R vgmplay-libvgm
 ```
 
 ### zxtune123
+For files in: 2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf
 https://zxtune.bitbucket.io/
 ```
 cd /home/$USER/.local/bin/
