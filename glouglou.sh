@@ -46,7 +46,7 @@ elif [[ -z "$vgmplay_bin" ]] \
 	ext_allplay="${ext_zxtune}"
 elif [[ -z "$vgmplay_bin" ]] \
   && [[ -z "$zxtune123_bin" ]]; then
-	echo "glouglou break, no dependencies are met:"
+	echo "glouglou break, none dependencies are met:"
 	printf '  %s\n' "${player_dependency[@]}"
 	exit
 fi
@@ -57,19 +57,23 @@ mapfile -t lst_vgm < <(find "$vgm_dir" -type f -regextype posix-egrep -iregex '.
 }
 # Play loop
 main_loop () {
-while true
-do
-	for file in "${lst_vgm[@]}"; do
-		vgm_counter=$(( vgm_counter + 1 ))
-		clear
-		echo "======= glouglou ======="
-		if [[ "${file##*.}" = "vgz" ]]; then
-			"$vgmplay_bin" "${file}"
-		else
-			"$zxtune123_bin" --alsa --file "${file}"
-		fi
+if (( "${#lst_vgm[@]}" )); then
+	while true
+	do
+		for file in "${lst_vgm[@]}"; do
+			vgm_counter=$(( vgm_counter + 1 ))
+			clear
+			echo "======= glouglou ======="
+			if [[ "${file##*.}" = "vgz" ]]; then
+				"$vgmplay_bin" "${file}"
+			else
+				"$zxtune123_bin" --alsa --file "${file}"
+			fi
+		done
 	done
-done
+else
+	echo "glouglou break, there's nothing here, no file to play."
+fi
 }
 # Kill stat
 kill_stat () {
