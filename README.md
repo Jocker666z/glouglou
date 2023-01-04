@@ -14,16 +14,28 @@ It is not necessary to have all the dependencies installed, for example if you d
 ### Glouglou :
 `curl https://raw.githubusercontent.com/Jocker666z/glouglou/main/glouglou.sh > /home/$USER/.local/bin/glouglou && chmod +rx /home/$USER/.local/bin/glouglou`
 
+### vgmstream-cli
+https://github.com/vgmstream/vgmstream
+
+Build dependencies: `git build-essential cmake audacious-dev libsvtav1enc1 libao-dev libopus-dev libmpg123-dev libgtk-3-dev`
+```
+git clone https://github.com/losnoco/vgmstream && cd vgmstream
+mkdir build && cd build && cmake .. 
+make -j"$(nproc)"
+su -c "make install" -m "root"
+```
+For:
+* Various machines: ads, adp, adx, at3, cps, genh, mod, ss2, thp, xa"
+
 ### vgmplay
 https://github.com/ValleyBell/vgmplay-libvgm
+
+Build dependencies: `git build-essential cmake zlib1g-dev libao-dev libdbus-1-dev`
 ```
 git clone --recurse-submodules https://github.com/ValleyBell/vgmplay-libvgm && cd vgmplay-libvgm
 mkdir build && cd build && cmake .. 
 make -j"$(nproc)"
 su -c "make install" -m "root"
-cd ..
-cd ..
-rm -R vgmplay-libvgm
 ```
 For:
 * NEC PC-Engine, Sharp X1, Fujitsu FM: s98
