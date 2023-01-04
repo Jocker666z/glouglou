@@ -34,13 +34,13 @@ x86_64:
 ```
 cd /home/$USER/.local/bin/
 wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5020_x86_64.tar.bz2
-tar -xf zxtune123_r5020.tar.bz2 && rm zxtune123_r5020.tar.bz2
+tar -xf zxtune123_r5020_x86_64.tar.bz2 && rm zxtune123_r5020_x86_64.tar.bz2
 ```
 armhf:
 ```
 cd /home/$USER/.local/bin/
 wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5020_armhf.tar.bz2
-tar -xf zxtune123_r5020.tar.bz2 && rm zxtune123_r5020.tar.bz2
+tar -xf zxtune123_r5020_armhf.tar.bz2 && rm zxtune123_r5020_armhf.tar.bz2
 ```
 For:
 * Nintendo DS: 2sf, mini2sf, ncsf, minincsf
