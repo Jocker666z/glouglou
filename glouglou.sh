@@ -7,24 +7,48 @@
 # Licence : unlicense
 
 # Test dependencies
-command_test() {
-n=0;
-for command in "${core_dependencies[@]}"; do
-	if hash "$command" &>/dev/null; then
-		(( c++ )) || true
-	else
-		echo "You shall not pass without installing: $command" && exit
-		(( n++ )) || true
-	fi
-done
+vgmplay_bin() {
+local bin_name="vgmplay"
+local system_bin_location
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	vgmplay_bin="$system_bin_location"
+fi
 }
-# Test argument
+zxtune123_bin() {
+local bin_name="zxtune123"
+local system_bin_location
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	zxtune123_bin="$system_bin_location"
+fi
+}
+# Test argument, if no argument set $PWD for search vgm (take a coffee)
 test_argument() {
-# If no argument set $PWD for search vgm (take a coffee)
 if [[ -d "$arg" ]]; then
 	vgm_dir="$arg"
 elif [[ -z "${vgm_dir}" ]]; then
 	vgm_dir="$PWD"
+fi
+}
+# Depending on the bin available builds the extension list to search
+make_ext_list() {
+if [[ -n "$vgmplay_bin" ]] \
+  && [[ -n "$zxtune123_bin" ]]; then
+	ext_allplay="${ext_zxtune}|${ext_vgmplay}"
+elif [[ -n "$vgmplay_bin" ]] \
+  && [[ -z "$zxtune123_bin" ]]; then
+	ext_allplay="${ext_vgmplay}"
+elif [[ -z "$vgmplay_bin" ]] \
+  && [[ -n "$zxtune123_bin" ]]; then
+	ext_allplay="${ext_zxtune}"
+elif [[ -z "$vgmplay_bin" ]] \
+  && [[ -z "$zxtune123_bin" ]]; then
+	echo "glouglou break, no dependencies are met:"
+	printf '  %s\n' "${player_dependency[@]}"
+	exit
 fi
 }
 # Populate vgm array
@@ -40,9 +64,9 @@ do
 		clear
 		echo "======= glouglou ======="
 		if [[ "${file##*.}" = "vgz" ]]; then
-			vgmplay "${file}"
+			"$vgmplay_bin" "${file}"
 		else
-			zxtune123 --alsa --file "${file}"
+			"$zxtune123_bin" --alsa --file "${file}"
 		fi
 	done
 done
@@ -70,26 +94,30 @@ echo "The duration of your crazy listening was ${time_formated}".
 stty sane
 exit
 }
+
+# Trap
 trap 'kill_stat' SIGINT
 
 # Argument
 arg="$1"
-# Need Dependencies
-core_dependencies=(vgmplay zxtune123)
+# Dependencies
+player_dependency=(vgmplay zxtune123)
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed
-ext_spcplay="spc"
-ext_psfplay="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
+ext_zxtune="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
 ext_vgmplay="s98|vgm|vgz"
-ext_allplay="${ext_spcplay}|${ext_psfplay}|${ext_vgmplay}"
 
 # Start time counter of process
 start_process_time=$(date +%s)
-# Main
-command_test
+
+# Set up
+vgmplay_bin
+zxtune123_bin
+make_ext_list
 test_argument
 search_vgm
+# Play
 main_loop
 
 exit
