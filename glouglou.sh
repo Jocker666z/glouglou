@@ -57,16 +57,23 @@ mapfile -t lst_vgm < <(find "$vgm_dir" -type f -regextype posix-egrep -iregex '.
 }
 # Play loop
 main_loop () {
+local ext
+
 if (( "${#lst_vgm[@]}" )); then
 	while true
 	do
 		for file in "${lst_vgm[@]}"; do
+			# For final stat
 			vgm_counter=$(( vgm_counter + 1 ))
+			# For test ext
+			ext="${file##*.}"
+			# Display
 			clear
 			echo "======= glouglou ======="
-			if [[ "${file##*.}" = "vgz" ]]; then
+			# Play
+			if [[ "$ext_vgmplay" =~ $ext ]]; then
 				"$vgmplay_bin" "${file}"
-			else
+			elif [[ "$ext_zxtune" =~ $ext ]]; then
 				"$zxtune123_bin" --alsa --file "${file}"
 			fi
 		done
@@ -108,7 +115,7 @@ arg="$1"
 player_dependency=(vgmplay zxtune123)
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
-# Type of files allowed
+# Type of files allowed by player
 ext_zxtune="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
 ext_vgmplay="s98|vgm|vgz"
 
