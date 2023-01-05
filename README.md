@@ -14,6 +14,7 @@ It is not necessary to have all the dependencies installed, for example if you d
 ### Glouglou :
 `curl https://raw.githubusercontent.com/Jocker666z/glouglou/main/glouglou.sh > /home/$USER/.local/bin/glouglou && chmod +rx /home/$USER/.local/bin/glouglou`
 
+## Dependencies install help:
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
 
