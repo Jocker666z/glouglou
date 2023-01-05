@@ -75,7 +75,7 @@ if (( "${#lst_vgm[@]}" )); then
 			if [[ "$ext_vgmplay" =~ $ext ]] && [[ -n "$vgmplay_bin" ]]; then
 				"$vgmplay_bin" "${file}"
 			elif [[ "$ext_zxtune" =~ $ext ]] && [[ -n "$zxtune123_bin" ]]; then
-				"$zxtune123_bin" --alsa --file "${file}"
+				"$zxtune123_bin" --analyzer --alsa --file "${file}"
 			elif [[ "$ext_vgmstream" =~ $ext ]] && [[ -n "$vgmstream123_bin" ]]; then
 				"$vgmstream123_bin" -D alsa -m "${file}"
 			fi
