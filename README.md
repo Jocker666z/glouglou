@@ -11,7 +11,6 @@ Stop it by true proper command: `ctrl+c`.
 It is not necessary to have all the dependencies installed, for example if you don't want to install zxtune123 but vgmplay is installed, glouglou will only read the vgmplay files.
 
 ## Install & update
-### Glouglou :
 `curl https://raw.githubusercontent.com/Jocker666z/glouglou/main/glouglou.sh > /home/$USER/.local/bin/glouglou && chmod +rx /home/$USER/.local/bin/glouglou`
 
 ## Dependencies install help:
