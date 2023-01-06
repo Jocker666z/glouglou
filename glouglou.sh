@@ -127,7 +127,7 @@ player_dependency=(vgmplay zxtune123 vgmstream123)
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
 ext_zxtune0="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
-ext_zxtune1="v2m"
+ext_zxtune1="sid|v2m"
 ext_vgmstream="ads|adp|adx|at3|cps|genh|it|mod|s3m|ss2|thp|xa|xm"
 ext_vgmplay="s98|vgm|vgz"
 ext_allplay="${ext_zxtune0}|${ext_zxtune1}|${ext_vgmplay}|${ext_vgmstream}"
