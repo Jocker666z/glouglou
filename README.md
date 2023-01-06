@@ -15,10 +15,20 @@ It is not necessary to have all the dependencies installed, for example if you d
 
 ## Dependencies install help:
 ### adplay
+https://adplug.github.io/
+
 adplay is present in many official repositories for most GNU/Linux distributions.
 
 For:
 * PC AdLib (OPL2/3): amd, d00, hsc, hsq, imf, rad, sdb, sqx, wlf
+
+### openmpt123
+https://lib.openmpt.org/
+
+openmpt123 is present in many official repositories for most GNU/Linux distributions.
+
+For:
+* Music tracker files: it, mo3, mod, s3m, xm
 
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
@@ -31,7 +41,7 @@ make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
 For:
-* Various machines: ads, adp, adx, at3, cps, genh, it, mod, s3m, ss2, thp, xa, xm
+* Various machines: ads, adp, adx, at3, cps, genh, ss2, thp, xa
 
 ### vgmplay
 https://github.com/ValleyBell/vgmplay-libvgm

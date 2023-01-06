@@ -18,6 +18,17 @@ else
 	unset ext_adlib
 fi
 }
+openmpt_bin() {
+local bin_name="openmpt123"
+local system_bin_location
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	openmpt_bin="$system_bin_location"
+else
+	unset ext_openmpt
+fi
+}
 vgmplay_bin() {
 local bin_name="vgmplay"
 local system_bin_location
@@ -63,6 +74,7 @@ fi
 # Dependencies test
 player_dependency_test() {
 if [[ -z "$adplay_bin" ]] \
+   && [[ -z "$openmpt_bin" ]] \
    && [[ -z "$vgmplay_bin" ]] \
    && [[ -z "$zxtune123_bin" ]] \
    && [[ -z "$vgmstream123_bin" ]]; then
@@ -91,9 +103,10 @@ if (( "${#lst_vgm[@]}" )); then
 			clear
 			echo "======= glouglou ======="
 			# Play
-			echo "${file}"
 			if [[ "$ext_adplay" =~ $ext ]] && [[ -n "$adplay_bin" ]]; then
 				"$adplay_bin" "${file}" -v -r
+			elif [[ "$ext_openmpt" =~ $ext ]] && [[ -n "$openmpt_bin" ]]; then
+				"$openmpt_bin" "${file}"
 			elif [[ "$ext_vgmplay" =~ $ext ]] && [[ -n "$vgmplay_bin" ]]; then
 				"$vgmplay_bin" "${file}"
 			elif [[ "$ext_zxtune" =~ $ext ]] && [[ -n "$zxtune123_bin" ]]; then
@@ -137,14 +150,15 @@ trap 'kill_stat' SIGINT
 # Argument
 arg="$1"
 # Dependencies
-player_dependency=(vgmplay zxtune123 vgmstream123)
+player_dependency=(adplay openmpt123 vgmplay zxtune123 vgmstream123)
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
 ext_adplay="amd|d00|hsc|hsq|imf|rad|sdb|sqx|wlf"
+ext_openmpt="it|mo3|mod|s3m|xm"
 ext_zxtune0="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
 ext_zxtune1="sid|v2m"
-ext_vgmstream="ads|adp|adx|at3|cps|genh|it|mod|s3m|ss2|thp|xa|xm"
+ext_vgmstream="ads|adp|adx|at3|cps|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
 
 # Start time counter of process
@@ -152,12 +166,13 @@ start_process_time=$(date +%s)
 
 # Set up
 adplay_bin
+openmpt_bin
 vgmplay_bin
 zxtune123_bin
 vgmstream123_bin
 player_dependency_test
 # $ext_allplay contruction depend -> player_dependency_test
-ext_allplay="${ext_adplay}|${ext_zxtune0}|${ext_zxtune1}|${ext_vgmplay}|${ext_vgmstream}"
+ext_allplay="${ext_adplay}|${ext_openmpt}|${ext_vgmplay}|${ext_vgmstream}|${ext_zxtune0}|${ext_zxtune1}"
 test_argument
 search_vgm
 # Play
