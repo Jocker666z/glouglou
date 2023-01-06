@@ -14,6 +14,8 @@ system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
 	vgmplay_bin="$system_bin_location"
+else
+	unset ext_vgmplay
 fi
 }
 zxtune123_bin() {
@@ -23,6 +25,9 @@ system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
 	zxtune123_bin="$system_bin_location"
+else
+	unset ext_zxtune0
+	unset ext_zxtune1
 fi
 }
 vgmstream123_bin() {
@@ -32,6 +37,8 @@ system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
 	vgmstream123_bin="$system_bin_location"
+else
+	unset ext_vgmstream
 fi
 }
 # Test argument, if no argument set $PWD for search vgm (take a coffee)
@@ -119,10 +126,11 @@ player_dependency=(vgmplay zxtune123 vgmstream123)
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
-ext_zxtune="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
+ext_zxtune0="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
+ext_zxtune1="v2m"
 ext_vgmstream="ads|adp|adx|at3|cps|genh|it|mod|s3m|ss2|thp|xa|xm"
 ext_vgmplay="s98|vgm|vgz"
-ext_allplay="${ext_zxtune}|${ext_vgmplay}|${ext_vgmstream}"
+ext_allplay="${ext_zxtune0}|${ext_zxtune1}|${ext_vgmplay}|${ext_vgmstream}"
 
 # Start time counter of process
 start_process_time=$(date +%s)
