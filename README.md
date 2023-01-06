@@ -14,6 +14,12 @@ It is not necessary to have all the dependencies installed, for example if you d
 `curl https://raw.githubusercontent.com/Jocker666z/glouglou/main/glouglou.sh > /home/$USER/.local/bin/glouglou && chmod +rx /home/$USER/.local/bin/glouglou`
 
 ## Dependencies install help:
+### adplay
+adplay is present in many official repositories for most GNU/Linux distributions.
+
+For:
+* PC AdLib (OPL2/3): amd, d00, hsc, hsq, imf, rad, sdb, sqx, wlf
+
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
 
@@ -57,6 +63,7 @@ wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5020_armhf.t
 tar -xf zxtune123_r5020_armhf.tar.bz2 && rm zxtune123_r5020_armhf.tar.bz2
 ```
 For:
+* C64: sid
 * Nintendo DS: 2sf, mini2sf, ncsf, minincsf
 * Nintendo GBA: gsf, minigsf
 * Nintendo N64: usf, miniusf

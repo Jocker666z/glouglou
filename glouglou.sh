@@ -7,6 +7,17 @@
 # Licence : unlicense
 
 # Test dependencies
+adplay_bin() {
+local bin_name="adplay"
+local system_bin_location
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	adplay_bin="$system_bin_location"
+else
+	unset ext_adlib
+fi
+}
 vgmplay_bin() {
 local bin_name="vgmplay"
 local system_bin_location
@@ -51,7 +62,8 @@ fi
 }
 # Dependencies test
 player_dependency_test() {
-if [[ -z "$vgmplay_bin" ]] \
+if [[ -z "$adplay_bin" ]] \
+   && [[ -z "$vgmplay_bin" ]] \
    && [[ -z "$zxtune123_bin" ]] \
    && [[ -z "$vgmstream123_bin" ]]; then
 	echo "glouglou break, none dependencies are met:"
@@ -79,7 +91,10 @@ if (( "${#lst_vgm[@]}" )); then
 			clear
 			echo "======= glouglou ======="
 			# Play
-			if [[ "$ext_vgmplay" =~ $ext ]] && [[ -n "$vgmplay_bin" ]]; then
+			echo "${file}"
+			if [[ "$ext_adplay" =~ $ext ]] && [[ -n "$adplay_bin" ]]; then
+				"$adplay_bin" "${file}" -v -r
+			elif [[ "$ext_vgmplay" =~ $ext ]] && [[ -n "$vgmplay_bin" ]]; then
 				"$vgmplay_bin" "${file}"
 			elif [[ "$ext_zxtune" =~ $ext ]] && [[ -n "$zxtune123_bin" ]]; then
 				"$zxtune123_bin" --analyzer --alsa --file "${file}"
@@ -126,20 +141,23 @@ player_dependency=(vgmplay zxtune123 vgmstream123)
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
+ext_adplay="amd|d00|hsc|hsq|imf|rad|sdb|sqx|wlf"
 ext_zxtune0="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
 ext_zxtune1="sid|v2m"
 ext_vgmstream="ads|adp|adx|at3|cps|genh|it|mod|s3m|ss2|thp|xa|xm"
 ext_vgmplay="s98|vgm|vgz"
-ext_allplay="${ext_zxtune0}|${ext_zxtune1}|${ext_vgmplay}|${ext_vgmstream}"
 
 # Start time counter of process
 start_process_time=$(date +%s)
 
 # Set up
+adplay_bin
 vgmplay_bin
 zxtune123_bin
 vgmstream123_bin
 player_dependency_test
+# $ext_allplay contruction depend -> player_dependency_test
+ext_allplay="${ext_adplay}|${ext_zxtune0}|${ext_zxtune1}|${ext_vgmplay}|${ext_vgmstream}"
 test_argument
 search_vgm
 # Play
