@@ -239,7 +239,7 @@ ext_uade="ahx|bp|fc13|fc14"
 ext_vgmstream="ads|adp|adx|at3|cps|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_zxtune0="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
-ext_zxtune1="sid|v2m|ym"
+ext_zxtune1="sap|sid|v2m|ym"
 
 # Start time counter of process
 start_process_time=$(date +%s)

@@ -115,6 +115,7 @@ wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5020_armhf.t
 tar -xf zxtune123_r5020_armhf.tar.bz2 && rm zxtune123_r5020_armhf.tar.bz2
 ```
 For:
+* Atari XL/XE: sap
 * C64: sid
 * Nintendo DS: 2sf, mini2sf, ncsf, minincsf
 * Nintendo GBA: gsf, minigsf
