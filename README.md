@@ -124,4 +124,4 @@ For:
 * Sega Dreamcast: dsf
 * Sony Playstation: psf, minipsf
 * Sony Playstation 2: psf2, minipsf2
-* PC: v2m
+* PC: v2m, ym
