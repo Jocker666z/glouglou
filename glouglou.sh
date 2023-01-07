@@ -8,8 +8,10 @@
 
 # Test dependencies
 adplay_bin() {
-local bin_name="adplay"
+local bin_name
 local system_bin_location
+
+bin_name="adplay"
 system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
@@ -19,8 +21,10 @@ else
 fi
 }
 openmpt_bin() {
-local bin_name="openmpt123"
+local bin_name
 local system_bin_location
+
+bin_name="openmpt123"
 system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
@@ -29,9 +33,34 @@ else
 	unset ext_openmpt
 fi
 }
+sc68_bin() {
+local bin_name0
+local bin_name1
+local system_bin_location0
+local system_bin_location1
+
+bin_name0="sc68"
+bin_name1="aplay"
+system_bin_location0=$(command -v $bin_name0)
+system_bin_location1=$(command -v $bin_name1)
+
+if test -n "$system_bin_location0"; then
+	sc68_bin="$system_bin_location0"
+else
+	unset ext_sc68
+fi
+
+if test -n "$system_bin_location1"; then
+	aplay_bin="$system_bin_location1"
+else
+	unset ext_sc68
+fi
+}
 timidity_bin() {
-local bin_name="timidity"
+local bin_name
 local system_bin_location
+
+bin_name="timidity"
 system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
@@ -41,8 +70,10 @@ else
 fi
 }
 uade123_bin() {
-local bin_name="uade123"
+local bin_name
 local system_bin_location
+
+bin_name="uade123"
 system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
@@ -52,8 +83,10 @@ else
 fi
 }
 vgmplay_bin() {
-local bin_name="vgmplay"
+local bin_name
 local system_bin_location
+
+bin_name="vgmplay"
 system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
@@ -63,8 +96,10 @@ else
 fi
 }
 zxtune123_bin() {
-local bin_name="zxtune123"
+local bin_name
 local system_bin_location
+
+bin_name="zxtune123"
 system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
@@ -75,8 +110,10 @@ else
 fi
 }
 vgmstream123_bin() {
-local bin_name="vgmstream123"
+local bin_name
 local system_bin_location
+
+bin_name="vgmstream123"
 system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
@@ -96,7 +133,9 @@ fi
 # Dependencies test
 player_dependency_test() {
 if [[ -z "$adplay_bin" ]] \
+   && [[ -z "$aplay_bin" ]] \
    && [[ -z "$openmpt_bin" ]] \
+   && [[ -z "$sc68_bin" ]] \
    && [[ -z "$timidity_bin" ]] \
    && [[ -z "$uade123_bin" ]] \
    && [[ -z "$vgmplay_bin" ]] \
@@ -131,6 +170,8 @@ if (( "${#lst_vgm[@]}" )); then
 				"$adplay_bin" "${file}" -v -r
 			elif [[ "$ext_openmpt" =~ $ext ]] && [[ -n "$openmpt_bin" ]]; then
 				"$openmpt_bin" "${file}"
+			elif [[ "$ext_sc68" =~ $ext ]] && [[ -n "$sc68_bin" ]]; then
+				"$sc68_bin" "${file}" --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
 			elif [[ "$ext_timidity" =~ $ext ]] && [[ -n "$timidity_bin" ]]; then
 				"$timidity_bin" "${file}" -in --volume=100
 			elif [[ "$ext_uade" =~ $ext ]] && [[ -n "$uade123_bin" ]]; then
@@ -178,12 +219,21 @@ trap 'kill_stat' SIGINT
 # Argument
 arg="$1"
 # Dependencies
-player_dependency=(adplay openmpt123 timidity_bin uade123 vgmstream123 vgmplay zxtune123)
+player_dependency=(
+	'openmpt123'
+	'sc68 + aplay'
+	'timidity'
+	'uade123'
+	'vgmstream123'
+	'vgmplay'
+	'zxtune123'
+	)
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
 ext_adplay="amd|d00|hsc|hsq|imf|rad|sdb|sqx|wlf"
 ext_openmpt="it|mo3|mod|s3m|xm"
+ext_sc68="sc68"
 ext_timidity="mid"
 ext_uade="ahx|bp|fc13|fc14"
 ext_vgmstream="ads|adp|adx|at3|cps|genh|ss2|thp|xa"
@@ -197,6 +247,7 @@ start_process_time=$(date +%s)
 # Set up
 adplay_bin
 openmpt_bin
+sc68_bin
 timidity_bin
 uade123_bin
 vgmplay_bin
@@ -204,7 +255,7 @@ zxtune123_bin
 vgmstream123_bin
 player_dependency_test
 # $ext_allplay contruction depend -> player_dependency_test
-ext_allplay="${ext_adplay}|${ext_openmpt}|${ext_timidity}|${ext_uade}|${ext_vgmplay}|${ext_vgmstream}|${ext_zxtune0}|${ext_zxtune1}"
+ext_allplay="${ext_adplay}|${ext_openmpt}|${ext_sc68}|${ext_timidity}|${ext_uade}|${ext_vgmplay}|${ext_vgmstream}|${ext_zxtune0}|${ext_zxtune1}"
 test_argument
 search_vgm
 # Play
