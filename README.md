@@ -1,7 +1,7 @@
 # glouglou
-Bad bash script for no brain, also play vgm in shuffle.
+Bad bash script for no brain, also play vgm/chiptune in shuffle.
 
-glouglou just play in shuffle and repeat, all the vgm files it found. Nothing else.
+glouglou just play in shuffle and repeat, all the files it found. Nothing else.
 
 ## Use
 Enter : `glouglou /dir` or just `glouglou` (it will recursively search files).
@@ -48,7 +48,7 @@ git clone https://gitlab.com/uade-music-player/uade && cd uade
 su -c "make install" -m "root"
 ```
 For:
-* Music tracker files: fc13, fc14
+* Music tracker files: ahx, bp, fc13, fc14
 
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream

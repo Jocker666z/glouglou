@@ -170,7 +170,7 @@ export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
 ext_adplay="amd|d00|hsc|hsq|imf|rad|sdb|sqx|wlf"
 ext_openmpt="it|mo3|mod|s3m|xm"
-ext_uade="fc13|fc14"
+ext_uade="ahx|bp|fc13|fc14"
 ext_vgmstream="ads|adp|adx|at3|cps|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_zxtune0="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
