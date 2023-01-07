@@ -30,6 +30,26 @@ openmpt123 is present in many official repositories for most GNU/Linux distribut
 For:
 * Music tracker files: it, mo3, mod, s3m, xm
 
+### uade
+https://gitlab.com/uade-music-player/uade
+
+Build dependencies: `git build-essential sparse audacious-dev libao-dev libvorbis-dev libmpg123-dev`
+```
+git clone https://gitlab.com/heikkiorsila/bencodetools && cd bencodetools
+./configure && make -j"$(nproc)"
+su -c "make install" -m "root"
+cd ..
+git clone https://gitlab.com/hors/libzakalwe && cd libzakalwe
+./configure && make -j"$(nproc)"
+su -c "make install" -m "root"
+cd ..
+git clone https://gitlab.com/uade-music-player/uade && cd uade
+./configure && make -j"$(nproc)"
+su -c "make install" -m "root"
+```
+For:
+* Music tracker files: fc13, fc14
+
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
 
