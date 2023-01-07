@@ -30,6 +30,13 @@ openmpt123 is present in many official repositories for most GNU/Linux distribut
 For:
 * Music tracker files: it, mo3, mod, s3m, xm
 
+### TiMidity++
+https://timidity.sourceforge.net/
+
+timidity is present in many official repositories for most GNU/Linux distributions. 
+
+For .mid
+
 ### uade
 https://gitlab.com/uade-music-player/uade
 
