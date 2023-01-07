@@ -30,6 +30,21 @@ openmpt123 is present in many official repositories for most GNU/Linux distribut
 For:
 * Music tracker files: it, mo3, mod, s3m, xm
 
+### sc68
+https://sourceforge.net/projects/sc68/
+
+You also need `aplay` for this player, part of `alsa-utils` package.
+
+Build dependencies: `git build-essential autoconf libtool libtool-bin automake pkg-config libao-dev zlib1g-dev`
+```
+cd
+git clone https://github.com/Jocker666z/sc68 && cd sc68
+tools/svn-bootstrap.sh && ./configure LDFLAGS="-static"
+make -j"$(nproc)"
+su -c "make install" -m "root"
+```
+For .sc68
+
 ### TiMidity++
 https://timidity.sourceforge.net/
 
