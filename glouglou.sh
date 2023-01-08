@@ -239,7 +239,7 @@ player_dependency=(
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
-ext_adplay="adl|amd|d00|got|hsc|hsq|imf|ksm|mdi|rad|sdb|sqx|wlf"
+ext_adplay="adl|amd|d00|got|hsc|hsq|imf|ksm|mdi|rad|rol|sdb|sqx|wlf"
 ext_openmpt="it|mo3|mod|s3m|xm"
 ext_sc68="sc68"
 ext_timidity="mid"

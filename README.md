@@ -20,7 +20,7 @@ https://adplug.github.io/
 adplay is present in many official repositories for most GNU/Linux distributions.
 
 For:
-* PC AdLib (OPL2/3): adl, amd, d00, got, hsc, hsq, imf, ksm, mdi, rad, sdb, sqx, wlf
+* PC AdLib (OPL2/3): adl, amd, d00, got, hsc, hsq, imf, ksm, mdi, rad, rol, sdb, sqx, wlf
 
 ### openmpt123
 https://lib.openmpt.org/
