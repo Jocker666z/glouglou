@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2317,SC2086
 # glouglou
 # Bad bash script for no brain, also play vgm in shuffle
 #
@@ -168,18 +169,25 @@ if (( "${#lst_vgm[@]}" )); then
 			# Play
 			if [[ "$ext_adplay" =~ $ext ]] && [[ -n "$adplay_bin" ]]; then
 				"$adplay_bin" "${file}" -v -r
+
 			elif [[ "$ext_openmpt" =~ $ext ]] && [[ -n "$openmpt_bin" ]]; then
 				"$openmpt_bin" "${file}"
+
 			elif [[ "$ext_sc68" =~ $ext ]] && [[ -n "$sc68_bin" ]]; then
 				"$sc68_bin" "${file}" --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
+
 			elif [[ "$ext_timidity" =~ $ext ]] && [[ -n "$timidity_bin" ]]; then
 				"$timidity_bin" "${file}" -in --volume=100
+
 			elif [[ "$ext_uade" =~ $ext ]] && [[ -n "$uade123_bin" ]]; then
 				"$uade123_bin" "${file}"
+
 			elif [[ "$ext_vgmstream" =~ $ext ]] && [[ -n "$vgmstream123_bin" ]]; then
 				"$vgmstream123_bin" -D alsa -m "${file}"
+
 			elif [[ "$ext_vgmplay" =~ $ext ]] && [[ -n "$vgmplay_bin" ]]; then
 				"$vgmplay_bin" "${file}"
+
 			elif [[ "$ext_zxtune" =~ $ext ]] && [[ -n "$zxtune123_bin" ]]; then
 				"$zxtune123_bin" --analyzer --alsa --file "${file}"
 			fi
@@ -238,8 +246,9 @@ ext_timidity="mid"
 ext_uade="ahx|bp|fc13|fc14"
 ext_vgmstream="ads|adp|adx|at3|cps|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
-ext_zxtune0="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
-ext_zxtune1="sap|sid|v2m|ym"
+ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|spc|ssf|usf"
+ext_zxtune_various="sap|sid|v2m|ym"
+ext_zxtune="${ext_zxtune_xfs}|${ext_zxtune_various}"
 
 # Start time counter of process
 start_process_time=$(date +%s)
@@ -255,7 +264,16 @@ zxtune123_bin
 vgmstream123_bin
 player_dependency_test
 # $ext_allplay contruction depend -> player_dependency_test
-ext_allplay="${ext_adplay}|${ext_openmpt}|${ext_sc68}|${ext_timidity}|${ext_uade}|${ext_vgmplay}|${ext_vgmstream}|${ext_zxtune0}|${ext_zxtune1}"
+ext_allplay_raw="${ext_adplay}| \
+				 ${ext_openmpt}| \
+				 ${ext_sc68}| \
+				 ${ext_timidity}| \
+				 ${ext_uade}| \
+				 ${ext_vgmplay}| \
+				 ${ext_vgmstream}| \
+				 ${ext_vgmplay}| \
+				 ${ext_zxtune}"
+ext_allplay="${ext_allplay_raw//[[:blank:]]/}"
 test_argument
 search_vgm
 # Play
