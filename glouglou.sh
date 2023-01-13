@@ -247,7 +247,7 @@ ext_uade="ahx|bp|fc13|fc14"
 ext_vgmstream="ads|adp|adx|at3|cps|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
-ext_zxtune_various="sap|sid|spc|v2m|ym"
+ext_zxtune_various="hlv|sap|sid|spc|v2m|ym"
 ext_zxtune="${ext_zxtune_xfs}|${ext_zxtune_various}"
 
 # Start time counter of process
