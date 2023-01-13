@@ -70,7 +70,7 @@ git clone https://gitlab.com/uade-music-player/uade && cd uade
 su -c "make install" -m "root"
 ```
 For:
-* Music tracker files: ahx, bp, fc13, fc14
+* Music tracker files: abk, ahx, bp, fc13, fc14
 
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
