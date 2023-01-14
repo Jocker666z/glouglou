@@ -20,7 +20,7 @@ https://adplug.github.io/
 adplay is present in many official repositories for most GNU/Linux distributions.
 
 For:
-* PC AdLib (OPL2/3): adl, amd, d00, got, hsc, hsq, imf, ksm, laa, mdi, rad, rol, sdb, sqx, wlf
+* PC AdLib (OPL2/3): adl, amd, d00, got, hsc, hsq, imf, ksm, laa, mdi, rad, rol, sdb, sqx, wlf, xms
 
 ### openmpt123
 https://lib.openmpt.org/
@@ -70,7 +70,7 @@ git clone https://gitlab.com/uade-music-player/uade && cd uade
 su -c "make install" -m "root"
 ```
 For:
-* Music tracker files: abk, ahx, bp, fc13, fc14
+* Tracker: abk, ahx, amc, ast, bp, fc13, fc14
 
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
@@ -83,7 +83,7 @@ make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
 For:
-* Various machines: ads, adp, adx, at3, cps, genh, ss2, thp, xa
+* Various machines: ads, adp, adx, apc, at3, cps, dsm, genh, ss2, thp, xa
 
 ### vgmplay
 https://github.com/ValleyBell/vgmplay-libvgm
@@ -125,4 +125,4 @@ For:
 * Sega Dreamcast: dsf
 * Sony Playstation: psf, minipsf
 * Sony Playstation 2: psf2, minipsf2
-* PC: hvl, v2m, ym
+* Tracker: amf, hvl, v2m, ym

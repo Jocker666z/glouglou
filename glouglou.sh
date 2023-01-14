@@ -239,15 +239,15 @@ player_dependency=(
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
-ext_adplay="adl|amd|d00|got|hsc|hsq|imf|laa|ksm|mdi|rad|rol|sdb|sqx|wlf"
+ext_adplay="adl|amd|d00|got|hsc|hsq|imf|laa|ksm|mdi|rad|rol|sdb|sqx|wlf|xms"
 ext_openmpt="it|mo3|mod|s3m|xm"
 ext_sc68="sc68"
 ext_timidity="mid"
-ext_uade="abk|ahx|bp|fc13|fc14"
-ext_vgmstream="ads|adp|adx|at3|cps|genh|ss2|thp|xa"
+ext_uade="abk|ahx|amc|ast|bp|fc13|fc14"
+ext_vgmstream="ads|adp|adx|apc|at3|cps|dsm|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
-ext_zxtune_various="hvl|sap|sid|spc|v2m|ym"
+ext_zxtune_various="amf|hvl|sap|sid|spc|v2m|ym"
 ext_zxtune="${ext_zxtune_xfs}|${ext_zxtune_various}"
 
 # Start time counter of process
