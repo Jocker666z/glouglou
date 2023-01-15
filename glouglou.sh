@@ -256,16 +256,16 @@ player_dependency=(
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
-ext_adplay="adl|amd|bam|cff|cmf|d00|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|rad|rol|sdb|sqx|wlf|xms"
-ext_openmpt="it|mo3|mod|s3m|xm"
+ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|rad|rol|sdb|sqx|wlf|xms|xsm"
+ext_openmpt="it|cow|mo3|mod|s3m|plm|xm"
 ext_sc68="sc68"
 ext_timidity="mid"
-ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|hot|fc13|fc14"
+ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|hot|fc13|fc14|mug"
 ext_vgmstream="ads|adp|adx|apc|at3|cps|dsm|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
-ext_xmp="669|amf|musx"
+ext_xmp="669|amf|dbm|digi|dsm|dsym|far|mdl|musx|psm"
 ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
-ext_zxtune_various="hvl|dmf|sap|sid|spc|v2m|ym"
+ext_zxtune_various="ams|dmf|dtt|hvl|sap|sid|spc|v2m|ym"
 ext_zxtune="${ext_zxtune_xfs}|${ext_zxtune_various}"
 
 # Start time counter of process
