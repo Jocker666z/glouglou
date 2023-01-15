@@ -70,7 +70,7 @@ git clone https://gitlab.com/uade-music-player/uade && cd uade
 su -c "make install" -m "root"
 ```
 For:
-* Tracker: abk, ahx, amc, ast, bp, fc13, fc14
+* Tracker: abk, ahx, amc, ast, bp, hot, fc13, fc14
 
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
@@ -98,6 +98,13 @@ su -c "make install" -m "root"
 For:
 * NEC PC-Engine, Sharp X1, Fujitsu FM: s98
 * Various machines: vgm, vgz
+
+### xmp
+https://xmp.sourceforge.net/
+
+xmp is present in many official repositories for most GNU/Linux distributions. 
+
+For .musx
 
 ### zxtune123
 https://zxtune.bitbucket.io/

@@ -96,6 +96,19 @@ else
 	unset ext_vgmplay
 fi
 }
+xmp_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="xmp"
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	xmp_bin="$system_bin_location"
+else
+	unset ext_xmp
+fi
+}
 zxtune123_bin() {
 local bin_name
 local system_bin_location
@@ -106,8 +119,7 @@ system_bin_location=$(command -v $bin_name)
 if test -n "$system_bin_location"; then
 	zxtune123_bin="$system_bin_location"
 else
-	unset ext_zxtune0
-	unset ext_zxtune1
+	unset ext_zxtune
 fi
 }
 vgmstream123_bin() {
@@ -140,6 +152,7 @@ if [[ -z "$adplay_bin" ]] \
    && [[ -z "$timidity_bin" ]] \
    && [[ -z "$uade123_bin" ]] \
    && [[ -z "$vgmplay_bin" ]] \
+   && [[ -z "$xmp_bin" ]] \
    && [[ -z "$zxtune123_bin" ]] \
    && [[ -z "$vgmstream123_bin" ]]; then
 	echo "glouglou break, none dependencies are met:"
@@ -188,6 +201,9 @@ if (( "${#lst_vgm[@]}" )); then
 			elif [[ "$ext_vgmplay" =~ $ext ]] && [[ -n "$vgmplay_bin" ]]; then
 				"$vgmplay_bin" "${file}"
 
+			elif [[ "$ext_xmp" =~ $ext ]] && [[ -n "$xmp_bin" ]]; then
+				"$xmp_bin" "${file}"
+
 			elif [[ "$ext_zxtune" =~ $ext ]] && [[ -n "$zxtune123_bin" ]]; then
 				"$zxtune123_bin" --analyzer --alsa --file "${file}"
 			fi
@@ -234,6 +250,7 @@ player_dependency=(
 	'uade123'
 	'vgmstream123'
 	'vgmplay'
+	'xmp'
 	'zxtune123'
 	)
 # Paths
@@ -243,9 +260,10 @@ ext_adplay="adl|amd|d00|got|hsc|hsq|imf|laa|ksm|mdi|rad|rol|sdb|sqx|wlf|xms"
 ext_openmpt="it|mo3|mod|s3m|xm"
 ext_sc68="sc68"
 ext_timidity="mid"
-ext_uade="abk|ahx|amc|ast|bp|fc13|fc14"
+ext_uade="abk|ahx|amc|ast|bp|hot|fc13|fc14"
 ext_vgmstream="ads|adp|adx|apc|at3|cps|dsm|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
+ext_xmp="musx"
 ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_various="amf|hvl|sap|sid|spc|v2m|ym"
 ext_zxtune="${ext_zxtune_xfs}|${ext_zxtune_various}"
@@ -259,9 +277,10 @@ openmpt_bin
 sc68_bin
 timidity_bin
 uade123_bin
-vgmplay_bin
-zxtune123_bin
 vgmstream123_bin
+vgmplay_bin
+xmp_bin
+zxtune123_bin
 player_dependency_test
 # $ext_allplay contruction depend -> player_dependency_test
 ext_allplay_raw="${ext_adplay}| \
@@ -272,6 +291,7 @@ ext_allplay_raw="${ext_adplay}| \
 				 ${ext_vgmplay}| \
 				 ${ext_vgmstream}| \
 				 ${ext_vgmplay}| \
+				 ${ext_xmp}| \
 				 ${ext_zxtune}"
 ext_allplay="${ext_allplay_raw//[[:blank:]]/}"
 test_argument
