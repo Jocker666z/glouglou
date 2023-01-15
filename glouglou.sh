@@ -202,7 +202,7 @@ if (( "${#lst_vgm[@]}" )); then
 				"$vgmplay_bin" "${file}"
 
 			elif [[ "$ext_xmp" =~ $ext ]] && [[ -n "$xmp_bin" ]]; then
-				"$xmp_bin" "${file}"
+				"$xmp_bin" "${file}" --all-sequences
 
 			elif [[ "$ext_zxtune" =~ $ext ]] && [[ -n "$zxtune123_bin" ]]; then
 				"$zxtune123_bin" --analyzer --alsa --file "${file}"
@@ -256,16 +256,16 @@ player_dependency=(
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
-ext_adplay="adl|amd|d00|got|hsc|hsq|imf|laa|ksm|mdi|rad|rol|sdb|sqx|wlf|xms"
+ext_adplay="adl|amd|bam|cff|cmf|d00|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|rad|rol|sdb|sqx|wlf|xms"
 ext_openmpt="it|mo3|mod|s3m|xm"
 ext_sc68="sc68"
 ext_timidity="mid"
-ext_uade="abk|ahx|amc|ast|bp|hot|fc13|fc14"
+ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|hot|fc13|fc14"
 ext_vgmstream="ads|adp|adx|apc|at3|cps|dsm|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
-ext_xmp="musx"
+ext_xmp="669|amf|musx"
 ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
-ext_zxtune_various="amf|hvl|sap|sid|spc|v2m|ym"
+ext_zxtune_various="hvl|dmf|sap|sid|spc|v2m|ym"
 ext_zxtune="${ext_zxtune_xfs}|${ext_zxtune_various}"
 
 # Start time counter of process

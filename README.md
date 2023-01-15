@@ -20,7 +20,7 @@ https://adplug.github.io/
 adplay is present in many official repositories for most GNU/Linux distributions.
 
 For:
-* PC AdLib (OPL2/3): adl, amd, d00, got, hsc, hsq, imf, ksm, laa, mdi, rad, rol, sdb, sqx, wlf, xms
+* PC AdLib (OPL2/3): adl, amd, bam, cff, cmf, d00, ddt, dtm, got, hsc, hsq, imf, ksm, laa, mdi, rad, rol, sdb, sqx, wlf, xms
 
 ### openmpt123
 https://lib.openmpt.org/
@@ -70,7 +70,7 @@ git clone https://gitlab.com/uade-music-player/uade && cd uade
 su -c "make install" -m "root"
 ```
 For:
-* Tracker: abk, ahx, amc, ast, bp, hot, fc13, fc14
+* Tracker: aam, abk, ahx, amc, aon, ast, bp, bp3, bss, cus, dm, dm2, hot, fc13, fc14
 
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
@@ -104,7 +104,7 @@ https://xmp.sourceforge.net/
 
 xmp is present in many official repositories for most GNU/Linux distributions. 
 
-For .musx
+For 669, amf, musx
 
 ### zxtune123
 https://zxtune.bitbucket.io/
@@ -132,4 +132,4 @@ For:
 * Sega Dreamcast: dsf
 * Sony Playstation: psf, minipsf
 * Sony Playstation 2: psf2, minipsf2
-* Tracker: amf, hvl, v2m, ym
+* Tracker: dmf, hvl, v2m, ym
