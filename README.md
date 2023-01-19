@@ -114,7 +114,7 @@ https://xmp.sourceforge.net/
 
 xmp is present in many official repositories for most GNU/Linux distributions. 
 
-For 669, amf, dbm, digi, dsm, dsym, far, mdl, musx, psm
+For 669, amf, dbm, digi, dsm, dsym, far, gz, mdl, musx, psm
 
 ### zxtune123
 https://zxtune.bitbucket.io/

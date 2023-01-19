@@ -160,6 +160,7 @@ fi
 player_dependency_test() {
 if [[ -z "$adplay_bin" ]] \
    && [[ -z "$aplay_bin" ]] \
+   && [[ -z "$mpv_bin" ]] \
    && [[ -z "$openmpt_bin" ]] \
    && [[ -z "$sc68_bin" ]] \
    && [[ -z "$timidity_bin" ]] \
