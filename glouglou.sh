@@ -193,39 +193,43 @@ if (( "${#lst_vgm[@]}" )); then
 			clear
 			echo "======= glouglou ======="
 			# Play
-			if [[ "$ext_adplay" =~ $ext ]] && [[ -n "$adplay_bin" ]]; then
+
+			shopt -s nocasematch
+			if echo "|${ext_adplay}|" | grep "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
 				"$adplay_bin" "${file}" -v -r -o
 
-			elif [[ "$ext_mpv" =~ $ext ]] && [[ -n "$mpv_bin" ]]; then
+			elif echo "|${ext_mpv}|" | grep "|${ext}|" &>/dev/null && [[ -n "$mpv_bin" ]]; then
 				"$mpv_bin" "${file}" --terminal --no-video \
 					--term-osd-bar yes \
 					--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 
-			elif [[ "$ext_openmpt" =~ $ext ]] && [[ -n "$openmpt_bin" ]]; then
+			elif echo "|${ext_openmpt}|" | grep "|${ext}|" &>/dev/null && [[ -n "$openmpt_bin" ]]; then
 				"$openmpt_bin" "${file}"
 
-			elif [[ "$ext_sc68" =~ $ext ]] && [[ -n "$sc68_bin" ]]; then
+			elif echo "|${ext_sc68}|" | grep "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
 				"$sc68_bin" "${file}" --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
 
-			elif [[ "$ext_timidity" =~ $ext ]] && [[ -n "$timidity_bin" ]]; then
+			elif echo "|${ext_timidity}|" | grep "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
 				"$timidity_bin" "${file}" -in --volume=100
 
-			elif [[ "$ext_uade" =~ $ext ]] && [[ -n "$uade123_bin" ]]; then
+			elif echo "|${ext_uade}|" | grep "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				"$uade123_bin" "${file}"
 
-			elif [[ "$ext_vgmstream" =~ $ext ]] && [[ -n "$vgmstream123_bin" ]]; then
+			elif echo "|${ext_vgmstream}|" | grep "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
 				"$vgmstream123_bin" -D alsa -m "${file}"
 
-			elif [[ "$ext_vgmplay" =~ $ext ]] && [[ -n "$vgmplay_bin" ]]; then
+			elif echo "|${ext_vgmplay}|" | grep "|${ext}|" &>/dev/null && [[ -n "$vgmplay_bin" ]]; then
 				"$vgmplay_bin" "${file}"
 
-			elif [[ "$ext_xmp" =~ $ext ]] && [[ -n "$xmp_bin" ]]; then
-				"$xmp_bin" "${file}" --all-sequences
+			elif echo "|${ext_xmp}|" | grep "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
+				"$xmp_bin" "${file}"
 
-			elif [[ "$ext_zxtune" =~ $ext ]] && [[ -n "$zxtune123_bin" ]]; then
+			elif echo "|${ext_zxtune}|" | grep "|${ext}|" &>/dev/null && [[ -n "$zxtune123_bin" ]]; then
 				"$zxtune123_bin" --analyzer --alsa --file "${file}"
 			fi
+			shopt -u nocasematch
 		done
+
 	done
 else
 	echo "glouglou break, there's nothing here, no file to play."
@@ -247,7 +251,7 @@ time_formated="$((diff_in_s/3600))h$((diff_in_s%3600/60))m$((diff_in_s%60))s"
 echo
 echo "--------------------"
 echo "glouglou was exited."
-echo "You have listened ${vgm_counter} tracks".
+echo "You have listened ${vgm_counter}/${#lst_vgm[@]} tracks".
 echo "The duration of your crazy listening was ${time_formated}".
 
 # Proper exit
@@ -281,10 +285,10 @@ ext_mpv="ape|flac|m4a|mp3|ogg|opus|wav|wv"
 ext_openmpt="it|cow|mo3|mod|s3m|plm|xm"
 ext_sc68="sc68"
 ext_timidity="mid"
-ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|ex|hot|fc13|fc14|mug"
+ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|ex|hot|fc13|fc14|mug|sfx"
 ext_vgmstream="ads|adp|adx|apc|at3|cps|dsm|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
-ext_xmp="669|amf|dbm|digi|dsm|dsym|far|mdl|musx|psm"
+ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
 ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|sid|spc|v2m|ym"
 ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"

@@ -10,6 +10,8 @@ Stop it by true proper command: `ctrl+c`.
 
 It is not necessary to have all the dependencies installed, for example if you don't want to install zxtune123 but vgmplay is installed, glouglou will only read the vgmplay files.
 
+For info, glouglou takes less than 6s to launch a playlist of more than 70000 files on LAN disk.
+
 ## Install & update
 `curl https://raw.githubusercontent.com/Jocker666z/glouglou/main/glouglou.sh > /home/$USER/.local/bin/glouglou && chmod +rx /home/$USER/.local/bin/glouglou`
 
@@ -78,7 +80,7 @@ git clone https://gitlab.com/uade-music-player/uade && cd uade
 su -c "make install" -m "root"
 ```
 For:
-* Tracker: aam, abk, ahx, amc, aon, ast, bp, bp3, bss, cus, dm, dm2, dmu, dss, ea, hot, fc13, fc14, mug
+* Tracker: aam, abk, ahx, amc, aon, ast, bp, bp3, bss, cus, dm, dm2, dmu, dss, ea, hot, fc13, fc14, mug, sfx
 
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
