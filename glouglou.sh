@@ -285,9 +285,10 @@ ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|ex|hot|fc13|f
 ext_vgmstream="ads|adp|adx|apc|at3|cps|dsm|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|mdl|musx|psm"
+ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|sid|spc|v2m|ym"
 ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
-ext_zxtune_various="ams|dmf|dtt|hvl|sap|sid|spc|v2m|ym"
-ext_zxtune="${ext_zxtune_xfs}|${ext_zxtune_various}"
+ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"
+ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xfs}|${ext_zxtune_zx_spectrum}"
 
 # Start time counter of process
 start_process_time=$(date +%s)

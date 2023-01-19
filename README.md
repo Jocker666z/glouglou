@@ -141,3 +141,4 @@ For:
 * Sony Playstation: psf, minipsf
 * Sony Playstation 2: psf2, minipsf2
 * Tracker: ams, dmf, dtt, hvl, v2m, ym
+* ZX Spectrum: asc, ay, psc, pt2, pt3, sqt, stc, stp
