@@ -21,6 +21,19 @@ else
 	unset ext_adlib
 fi
 }
+mpv_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="mpv"
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	mpv_bin="$system_bin_location"
+else
+	unset ext_mpv
+fi
+}
 openmpt_bin() {
 local bin_name
 local system_bin_location
@@ -183,6 +196,11 @@ if (( "${#lst_vgm[@]}" )); then
 			if [[ "$ext_adplay" =~ $ext ]] && [[ -n "$adplay_bin" ]]; then
 				"$adplay_bin" "${file}" -v -r -o
 
+			elif [[ "$ext_mpv" =~ $ext ]] && [[ -n "$mpv_bin" ]]; then
+				"$mpv_bin" "${file}" --terminal --no-video \
+					--term-osd-bar yes \
+					--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
+
 			elif [[ "$ext_openmpt" =~ $ext ]] && [[ -n "$openmpt_bin" ]]; then
 				"$openmpt_bin" "${file}"
 
@@ -244,6 +262,8 @@ trap 'kill_stat' SIGINT
 arg="$1"
 # Dependencies
 player_dependency=(
+	'adplay'
+	'mpv'
 	'openmpt123'
 	'sc68 + aplay'
 	'timidity'
@@ -256,7 +276,8 @@ player_dependency=(
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
-ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|rad|rol|sdb|sqx|wlf|xms|xsm"
+ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
+ext_mpv="ape|flac|m4a|mp3|ogg|opus|wav|wv"
 ext_openmpt="it|cow|mo3|mod|s3m|plm|xm"
 ext_sc68="sc68"
 ext_timidity="mid"
@@ -271,8 +292,9 @@ ext_zxtune="${ext_zxtune_xfs}|${ext_zxtune_various}"
 # Start time counter of process
 start_process_time=$(date +%s)
 
-# Set up
+# Setup
 adplay_bin
+mpv_bin
 openmpt_bin
 sc68_bin
 timidity_bin
@@ -284,6 +306,7 @@ zxtune123_bin
 player_dependency_test
 # $ext_allplay contruction depend -> player_dependency_test
 ext_allplay_raw="${ext_adplay}| \
+				 ${ext_mpv}| \
 				 ${ext_openmpt}| \
 				 ${ext_sc68}| \
 				 ${ext_timidity}| \

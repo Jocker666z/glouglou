@@ -20,7 +20,15 @@ https://adplug.github.io/
 adplay is present in many official repositories for most GNU/Linux distributions.
 
 For:
-* PC AdLib (OPL2/3): adl, amd, bam, cff, cmf, d00, dfm, ddt, dtm, got, hsc, hsq, imf, ksm, laa, mdi, rad, rol, sdb, sqx, wlf, xms, xsm
+* PC AdLib (OPL2/3): adl, amd, bam, cff, cmf, d00, dfm, ddt, dtm, got, hsc, hsq, imf, ksm, laa, mdi, mtk, rad, rol, sdb, sqx, wlf, xms, xsm
+
+### mpv
+https://mpv.io/
+
+mpv is present in many official repositories for most GNU/Linux distributions.
+
+For:
+* Audio files: ape, flac, m4a, mp3, ogg, opus, wav, wv
 
 ### openmpt123
 https://lib.openmpt.org/
@@ -28,7 +36,7 @@ https://lib.openmpt.org/
 openmpt123 is present in many official repositories for most GNU/Linux distributions.
 
 For:
-* Music tracker files: it, cow, mo3, mod, s3m, plm, xm
+* Tracker: it, cow, mo3, mod, s3m, plm, xm
 
 ### sc68
 https://sourceforge.net/projects/sc68/
