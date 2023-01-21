@@ -31,13 +31,6 @@ mpv is present in many official repositories for most GNU/Linux distributions.
 
 For:
 * Audio files: ape, flac, m4a, mp3, ogg, opus, wav, wv
-
-### openmpt123
-https://lib.openmpt.org/
-
-openmpt123 is present in many official repositories for most GNU/Linux distributions.
-
-For:
 * Tracker: it, cow, mo3, mod, s3m, plm, xm
 
 ### sc68

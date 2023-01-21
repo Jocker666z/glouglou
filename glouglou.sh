@@ -34,19 +34,6 @@ else
 	unset ext_mpv
 fi
 }
-openmpt_bin() {
-local bin_name
-local system_bin_location
-
-bin_name="openmpt123"
-system_bin_location=$(command -v $bin_name)
-
-if test -n "$system_bin_location"; then
-	openmpt_bin="$system_bin_location"
-else
-	unset ext_openmpt
-fi
-}
 sc68_bin() {
 local bin_name0
 local bin_name1
@@ -161,7 +148,6 @@ player_dependency_test() {
 if [[ -z "$adplay_bin" ]] \
    && [[ -z "$aplay_bin" ]] \
    && [[ -z "$mpv_bin" ]] \
-   && [[ -z "$openmpt_bin" ]] \
    && [[ -z "$sc68_bin" ]] \
    && [[ -z "$timidity_bin" ]] \
    && [[ -z "$uade123_bin" ]] \
@@ -203,9 +189,6 @@ if (( "${#lst_vgm[@]}" )); then
 				"$mpv_bin" "${file}" --terminal --no-video \
 					--term-osd-bar yes \
 					--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
-
-			elif echo "|${ext_openmpt}|" | grep "|${ext}|" &>/dev/null && [[ -n "$openmpt_bin" ]]; then
-				"$openmpt_bin" "${file}"
 
 			elif echo "|${ext_sc68}|" | grep "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
 				"$sc68_bin" "${file}" --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
@@ -269,7 +252,6 @@ arg="$1"
 player_dependency=(
 	'adplay'
 	'mpv'
-	'openmpt123'
 	'sc68 + aplay'
 	'timidity'
 	'uade123'
@@ -282,8 +264,9 @@ player_dependency=(
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
-ext_mpv="ape|flac|m4a|mp3|ogg|opus|wav|wv"
-ext_openmpt="it|cow|mo3|mod|s3m|plm|xm"
+ext_mpv_various="ape|flac|m4a|mp3|ogg|opus|wav|wv"
+ext_mpv_tracker="it|cow|mo3|mod|s3m|plm|xm"
+ext_mpv="${ext_mpv_various}|${ext_mpv_tracker}"
 ext_sc68="sc68"
 ext_timidity="mid"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|ex|hot|fc13|fc14|mug|sfx"
@@ -301,7 +284,6 @@ start_process_time=$(date +%s)
 # Setup
 adplay_bin
 mpv_bin
-openmpt_bin
 sc68_bin
 timidity_bin
 uade123_bin
@@ -313,7 +295,6 @@ player_dependency_test
 # $ext_allplay contruction depend -> player_dependency_test
 ext_allplay_raw="${ext_adplay}| \
 				 ${ext_mpv}| \
-				 ${ext_openmpt}| \
 				 ${ext_sc68}| \
 				 ${ext_timidity}| \
 				 ${ext_uade}| \
