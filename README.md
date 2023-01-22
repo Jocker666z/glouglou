@@ -31,7 +31,7 @@ mpv is present in many official repositories for most GNU/Linux distributions.
 
 For:
 * Audio files: ape, flac, m4a, mp3, ogg, opus, wav, wv
-* Tracker: it, cow, mo3, mod, s3m, plm, xm
+* Tracker: it, cow, mo3, mms, mod, s3m, stp, plm, xm
 
 ### sc68
 https://sourceforge.net/projects/sc68/
@@ -48,12 +48,22 @@ su -c "make install" -m "root"
 ```
 For .sc68
 
+### sidplayfp
+https://github.com/libsidplayfp/sidplayfp
+
+sidplayfp is present in many official repositories for most GNU/Linux distributions.
+
+The sidplayfp configuration file must be filled in correctly, otherwise the result will be random (view: https://github.com/libsidplayfp/sidplayfp/wiki/sidplayfp.ini).
+
+For sid
+
+
 ### TiMidity++
 https://timidity.sourceforge.net/
 
 timidity is present in many official repositories for most GNU/Linux distributions. 
 
-For .mid
+For mid
 
 ### uade
 https://gitlab.com/uade-music-player/uade
@@ -126,7 +136,6 @@ tar -xf zxtune123_r5020_armhf.tar.bz2 && rm zxtune123_r5020_armhf.tar.bz2
 ```
 For:
 * Atari XL/XE: sap
-* C64: sid
 * Nintendo DS: 2sf, mini2sf, ncsf, minincsf
 * Nintendo GBA: gsf, minigsf
 * Nintendo N64: usf, miniusf

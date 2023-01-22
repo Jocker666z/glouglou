@@ -57,6 +57,19 @@ else
 	unset ext_sc68
 fi
 }
+sidplayfp_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="sidplayfp"
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	sidplayfp_bin="$system_bin_location"
+else
+	unset ext_sidplayfp
+fi
+}
 timidity_bin() {
 local bin_name
 local system_bin_location
@@ -149,6 +162,7 @@ if [[ -z "$adplay_bin" ]] \
    && [[ -z "$aplay_bin" ]] \
    && [[ -z "$mpv_bin" ]] \
    && [[ -z "$sc68_bin" ]] \
+   && [[ -z "$sidplayfp_bin" ]] \
    && [[ -z "$timidity_bin" ]] \
    && [[ -z "$uade123_bin" ]] \
    && [[ -z "$vgmplay_bin" ]] \
@@ -192,6 +206,9 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_sc68}|" | grep "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
 				"$sc68_bin" "${file}" --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
+
+			elif echo "|${ext_sidplayfp}|" | grep "|${ext}|" &>/dev/null && [[ -n "$sidplayfp_bin" ]]; then
+				"$sidplayfp_bin" "${file}" -v -s --digiboost
 
 			elif echo "|${ext_timidity}|" | grep "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
 				"$timidity_bin" "${file}" -in --volume=100
@@ -253,6 +270,7 @@ player_dependency=(
 	'adplay'
 	'mpv'
 	'sc68 + aplay'
+	'sidplayfp'
 	'timidity'
 	'uade123'
 	'vgmstream123'
@@ -265,15 +283,16 @@ export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
 ext_mpv_various="ape|flac|m4a|mp3|ogg|opus|wav|wv"
-ext_mpv_tracker="it|cow|mo3|mod|s3m|plm|xm"
+ext_mpv_tracker="it|cow|mo3|mms|mod|s3m|stp|plm|xm"
 ext_mpv="${ext_mpv_various}|${ext_mpv_tracker}"
 ext_sc68="sc68"
+ext_sidplayfp="sid"
 ext_timidity="mid"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|ex|hot|fc13|fc14|mug|sfx"
 ext_vgmstream="ads|adp|adx|apc|at3|cps|dsm|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
-ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|sid|spc|v2m|ym"
+ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|spc|v2m|ym"
 ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xfs}|${ext_zxtune_zx_spectrum}"
@@ -285,6 +304,7 @@ start_process_time=$(date +%s)
 adplay_bin
 mpv_bin
 sc68_bin
+sidplayfp_bin
 timidity_bin
 uade123_bin
 vgmstream123_bin
@@ -296,6 +316,7 @@ player_dependency_test
 ext_allplay_raw="${ext_adplay}| \
 				 ${ext_mpv}| \
 				 ${ext_sc68}| \
+				 ${ext_sidplayfp}| \
 				 ${ext_timidity}| \
 				 ${ext_uade}| \
 				 ${ext_vgmplay}| \
