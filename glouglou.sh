@@ -148,11 +148,24 @@ else
 	unset ext_vgmstream
 fi
 }
+# Usage
+Usage() {
+cat <<- EOF
+glouglou - <https://github.com/Jocker666z/glouglou>
+Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
+
+Usage: glouglou [options]
+                          Without option recursively search files.
+  -f|--filter "pattern"   Select only file & directory contain pattern.
+  -i|--input <directory>  Treat in batch a specific directory.
+  -h|--help               Display this help.
+EOF
+}
 # Test argument, if no argument set $PWD for search vgm (take a coffee)
 test_argument() {
-if [[ -d "$arg" ]]; then
-	vgm_dir="$arg"
-elif [[ -z "${vgm_dir}" ]]; then
+if [[ -d "$input_dir" ]]; then
+	vgm_dir="$input_dir"
+else
 	vgm_dir="$PWD"
 fi
 }
@@ -176,7 +189,11 @@ fi
 }
 # Populate vgm array
 search_vgm() {
-mapfile -t lst_vgm < <(find "$vgm_dir" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null | shuf)
+if [[ -z "$input_filter" ]]; then
+	mapfile -t lst_vgm < <(find "$vgm_dir" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null | shuf)
+else
+	mapfile -t lst_vgm < <(find "$vgm_dir" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null | shuf | grep -i "$input_filter")
+fi
 }
 # Play loop
 main_loop () {
@@ -263,8 +280,6 @@ exit
 # Trap
 trap 'kill_stat' SIGINT
 
-# Argument
-arg="$1"
 # Dependencies
 player_dependency=(
 	'adplay'
@@ -297,8 +312,34 @@ ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|mi
 ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xfs}|${ext_zxtune_zx_spectrum}"
 
-# Start time counter of process
-start_process_time=$(date +%s)
+# Arguments
+while [[ $# -gt 0 ]]; do
+	vgm2flac_args="$1"
+	case "$vgm2flac_args" in
+		-f|--filter)
+			shift
+			input_filter="$1"
+		;;
+		-h|--help)
+			usage
+			exit
+		;;
+		-i|--input)
+			shift
+			input_dir="$1"
+			if ! [[ -d "$input_dir" ]]; then
+				echo "glouglou was exited."
+				echo "\"$input_dir\" directory does not exist."
+				exit
+			fi
+			;;
+		*)
+			usage
+			exit
+		;;
+	esac
+	shift
+done
 
 # Setup
 adplay_bin
@@ -327,6 +368,8 @@ ext_allplay_raw="${ext_adplay}| \
 ext_allplay="${ext_allplay_raw//[[:blank:]]/}"
 test_argument
 search_vgm
+# Start time counter of process
+start_process_time=$(date +%s)
 # Play
 main_loop
 

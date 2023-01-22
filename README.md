@@ -1,10 +1,12 @@
 # glouglou
-Bad bash script for no brain, also play vgm/chiptune in shuffle.
+Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
 
 glouglou just play in shuffle and repeat, all the files it found. Nothing else.
 
 ## Use
-Enter : `glouglou /dir` or just `glouglou` (it will recursively search files).
+Enter :
+* `glouglou -i /dir` or just `glouglou` (it will recursively search files).
+* `glouglou -f "pattern filter"` for select only file & directory contain pattern.
 
 Stop it by true proper command: `ctrl+c`.
 
