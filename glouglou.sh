@@ -70,6 +70,17 @@ else
 	unset ext_sidplayfp
 fi
 }
+spc2wav_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="spc2wav"
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	spc2wav_bin="$system_bin_location"
+fi
+}
 timidity_bin() {
 local bin_name
 local system_bin_location
@@ -133,6 +144,9 @@ if test -n "$system_bin_location"; then
 	zxtune123_bin="$system_bin_location"
 else
 	unset ext_zxtune
+	if [[ -n "$spc2wav_bin" ]]; then
+		unset ext_snes
+	fi
 fi
 }
 vgmstream123_bin() {
@@ -176,6 +190,7 @@ if [[ -z "$adplay_bin" ]] \
    && [[ -z "$mpv_bin" ]] \
    && [[ -z "$sc68_bin" ]] \
    && [[ -z "$sidplayfp_bin" ]] \
+   && [[ -z "$spc2wav_bin" ]] \
    && [[ -z "$timidity_bin" ]] \
    && [[ -z "$uade123_bin" ]] \
    && [[ -z "$vgmplay_bin" ]] \
@@ -226,6 +241,13 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_sidplayfp}|" | grep "|${ext}|" &>/dev/null && [[ -n "$sidplayfp_bin" ]]; then
 				"$sidplayfp_bin" "${file}" -v -s --digiboost
+
+			elif echo "|${ext_snes}|" | grep "|${ext}|" &>/dev/null; then
+				if [[ -n "$spc2wav_bin" ]]; then
+					"$spc2wav_bin" "${file}" /dev/stdout | aplay -V stereo
+				elif [[ -n "$zxtune123_bin" ]]; then
+					"$zxtune123_bin" --analyzer --alsa --file "${file}"
+				fi
 
 			elif echo "|${ext_timidity}|" | grep "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
 				"$timidity_bin" "${file}" -in --volume=100
@@ -302,12 +324,13 @@ ext_mpv_tracker="it|cow|mo3|mms|mod|s3m|stp|plm|xm"
 ext_mpv="${ext_mpv_various}|${ext_mpv_tracker}"
 ext_sc68="sc68"
 ext_sidplayfp="sid"
+ext_snes="spc"
 ext_timidity="mid"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|ex|hot|fc13|fc14|mug|sfx"
 ext_vgmstream="ads|adp|adx|apc|at3|cps|dsm|genh|ss2|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
-ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|spc|v2m|ym"
+ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|v2m|ym"
 ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xfs}|${ext_zxtune_zx_spectrum}"
@@ -346,6 +369,7 @@ adplay_bin
 mpv_bin
 sc68_bin
 sidplayfp_bin
+spc2wav_bin
 timidity_bin
 uade123_bin
 vgmstream123_bin
@@ -358,6 +382,7 @@ ext_allplay_raw="${ext_adplay}| \
 				 ${ext_mpv}| \
 				 ${ext_sc68}| \
 				 ${ext_sidplayfp}| \
+				 ${ext_snes}| \
 				 ${ext_timidity}| \
 				 ${ext_uade}| \
 				 ${ext_vgmplay}| \

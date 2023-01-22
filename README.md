@@ -60,6 +60,15 @@ The sidplayfp configuration file must be filled in correctly, otherwise the resu
 
 For sid
 
+### spc2wav
+https://github.com/jprjr/spc2wav
+
+```
+cd /home/$USER/.local/bin/
+wget https://github.com/jprjr/spc2wav/releases/download/v1.0.4/spc2wav-linux.tar.gz
+tar -xf spc2wav-linux.tar.gz
+```
+For Nintendo SNES: spc
 
 ### TiMidity++
 https://timidity.sourceforge.net/
