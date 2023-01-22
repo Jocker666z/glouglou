@@ -149,7 +149,7 @@ else
 fi
 }
 # Usage
-Usage() {
+usage() {
 cat <<- EOF
 glouglou - <https://github.com/Jocker666z/glouglou>
 Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
