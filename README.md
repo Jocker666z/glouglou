@@ -108,7 +108,7 @@ make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
 For:
-* Various machines: ads, adp, adx, apc, at3, cps, dsm, genh, ss2, thp, xa
+* Various machines: ads, adp, adx, apc, at3, cps, dsm, genh, sad, ss2, strm, thp, xa
 
 ### vgmplay
 https://github.com/ValleyBell/vgmplay-libvgm

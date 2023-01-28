@@ -308,6 +308,7 @@ player_dependency=(
 	'mpv'
 	'sc68 + aplay'
 	'sidplayfp'
+	'spc2wav + aplay'
 	'timidity'
 	'uade123'
 	'vgmstream123'
@@ -327,7 +328,7 @@ ext_sidplayfp="sid"
 ext_snes="spc"
 ext_timidity="mid"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|ex|hot|fc13|fc14|mug|sfx"
-ext_vgmstream="ads|adp|adx|apc|at3|cps|dsm|genh|ss2|thp|xa"
+ext_vgmstream="ads|adp|adx|apc|at3|cps|dsm|genh|sad|ss2|strm|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
 ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|v2m|ym"
