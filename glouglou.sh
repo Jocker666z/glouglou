@@ -105,6 +105,7 @@ if test -n "$system_bin_location"; then
 	uade123_bin="$system_bin_location"
 else
 	unset ext_uade
+	unset pre_uade
 fi
 }
 vgmplay_bin() {
@@ -204,15 +205,26 @@ fi
 }
 # Populate vgm array
 search_vgm() {
-if [[ -z "$input_filter" ]]; then
-	mapfile -t lst_vgm < <(find "$vgm_dir" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null | shuf)
+# If uade find prefix too
+if [[ -n "$uade123_bin" ]]; then
+	mapfile -t lst_vgm0 < <(find . -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
+	mapfile -t lst_vgm1 < <(find . -type f -regextype posix-extended -iregex '.*/('$pre_uade').*')
+	lst_vgm=( "${lst_vgm0[@]}" "${lst_vgm1[@]}" )
 else
-	mapfile -t lst_vgm < <(find "$vgm_dir" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null | shuf | grep -i "$input_filter")
+	mapfile -t lst_vgm < <(find . -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
+fi
+
+# If filter pattern
+if [[ -z "$input_filter" ]]; then
+	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | shuf)
+else
+	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | shuf | grep -i "$input_filter")
 fi
 }
 # Play loop
 main_loop () {
 local ext
+local pre
 
 if (( "${#lst_vgm[@]}" )); then
 	while true
@@ -222,6 +234,8 @@ if (( "${#lst_vgm[@]}" )); then
 			vgm_counter=$(( vgm_counter + 1 ))
 			# For test ext
 			ext="${file##*.}"
+			# For test prefix
+			pre=$(basename "${file%.*}")
 			# Display
 			clear
 			echo "======= glouglou ======="
@@ -253,6 +267,9 @@ if (( "${#lst_vgm[@]}" )); then
 				"$timidity_bin" "${file}" -in --volume=100
 
 			elif echo "|${ext_uade}|" | grep "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
+				"$uade123_bin" "${file}"
+
+			elif echo "|${pre_uade}|" | grep "|${pre}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				"$uade123_bin" "${file}"
 
 			elif echo "|${ext_vgmstream}|" | grep "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
@@ -328,6 +345,7 @@ ext_sidplayfp="sid"
 ext_snes="spc"
 ext_timidity="mid"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|ex|hot|fc13|fc14|mug|sfx"
+pre_uade="dw|rjp"
 ext_vgmstream="ads|adp|adx|apc|at3|bcstm|cps|dsm|genh|sad|ss2|strm|thp|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"

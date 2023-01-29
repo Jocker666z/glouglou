@@ -95,7 +95,8 @@ git clone https://gitlab.com/uade-music-player/uade && cd uade
 su -c "make install" -m "root"
 ```
 For:
-* Tracker: aam, abk, ahx, amc, aon, ast, bp, bp3, bss, cus, dm, dm2, dmu, dss, ea, hot, fc13, fc14, mug, sfx
+* Exotica prefix: dw, rjp
+* Tracker extension: aam, abk, ahx, amc, aon, ast, bp, bp3, bss, cus, dm, dm2, dmu, dss, ea, hot, fc13, fc14, mug, sfx
 
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
@@ -108,7 +109,7 @@ make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
 For:
-* Various machines: ads, adp, adx, apc, at3, cps, dsm, genh, sad, ss2, strm, thp, xa
+* Various machines: ads, adp, adx, apc, at3, bcstm, cps, dsm, genh, sad, ss2, strm, thp, xa
 
 ### vgmplay
 https://github.com/ValleyBell/vgmplay-libvgm
