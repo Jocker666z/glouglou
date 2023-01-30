@@ -109,7 +109,7 @@ make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
 For:
-* Various machines: 8svx, ads, adp, adx, apc, at3, bcstm, cps, dsm, genh, sad, ss2, strm, thp, xa
+* Various machines: 8svx, ads, adp, adx, apc, at3, bcstm, cps, dsm, genh, sad, ss2, strm, p04, p16, thp, xa
 
 ### vgmplay
 https://github.com/ValleyBell/vgmplay-libvgm
@@ -130,7 +130,7 @@ https://xmp.sourceforge.net/
 
 xmp is present in many official repositories for most GNU/Linux distributions. 
 
-For 669, amf, dbm, digi, dsm, dsym, far, gz, mdl, musx, psm
+For tracker extension: 669, amf, dbm, digi, dsm, dsym, far, gz, mdl, musx, psm
 
 ### zxtune123
 https://zxtune.bitbucket.io/
