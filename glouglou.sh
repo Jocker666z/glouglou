@@ -170,10 +170,11 @@ glouglou - <https://github.com/Jocker666z/glouglou>
 Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
 
 Usage: glouglou [options]
-                          Without option recursively search files.
+                          Without option inplace recursively search files.
   -c|--classic            Playlist in alphabetical order
-  -f|--filter "pattern"   Select only file & directory contain pattern.
-  -i|--input <directory>  Treat in batch a specific directory.
+  -e|--exclude "pattern"  Exclude files & directories contain pattern.
+  -f|--filter "pattern"   Select only files & directories contain pattern.
+  -i|--input <directory>  Target search directory.
   -h|--help               Display this help.
   -r|--repeat_off         No repeat.
 EOF
@@ -216,21 +217,34 @@ else
 	mapfile -t lst_vgm < <(find . -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
 fi
 
-# If classic player
-if [[ -z "$classic_player" ]]; then
-	# If filter pattern
-	if [[ -z "$input_filter" ]]; then
-		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | shuf)
-	else
-		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | grep -i "$input_filter" | shuf)
-	fi
+# Sort type shuffle or alphabetical
+if [[ -n "$classic_player" ]]; then
+	sort_type=('sort' '-V')
 else
-	# If filter pattern
-	if [[ -z "$input_filter" ]]; then
-		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | sort -V)
-	else
-		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | grep -i "$input_filter" | sort -V)
-	fi
+	sort_type=('shuf')
+fi
+
+# Pattern condition
+# If no patern
+if [[ -z "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
+	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+							| "${sort_type[@]}")
+# If -f
+elif [[ -n "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
+	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+							| grep -i "$input_filter" \
+							| "${sort_type[@]}")
+# If -e
+elif [[ -z "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
+	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+							| grep -v "$exclude_filter" \
+							| "${sort_type[@]}")
+# If -f -e
+elif [[ -n "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
+	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+							| grep -v "$exclude_filter" \
+							| grep -i "$input_filter" \
+							| "${sort_type[@]}")
 fi
 }
 # Play loop
@@ -378,6 +392,10 @@ while [[ $# -gt 0 ]]; do
 	case "$vgm2flac_args" in
 		-c|--classic)
 			classic_player="1"
+		;;
+		-e|--exclude)
+			shift
+			exclude_filter="$1"
 		;;
 		-f|--filter)
 			shift
