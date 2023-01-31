@@ -171,9 +171,11 @@ Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
 
 Usage: glouglou [options]
                           Without option recursively search files.
+  -c|--classic            Playlist in alphabetical order
   -f|--filter "pattern"   Select only file & directory contain pattern.
   -i|--input <directory>  Treat in batch a specific directory.
   -h|--help               Display this help.
+  -r|--repeat_off         No repeat.
 EOF
 }
 # Test argument, if no argument set $PWD for search vgm (take a coffee)
@@ -214,11 +216,21 @@ else
 	mapfile -t lst_vgm < <(find . -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
 fi
 
-# If filter pattern
-if [[ -z "$input_filter" ]]; then
-	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | shuf)
+# If classic player
+if [[ -z "$classic_player" ]]; then
+	# If filter pattern
+	if [[ -z "$input_filter" ]]; then
+		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | shuf)
+	else
+		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | grep -i "$input_filter" | shuf)
+	fi
 else
-	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | shuf | grep -i "$input_filter")
+	# If filter pattern
+	if [[ -z "$input_filter" ]]; then
+		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | sort -V)
+	else
+		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" | grep -i "$input_filter" | sort -V)
+	fi
 fi
 }
 # Play loop
@@ -286,6 +298,12 @@ if (( "${#lst_vgm[@]}" )); then
 			fi
 			shopt -u nocasematch
 		done
+
+		# If no repeat
+		if [[ -n "$no_repeat" ]] \
+		&& [[ "$vgm_counter" = "${#lst_vgm[@]}" ]]; then
+			kill_stat
+		fi
 
 	done
 else
@@ -358,6 +376,9 @@ ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xfs}|${ext_zxtune_zx_spectrum}"
 while [[ $# -gt 0 ]]; do
 	vgm2flac_args="$1"
 	case "$vgm2flac_args" in
+		-c|--classic)
+			classic_player="1"
+		;;
 		-f|--filter)
 			shift
 			input_filter="$1"
@@ -375,6 +396,9 @@ while [[ $# -gt 0 ]]; do
 				exit
 			fi
 			;;
+		-r|--repeat_off)
+			no_repeat="1"
+		;;
 		*)
 			usage
 			exit
