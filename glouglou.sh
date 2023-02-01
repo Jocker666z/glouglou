@@ -237,12 +237,12 @@ elif [[ -n "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
 # If -e
 elif [[ -z "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
-							| grep -v "$exclude_filter" \
+							| grep -i -v "$exclude_filter" \
 							| "${sort_type[@]}")
 # If -f -e
 elif [[ -n "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
-							| grep -v "$exclude_filter" \
+							| grep -i -v "$exclude_filter" \
 							| grep -i "$input_filter" \
 							| "${sort_type[@]}")
 fi
@@ -251,6 +251,10 @@ fi
 main_loop () {
 local ext
 local pre
+
+# For debug
+#printf '%s\n' "${lst_vgm[@]}"
+#exit
 
 if (( "${#lst_vgm[@]}" )); then
 	while true
