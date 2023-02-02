@@ -217,29 +217,29 @@ else
 	mapfile -t lst_vgm < <(find . -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
 fi
 
-# Sort type shuffle or alphabetical
+# Sort type: shuffle or alphabetical
 if [[ -n "$classic_player" ]]; then
 	sort_type=('sort' '-V')
 else
 	sort_type=('shuf')
 fi
 
-# Pattern condition
-# If no patern
+# Final playlist array
+## If no patern
 if [[ -z "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
 	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 							| "${sort_type[@]}")
-# If -f
+## If -f
 elif [[ -n "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
 	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 							| grep -E -i "$input_filter" \
 							| "${sort_type[@]}")
-# If -e
+## If -e
 elif [[ -z "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 							| grep -E -i -v "$exclude_filter" \
 							| "${sort_type[@]}")
-# If -f -e
+## If -f -e
 elif [[ -n "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 							| grep -E -i -v "$exclude_filter" \
@@ -382,7 +382,7 @@ ext_snes="spc"
 ext_timidity="mid"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|ex|hot|fc13|fc14|mug|sfx"
 pre_uade="aam|bp|cus|dw|hipc|mdat|med|mod|np3|rjp|s7g|soc|xm"
-ext_vgmstream="8svx|ads|adp|adx|apc|at3|bcstm|cps|dsm|genh|sad|ss2|strm|p04|p16|thp|xa"
+ext_vgmstream="8svx|ads|adp|adx|aix|apc|at3|bcstm|cps|dsm|fsb|genh|lwav|npsf|sad|ss2|strm|p04|p16|thp|vag|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
 ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|v2m|ym"
