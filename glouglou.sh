@@ -163,6 +163,14 @@ else
 	unset ext_vgmstream
 fi
 }
+multi_depend() {
+# SNES .spc
+if [[ -z "$spc2wav_bin" ]] \
+&& [[ -z "$zxtune123_bin" ]]; then
+&& [[ -z "$mpv_bin" ]]; then
+	unset ext_snes
+fi
+}
 # Usage
 usage() {
 cat <<- EOF
@@ -445,6 +453,7 @@ vgmstream123_bin
 vgmplay_bin
 xmp_bin
 zxtune123_bin
+multi_depend
 player_dependency_test
 # $ext_allplay contruction depend -> player_dependency_test
 ext_allplay_raw="${ext_adplay}| \
