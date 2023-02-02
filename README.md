@@ -38,6 +38,7 @@ mpv is present in many official repositories for most GNU/Linux distributions.
 
 For:
 * Audio files: ape, flac, m4a, mp3, ogg, opus, wav, wv
+* Nintendo SNES: spc
 * Tracker: it, cow, mo3, mms, mod, s3m, stp, plm, xm
 
 ### sc68

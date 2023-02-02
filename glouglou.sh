@@ -291,6 +291,10 @@ if (( "${#lst_vgm[@]}" )); then
 					"$spc2wav_bin" "${file}" /dev/stdout | aplay -V stereo
 				elif [[ -n "$zxtune123_bin" ]]; then
 					"$zxtune123_bin" --analyzer --alsa --file "${file}"
+				elif [[ -n "$mpv_bin" ]]; then
+					"$mpv_bin" "${file}" --terminal --no-video \
+						--term-osd-bar yes \
+						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 				fi
 
 			elif echo "|${ext_timidity}|" | grep "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
