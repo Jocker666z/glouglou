@@ -154,6 +154,7 @@ tar -xf zxtune123_r5020_armhf.tar.bz2 && rm zxtune123_r5020_armhf.tar.bz2
 ```
 For:
 * Atari XL/XE: sap
+* C64: .sid
 * Nintendo DS: 2sf, mini2sf, ncsf, minincsf
 * Nintendo GBA: gsf, minigsf
 * Nintendo N64: usf, miniusf

@@ -66,8 +66,6 @@ system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
 	sidplayfp_bin="$system_bin_location"
-else
-	unset ext_sidplayfp
 fi
 }
 spc2wav_bin() {
@@ -164,9 +162,15 @@ else
 fi
 }
 multi_depend() {
+# C64 .sid
+if [[ -z "$sidplayfp_bin" ]] \
+&& [[ -z "$zxtune123_bin" ]]; then
+	unset ext_sidplayfp
+fi
+
 # SNES .spc
 if [[ -z "$spc2wav_bin" ]] \
-&& [[ -z "$zxtune123_bin" ]]; then
+&& [[ -z "$zxtune123_bin" ]] \
 && [[ -z "$mpv_bin" ]]; then
 	unset ext_snes
 fi
@@ -291,8 +295,12 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_sc68}|" | grep "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
 				"$sc68_bin" "${file}" --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
 
-			elif echo "|${ext_sidplayfp}|" | grep "|${ext}|" &>/dev/null && [[ -n "$sidplayfp_bin" ]]; then
-				"$sidplayfp_bin" "${file}" -v -s --digiboost
+			elif echo "|${ext_sidplayfp}|" | grep "|${ext}|" &>/dev/null; then
+				if [[ -n "$sidplayfp_bin" ]]; then
+					"$sidplayfp_bin" "${file}" -v -s --digiboost
+				elif [[ -n "$zxtune123_bin" ]]; then
+					"$zxtune123_bin" --analyzer --alsa --file "${file}"
+				fi
 
 			elif echo "|${ext_snes}|" | grep "|${ext}|" &>/dev/null; then
 				if [[ -n "$spc2wav_bin" ]]; then
