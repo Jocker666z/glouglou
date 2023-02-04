@@ -54,7 +54,7 @@ tools/svn-bootstrap.sh && ./configure LDFLAGS="-static"
 make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
-For .sc68
+For : sc68, sndh
 
 ### sidplayfp
 https://github.com/libsidplayfp/sidplayfp

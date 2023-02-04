@@ -293,7 +293,7 @@ if (( "${#lst_vgm[@]}" )); then
 					--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 
 			elif echo "|${ext_sc68}|" | grep "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
-				"$sc68_bin" "${file}" --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
+				"$sc68_bin" "${file}" --track=all --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
 
 			elif echo "|${ext_sidplayfp}|" | grep "|${ext}|" &>/dev/null; then
 				if [[ -n "$sidplayfp_bin" ]]; then
@@ -396,7 +396,7 @@ ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|
 ext_mpv_various="ape|flac|m4a|mp3|ogg|opus|wav|wv"
 ext_mpv_tracker="it|cow|mo3|mms|mod|s3m|stp|plm|xm"
 ext_mpv="${ext_mpv_various}|${ext_mpv_tracker}"
-ext_sc68="sc68"
+ext_sc68="sc68|sndh"
 ext_sidplayfp="sid"
 ext_snes="spc"
 ext_timidity="mid"
