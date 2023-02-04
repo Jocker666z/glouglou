@@ -317,7 +317,7 @@ if (( "${#lst_vgm[@]}" )); then
 				"$timidity_bin" "${file}" -in --volume=100
 
 			elif echo "|${ext_uade}|" | grep "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
-				"$uade123_bin" "${file}"
+				"$uade123_bin" "${file}" -v
 
 			elif echo "|${pre_uade}|" | grep "|${pre}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				"$uade123_bin" "${file}"
@@ -400,8 +400,8 @@ ext_sc68="sc68"
 ext_sidplayfp="sid"
 ext_snes="spc"
 ext_timidity="mid"
-ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cus|dm|dm2|dmu|dss|ea|ex|hot|fc13|fc14|mug|sfx"
-pre_uade="aam|bp|cus|dw|hipc|mdat|med|mod|np3|rjp|s7g|soc|xm"
+ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|soc|p4x"
+pre_uade="aam|bp|cm|cus|dw|hipc|mdat|med|mod|np3|okt|rjp|rk|s7g|sfx|soc|sog|p4x|xm"
 ext_vgmstream="8svx|ads|adp|adx|aix|apc|at3|bcstm|cps|dsm|fsb|genh|lwav|npsf|sad|ss2|strm|p04|p16|thp|vag|xa"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"

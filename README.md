@@ -63,7 +63,7 @@ sidplayfp is present in many official repositories for most GNU/Linux distributi
 
 The sidplayfp configuration file must be filled in correctly, otherwise the result will be random (view: https://github.com/libsidplayfp/sidplayfp/wiki/sidplayfp.ini).
 
-For sid
+For C64 sid
 
 ### spc2wav
 https://github.com/jprjr/spc2wav
@@ -100,8 +100,8 @@ git clone https://gitlab.com/uade-music-player/uade && cd uade
 su -c "make install" -m "root"
 ```
 For:
-* Exotica prefix: aam, bp, cus, dw, hipc, mdat, med, mod, np3, rjp, s7g, soc, xm
-* Tracker extension: aam, abk, ahx, amc, aon, ast, bp, bp3, bss, cus, dm, dm2, dmu, dss, ea, hot, fc13, fc14, mug, sfx
+* Exotica prefix: aam, bp, cm, cus, dw, hipc, mdat, med, mod, np3, okt, rjp, rk, s7g, sfx, soc, sog, p4x, xm
+* Tracker extension: aam, abk, ahx, amc, aon, ast, bp, bp3, bss, cm, cus, dm, dm2, dmu, dss, dw, ea, hot, fc13, fc14, med, mug, np3, s7g, sfx, soc, p4x
 
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
@@ -154,7 +154,7 @@ tar -xf zxtune123_r5020_armhf.tar.bz2 && rm zxtune123_r5020_armhf.tar.bz2
 ```
 For:
 * Atari XL/XE: sap
-* C64: .sid
+* C64: sid
 * Nintendo DS: 2sf, mini2sf, ncsf, minincsf
 * Nintendo GBA: gsf, minigsf
 * Nintendo N64: usf, miniusf
