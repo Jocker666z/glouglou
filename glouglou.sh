@@ -265,6 +265,7 @@ local ext
 local pre
 
 # For debug
+#set -x
 #printf '%s\n' "${lst_vgm[@]}"
 #exit
 
@@ -282,27 +283,25 @@ if (( "${#lst_vgm[@]}" )); then
 			clear
 			echo "======= glouglou ======="
 			# Play
-
-			shopt -s nocasematch
-			if echo "|${ext_adplay}|" | grep "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
+			if echo "|${ext_adplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
 				"$adplay_bin" "${file}" -v -r -o
 
-			elif echo "|${ext_mpv}|" | grep "|${ext}|" &>/dev/null && [[ -n "$mpv_bin" ]]; then
+			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$mpv_bin" ]]; then
 				"$mpv_bin" "${file}" --terminal --no-video \
 					--term-osd-bar yes \
 					--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 
-			elif echo "|${ext_sc68}|" | grep "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
+			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
 				"$sc68_bin" "${file}" --track=all --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
 
-			elif echo "|${ext_sidplayfp}|" | grep "|${ext}|" &>/dev/null; then
+			elif echo "|${ext_sidplayfp}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$sidplayfp_bin" ]]; then
 					"$sidplayfp_bin" "${file}" -v -s --digiboost
 				elif [[ -n "$zxtune123_bin" ]]; then
 					"$zxtune123_bin" --analyzer --alsa --file "${file}"
 				fi
 
-			elif echo "|${ext_snes}|" | grep "|${ext}|" &>/dev/null; then
+			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$spc2wav_bin" ]]; then
 					"$spc2wav_bin" "${file}" /dev/stdout | aplay -V stereo
 				elif [[ -n "$zxtune123_bin" ]]; then
@@ -313,28 +312,27 @@ if (( "${#lst_vgm[@]}" )); then
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 				fi
 
-			elif echo "|${ext_timidity}|" | grep "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
+			elif echo "|${ext_timidity}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
 				"$timidity_bin" "${file}" -in --volume=100
 
-			elif echo "|${ext_uade}|" | grep "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
+			elif echo "|${ext_uade}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				"$uade123_bin" "${file}" -v
 
-			elif echo "|${pre_uade}|" | grep "|${pre}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
+			elif echo "|${pre_uade}|" | grep -i "|${pre}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				"$uade123_bin" "${file}"
 
-			elif echo "|${ext_vgmstream}|" | grep "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
+			elif echo "|${ext_vgmstream}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
 				"$vgmstream123_bin" -D alsa -m "${file}"
 
-			elif echo "|${ext_vgmplay}|" | grep "|${ext}|" &>/dev/null && [[ -n "$vgmplay_bin" ]]; then
+			elif echo "|${ext_vgmplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmplay_bin" ]]; then
 				"$vgmplay_bin" "${file}"
 
-			elif echo "|${ext_xmp}|" | grep "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
+			elif echo "|${ext_xmp}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
 				"$xmp_bin" "${file}"
 
-			elif echo "|${ext_zxtune}|" | grep "|${ext}|" &>/dev/null && [[ -n "$zxtune123_bin" ]]; then
+			elif echo "|${ext_zxtune}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$zxtune123_bin" ]]; then
 				"$zxtune123_bin" --analyzer --alsa --file "${file}"
 			fi
-			shopt -u nocasematch
 		done
 
 		# If no repeat
