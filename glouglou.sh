@@ -175,6 +175,56 @@ if [[ -z "$spc2wav_bin" ]] \
 	unset ext_snes
 fi
 }
+# Tools
+term_size() {
+term_width=$(stty size | awk '{print $2}')
+term_width_trunc=$(stty size | awk '{print $2}' | awk '{ print $1 - 3 }')
+}
+echo_truncate() {
+local label
+label="$1"
+
+if [[ "${#label}" -gt "$term_width" ]]; then
+	echo "$label" | cut -c 1-"$term_width_trunc" | awk '{print $0"..."}'
+else
+	echo "$label"
+fi
+}
+echo_separator() {
+tput dim
+printf "%*s" "$term_width" "" | tr ' ' "-"; echo
+tput sgr0
+}
+echo_playlist() {
+local play_item
+play_item="$1"
+
+# Load & reload term size
+term_size
+
+# Constuct
+playlist_bef_nb=$(( play_item - 1 ))
+playlist_aft_nb_one=$(( play_item + 1 ))
+playlist_aft_nb_two=$(( play_item + 2 ))
+lst_vgm_bef=$(echo "${lst_vgm[playlist_bef_nb]}" | rev | cut -d'/' -f-2 | rev)
+lst_vgm_current=$(echo "${lst_vgm[play_item]}" | rev | cut -d'/' -f-2 | rev)
+lst_vgm_aft_one=$(echo "${lst_vgm[playlist_aft_nb_one]}" | rev | cut -d'/' -f-2 | rev)
+lst_vgm_aft_two=$(echo "${lst_vgm[playlist_aft_nb_two]}" | rev | cut -d'/' -f-2 | rev)
+
+# Display
+clear
+tput bold sitm
+echo "  < glouglou Playlist - $vgm_counter"/"${#lst_vgm[@]} >"
+tput sgr0 dim
+echo_truncate "  ${lst_vgm_bef}"
+tput sgr0 bold
+echo_truncate "> ${lst_vgm_current}"
+tput sgr0
+echo_truncate "  ${lst_vgm_aft_one}"
+echo_truncate "  ${lst_vgm_aft_two}"
+echo_separator
+
+}
 # Usage
 usage() {
 cat <<- EOF
@@ -184,8 +234,8 @@ Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
 Usage: glouglou [options]
                           Without option inplace recursively search files.
   -c|--classic            Playlist in alphabetical order
-  -e|--exclude "pattern"  Exclude files & directories contain pattern.
-  -f|--filter "pattern"   Select only files & directories contain pattern.
+  -e|--exclude "pattern"  Exclude files contain pattern.
+  -f|--filter "pattern"   Select only files contain pattern.
   -i|--input <directory>  Target search directory.
   -h|--help               Display this help.
   -r|--repeat_off         No repeat.
@@ -272,66 +322,67 @@ local pre
 if (( "${#lst_vgm[@]}" )); then
 	while true
 	do
-		for file in "${lst_vgm[@]}"; do
-			# For final stat
+		for i in "${!lst_vgm[@]}"; do
+			# For final stat & playlist display
 			vgm_counter=$(( vgm_counter + 1 ))
+
+			# Playlist display
+			echo_playlist "$i"
+
 			# For test ext
-			ext="${file##*.}"
+			ext="${lst_vgm[i]##*.}"
 			# For test prefix
-			pre=$(basename "${file%.*}")
-			# Display
-			clear
-			echo "======= glouglou ======="
+			pre=$(basename "${lst_vgm[i]%.*}")
 			# Play
 			if echo "|${ext_adplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
-				"$adplay_bin" "${file}" -v -r -o
+				"$adplay_bin" "${lst_vgm[i]}" -v -r -o
 
 			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$mpv_bin" ]]; then
-				"$mpv_bin" "${file}" --terminal --no-video \
+				"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 					--term-osd-bar yes \
 					--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 
 			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
-				"$sc68_bin" "${file}" --track=all --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
+				"$sc68_bin" "${lst_vgm[i]}" --track=all --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
 
 			elif echo "|${ext_sidplayfp}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$sidplayfp_bin" ]]; then
-					"$sidplayfp_bin" "${file}" -v -s --digiboost
+					"$sidplayfp_bin" "${lst_vgm[i]}" -v -s --digiboost
 				elif [[ -n "$zxtune123_bin" ]]; then
-					"$zxtune123_bin" --analyzer --alsa --file "${file}"
+					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 				fi
 
 			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
-				if [[ -n "$spc2wav_bin" ]]; then
-					"$spc2wav_bin" "${file}" /dev/stdout | aplay -V stereo
-				elif [[ -n "$zxtune123_bin" ]]; then
-					"$zxtune123_bin" --analyzer --alsa --file "${file}"
+				if [[ -n "$zxtune123_bin" ]]; then
+					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
+				elif [[ -n "$spc2wav_bin" ]]; then
+					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout | aplay -V stereo
 				elif [[ -n "$mpv_bin" ]]; then
-					"$mpv_bin" "${file}" --terminal --no-video \
+					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--term-osd-bar yes \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 				fi
 
 			elif echo "|${ext_timidity}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
-				"$timidity_bin" "${file}" -in --volume=100
+				"$timidity_bin" "${lst_vgm[i]}" -in --volume=100
 
 			elif echo "|${ext_uade}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
-				"$uade123_bin" "${file}" -v
+				"$uade123_bin" "${lst_vgm[i]}" -v
 
 			elif echo "|${pre_uade}|" | grep -i "|${pre}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
-				"$uade123_bin" "${file}"
+				"$uade123_bin" "${lst_vgm[i]}"
 
 			elif echo "|${ext_vgmstream}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
-				"$vgmstream123_bin" -D alsa -m "${file}"
+				"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 
 			elif echo "|${ext_vgmplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmplay_bin" ]]; then
-				"$vgmplay_bin" "${file}"
+				"$vgmplay_bin" "${lst_vgm[i]}"
 
 			elif echo "|${ext_xmp}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
-				"$xmp_bin" "${file}"
+				"$xmp_bin" "${lst_vgm[i]}"
 
 			elif echo "|${ext_zxtune}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$zxtune123_bin" ]]; then
-				"$zxtune123_bin" --analyzer --alsa --file "${file}"
+				"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 			fi
 		done
 
@@ -360,7 +411,7 @@ time_formated="$((diff_in_s/3600))h$((diff_in_s%3600/60))m$((diff_in_s%60))s"
 
 # Print stats
 echo
-echo "--------------------"
+echo_separator
 echo "glouglou was exited."
 echo "You have listened ${vgm_counter}/${#lst_vgm[@]} tracks".
 echo "The duration of your crazy listening was ${time_formated}".

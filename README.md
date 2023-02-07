@@ -6,8 +6,8 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else.
 ## Use
 Enter :
 * `glouglou -i /dir` or just `glouglou` (inplace recursively search files).
-* `glouglou -e "pattern filter"` for exclude files & directories contain pattern.
-* `glouglou -f "pattern filter"` for select only files & directories contain pattern.
+* `glouglou -e "pattern filter"` for exclude files contain pattern.
+* `glouglou -f "pattern filter"` for select only files contain pattern.
 * `glouglou -c` for playlist in alphabetical order.
 * `glouglou -r` for no repeat playlist.
 
