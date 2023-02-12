@@ -223,7 +223,6 @@ tput sgr0
 echo_truncate "  ${lst_vgm_aft_one}"
 echo_truncate "  ${lst_vgm_aft_two}"
 echo_separator
-
 }
 # Usage
 usage() {
@@ -243,10 +242,8 @@ EOF
 }
 # Test argument, if no argument set $PWD for search vgm (take a coffee)
 test_argument() {
-if [[ -d "$input_dir" ]]; then
-	vgm_dir="$input_dir"
-else
-	vgm_dir="$PWD"
+if ! (( "${#input_dir[@]}" )); then
+	input_dir="."
 fi
 }
 # Dependencies test
@@ -270,14 +267,12 @@ fi
 }
 # Populate vgm array
 search_vgm() {
-# If uade find prefix too
-if [[ -n "$uade123_bin" ]]; then
-	mapfile -t lst_vgm0 < <(find . -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
-	mapfile -t lst_vgm1 < <(find . -type f -regextype posix-extended -iregex '.*/('$pre_uade').*')
-	lst_vgm=( "${lst_vgm0[@]}" "${lst_vgm1[@]}" )
-else
-	mapfile -t lst_vgm < <(find . -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
-fi
+for input in "${input_dir[@]}"; do
+	mapfile -t -O "${#lst_vgm[@]}" lst_vgm < <(find "$input" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
+	if [[ -n "$uade123_bin" ]]; then
+		mapfile -t -O "${#lst_vgm[@]}" lst_vgm < <(find "$input" -type f -regextype posix-extended -iregex '.*/('$pre_uade').*' 2>/dev/null)
+	fi
+done
 
 # Sort type: shuffle or alphabetical
 if [[ -n "$classic_player" ]]; then
@@ -480,12 +475,14 @@ while [[ $# -gt 0 ]]; do
 		;;
 		-i|--input)
 			shift
-			input_dir="$1"
-			if ! [[ -d "$input_dir" ]]; then
-				echo "glouglou was exited."
-				echo "\"$input_dir\" directory does not exist."
-				exit
-			fi
+			input_dir+=( "$1" )
+			for input in "${input_dir[@]}"; do
+				if ! [[ -d "$input" ]]; then
+					echo "glouglou was exited."
+					echo "\"$input\" directory does not exist."
+					exit
+				fi
+			done
 			;;
 		-r|--repeat_off)
 			no_repeat="1"
