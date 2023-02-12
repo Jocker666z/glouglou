@@ -303,11 +303,6 @@ elif [[ -n "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 							| grep -E -i "$input_filter" \
 							| "${sort_type[@]}")
 fi
-
-# For debug
-#set -x
-#printf '%s\n' "${lst_vgm[@]}"
-#exit
 }
 # Play loop
 main_loop () {
