@@ -355,7 +355,7 @@ if (( "${#lst_vgm[@]}" )); then
 				elif [[ -n "$mpv_bin" ]]; then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--term-osd-bar yes \
-						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
+						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
 				fi
 
 			elif echo "|${ext_timidity}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
@@ -446,10 +446,10 @@ ext_snes="spc"
 ext_timidity="mid"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny"
 #pre_uade="aam|bp|cm|cus|dw|hipc|mdat|med|mod|np3|okt|rjp|rk|s7g|sfx|smus|soc|sog|p4x|tiny|xm"
-ext_vgmstream_0_c="8svx|ads|adp|adx|aix|apc|at3|bcstm|cfn|cps"
-ext_vgmstream_d_m="dsm|dsp|fsb|genh|hca|hps|lwav|mus|musx"
-ext_vgmstream_n_z="npsf|sad|ss2|strm|p04|p16|thp|vag|vgmstream|xa|xwv"
-ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_m}|${ext_vgmstream_n_z}"
+ext_vgmstream_0_c="8svx|ads|adp|adx|aix|apc|at3|bcstm|brstm|cfn|csmp|cps"
+ext_vgmstream_d_n="dsm|dsp|fsb|genh|hca|hps|lwav|mus|musx|nlsd|npsf"
+ext_vgmstream_o_z="sad|ss2|strm|p04|p16|thp|vag|vgmstream|xa|xnb|xwv"
+ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
 ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|v2m|ym"
