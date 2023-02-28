@@ -437,7 +437,7 @@ player_dependency=(
 export PATH=$PATH:/home/$USER/.local/bin
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
-ext_mpv_various="ape|flac|m4a|mp3|ogg|opus|wav|wv"
+ext_mpv_various="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
 ext_mpv_tracker="it|cow|mo3|mms|mod|s3m|stp|plm|xm"
 ext_mpv="${ext_mpv_various}|${ext_mpv_tracker}"
 ext_sc68="sc68|sndh"
