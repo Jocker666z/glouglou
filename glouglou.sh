@@ -526,15 +526,22 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_uade}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				"$uade123_bin" "${lst_vgm[i]}" -v
+				tag_default "${lst_vgm[i]}"
+				listenbrainz_submit "UADE"
 
 			elif echo "|${ext_vgmstream}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
 				"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
+				"$xmp_bin" "${lst_vgm[i]}"
+				tag_default "${lst_vgm[i]}"
+				listenbrainz_submit "vgmstream"
 
 			elif echo "|${ext_vgmplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmplay_bin" ]]; then
 				"$vgmplay_bin" "${lst_vgm[i]}"
 
 			elif echo "|${ext_xmp}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
 				"$xmp_bin" "${lst_vgm[i]}"
+				tag_default "${lst_vgm[i]}"
+				listenbrainz_submit "XMP"
 
 			elif echo "|${ext_zxtune}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$zxtune123_bin" ]]; then
 				"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
