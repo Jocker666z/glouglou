@@ -12,6 +12,7 @@ Enter :
 * `glouglou -c` for playlist in alphabetical order.
 * `glouglou -r` for no repeat playlist.
 * `glouglou -t <token>` for register your ListenBrainz token.
+
 Stop it by true proper command: `ctrl+c`.
 
 ## Install & update
