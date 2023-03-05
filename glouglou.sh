@@ -191,6 +191,13 @@ if test -n "$system_bin_location"; then
 	curl_bin="$system_bin_location"
 fi
 
+# curl
+bin_name="vgm_tag"
+system_bin_location=$(command -v $bin_name)
+if test -n "$system_bin_location"; then
+	vgm_tag_bin="$system_bin_location"
+fi
+
 # xxd
 bin_name="xxd"
 system_bin_location=$(command -v $bin_name)
@@ -356,6 +363,26 @@ if [[ -n "$xxd_bin" ]] \
 				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
 	tag_album=$("$xxd_bin" -ps -s 0x0004Eh -l 32 "$file" \
 				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+	tag_default "$file"
+
+elif [[ -n "$listenbrainz_scrobb" ]] \
+  && [[ -n "$listenbrainz_token" ]]; then
+	tag_default "$file"
+fi
+}
+tag_vgm() {
+local file
+file=("$@")
+
+if [[ -n "$vgm_tag_bin" ]] \
+&& [[ -n "$listenbrainz_scrobb" ]] \
+&& [[ -n "$listenbrainz_token" ]]; then
+
+	"$vgm_tag_bin" -ShowTag8 "$file" > "$glouglou_cache_tag"
+
+	tag_title=$(sed -n 's/Track Title:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
+	tag_artist=$(sed -n 's/Composer:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
+	tag_album=$(sed -n 's/Game Name:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
 	tag_default "$file"
 
 elif [[ -n "$listenbrainz_scrobb" ]] \
@@ -537,6 +564,8 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_vgmplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmplay_bin" ]]; then
 				"$vgmplay_bin" "${lst_vgm[i]}"
+				tag_vgm "${lst_vgm[i]}"
+				listenbrainz_submit "VGMPlay"
 
 			elif echo "|${ext_xmp}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
 				"$xmp_bin" "${lst_vgm[i]}"
