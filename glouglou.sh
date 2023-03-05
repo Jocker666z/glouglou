@@ -180,6 +180,24 @@ if [ ! -d "$glouglou_config_dir" ]; then
 	mkdir "$glouglou_config_dir"
 fi
 }
+listenbrainz_bin() {
+local bin_name
+local system_bin_location
+
+# curl
+bin_name="curl"
+system_bin_location=$(command -v $bin_name)
+if test -n "$system_bin_location"; then
+	curl_bin="$system_bin_location"
+fi
+
+# xxd
+bin_name="xxd"
+system_bin_location=$(command -v $bin_name)
+if test -n "$system_bin_location"; then
+	xxd_bin="$system_bin_location"
+fi
+}
 # Tools
 term_size() {
 term_width=$(stty size | awk '{print $2}')
@@ -241,14 +259,17 @@ listenbrainz_token=$(< "$glouglou_config_file" grep "listenbrainz_token=" \
 fi
 }
 listenbrainz_submit() {
-if [[ -n "$listenbrainz_token" ]]; then
+if [[ -n "$curl_bin" ]] \
+&& [[ -n "$listenbrainz_scrobb" ]] \
+&& [[ -n "$listenbrainz_token" ]] \
+&& [[ -n "$tag_title" ]]; then
 	local unix_date
 	local player
 
 	player="$1"
 	unix_date=$(date +%s)
 
-	curl --silent --output /dev/null \
+	"$curl_bin" --silent --output /dev/null \
 		-X POST -H "Authorization: token $listenbrainz_token" \
 		--header "Content-Type:application/json" \
 		-d '{
@@ -271,20 +292,22 @@ if [[ -n "$listenbrainz_token" ]]; then
 fi
 }
 tag_spc() {
-if [[ -n "$listenbrainz_token" ]]; then
+if [[ -n "$xxd_bin" ]] \
+&& [[ -n "$listenbrainz_scrobb" ]] \
+&& [[ -n "$listenbrainz_token" ]]; then
 	local id666_test
 	local file
 	file=("$@")
-	id666_test=$(xxd -ps -s 0x00023h -l 1 "$file")
+	id666_test=$("$xxd_bin" -ps -s 0x00023h -l 1 "$file")
 
 	# If test ID666 here (1a hex = 26 dec)
 	if [ "$id666_test" = "1a" ]; then
 
-		tag_title=$(xxd -ps -s 0x0002Eh -l 32 "$file" \
+		tag_title=$("$xxd_bin" -ps -s 0x0002Eh -l 32 "$file" \
 					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
-		tag_artist=$(xxd -ps -s 0x000B1h -l 32 "$file" \
+		tag_artist=$("$xxd_bin" -ps -s 0x000B1h -l 32 "$file" \
 					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
-		tag_album=$(xxd -ps -s 0x0004Eh -l 32 "$file" \
+		tag_album=$("$xxd_bin" -ps -s 0x0004Eh -l 32 "$file" \
 					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
 
 	fi
@@ -304,6 +327,7 @@ Usage: glouglou [options]
   -i|--input <directory>  Target search directory.
   -h|--help               Display this help.
   -r|--repeat_off         No repeat.
+  -s|--scrobb             Use ListenBrainz scrobber.
   -t|--token <token>      Register your ListenBrainz token.
 EOF
 }
@@ -501,10 +525,12 @@ player_dependency=(
 	'xmp'
 	'zxtune123'
 	)
+	
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 glouglou_config_dir="/home/$USER/.config/glouglou"
 glouglou_config_file="/home/$USER/.config/glouglou/config"
+
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
 ext_mpv_various="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
@@ -525,6 +551,24 @@ ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|v2m|ym"
 ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xfs}|${ext_zxtune_zx_spectrum}"
+
+# Setup
+adplay_bin
+mpv_bin
+sc68_bin
+sidplayfp_bin
+spc2wav_bin
+timidity_bin
+uade123_bin
+vgmstream123_bin
+vgmplay_bin
+xmp_bin
+zxtune123_bin
+multi_depend
+player_dependency_test
+glouglou_config
+listenbrainz_token
+listenbrainz_bin
 
 # Arguments
 while [[ $# -gt 0 ]]; do
@@ -559,6 +603,19 @@ while [[ $# -gt 0 ]]; do
 		-r|--repeat_off)
 			no_repeat="1"
 		;;
+		-s|--scrobb)
+			if [[ -z "$curl_bin" ]]; then
+				echo "glouglou was exited."
+				echo "curl must be installed for use ListenBrainz scrobber."
+				exit
+			elif [[ -z "$listenbrainz_token" ]]; then
+				echo "glouglou was exited."
+				echo "ListenBrainz token must be registered for use ListenBrainz scrobber"
+				exit
+			else
+				listenbrainz_scrobb="1"
+			fi
+		;;
 		-t|--token)
 			shift
 			listenbrainz_register="$1"
@@ -572,23 +629,6 @@ while [[ $# -gt 0 ]]; do
 	esac
 	shift
 done
-
-# Setup
-adplay_bin
-mpv_bin
-sc68_bin
-sidplayfp_bin
-spc2wav_bin
-timidity_bin
-uade123_bin
-vgmstream123_bin
-vgmplay_bin
-xmp_bin
-zxtune123_bin
-multi_depend
-player_dependency_test
-glouglou_config
-listenbrainz_token
 
 # $ext_allplay contruction depend -> player_dependency_test
 ext_allplay_raw="${ext_adplay}| \
