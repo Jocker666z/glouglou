@@ -291,26 +291,39 @@ if [[ -n "$curl_bin" ]] \
 		https://api.listenbrainz.org/1/submit-listens 
 fi
 }
+tag_default() {
+local file
+file=("$@")
+
+tag_title=$(basename "${file%.*}")
+tag_artist="Unknow"
+tag_album=$(dirname "$file" | rev | cut -d'/' -f-1 | rev)
+}
 tag_spc() {
+local file
+file=("$@")
+
 if [[ -n "$xxd_bin" ]] \
 && [[ -n "$listenbrainz_scrobb" ]] \
 && [[ -n "$listenbrainz_token" ]]; then
 	local id666_test
-	local file
-	file=("$@")
 	id666_test=$("$xxd_bin" -ps -s 0x00023h -l 1 "$file")
 
 	# If test ID666 here (1a hex = 26 dec)
-	if [ "$id666_test" = "1a" ]; then
-
+	if [[ "$id666_test" = "1a" ]]; then
 		tag_title=$("$xxd_bin" -ps -s 0x0002Eh -l 32 "$file" \
 					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
 		tag_artist=$("$xxd_bin" -ps -s 0x000B1h -l 32 "$file" \
 					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
 		tag_album=$("$xxd_bin" -ps -s 0x0004Eh -l 32 "$file" \
 					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
-
+	else
+		tag_default "$file"
 	fi
+
+elif [[ -n "$listenbrainz_scrobb" ]] \
+  && [[ -n "$listenbrainz_token" ]]; then
+	tag_default "$file"
 fi
 }
 # Usage
