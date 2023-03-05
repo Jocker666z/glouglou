@@ -288,16 +288,27 @@ if [[ -n "$curl_bin" ]] \
 				"track_name": "'"$tag_title"'",
 				"release_name": "'"$tag_album"'"
 		}}]}' \
-		https://api.listenbrainz.org/1/submit-listens 
+		https://api.listenbrainz.org/1/submit-listens
+		
+		# Reset
+		unset tag_title
+		unset tag_artist
+		unset tag_album
 fi
 }
 tag_default() {
 local file
 file=("$@")
 
-tag_title=$(basename "${file%.*}")
-tag_artist="Unknow"
-tag_album=$(dirname "$file" | rev | cut -d'/' -f-1 | rev)
+if [[ -z "$tag_title" ]]; then
+	tag_title=$(basename "${file%.*}")
+fi
+if [[ -z "$tag_artist" ]]; then
+	tag_artist="Unknow"
+fi
+if [[ -z "$tag_album" ]]; then
+	tag_album=$(dirname "$file" | rev | cut -d'/' -f-1 | rev)
+fi
 }
 tag_spc() {
 local file
@@ -306,23 +317,32 @@ file=("$@")
 if [[ -n "$xxd_bin" ]] \
 && [[ -n "$listenbrainz_scrobb" ]] \
 && [[ -n "$listenbrainz_token" ]]; then
-	local id666_test
-	id666_test=$("$xxd_bin" -ps -s 0x00023h -l 1 "$file")
 
-	# If test ID666 here (1a hex = 26 dec)
-	if [[ "$id666_test" = "1a" ]]; then
-		tag_title=$("$xxd_bin" -ps -s 0x0002Eh -l 32 "$file" \
-					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
-		tag_artist=$("$xxd_bin" -ps -s 0x000B1h -l 32 "$file" \
-					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
-		tag_album=$("$xxd_bin" -ps -s 0x0004Eh -l 32 "$file" \
-					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
-	else
-		tag_default "$file"
-	fi
+	tag_title=$("$xxd_bin" -ps -s 0x0002Eh -l 32 "$file" \
+				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+	tag_artist=$("$xxd_bin" -ps -s 0x000B1h -l 32 "$file" \
+				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+	tag_album=$("$xxd_bin" -ps -s 0x0004Eh -l 32 "$file" \
+				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+	tag_default "$file"
 
 elif [[ -n "$listenbrainz_scrobb" ]] \
   && [[ -n "$listenbrainz_token" ]]; then
+	tag_default "$file"
+fi
+}
+tag_xsf() {
+local file
+file=("$@")
+
+if [[ -n "$listenbrainz_scrobb" ]] \
+&& [[ -n "$listenbrainz_token" ]]; then
+
+	strings -e S "$file" | sed -n '/TAG/,$p' > "$glouglou_cache_tag"
+
+	tag_title=$(< "$glouglou_cache_tag" grep -i -a title= | sed 's/^.*=//')
+	tag_artist=$(< "$glouglou_cache_tag" grep -i -a artist= | sed 's/^.*=//')
+	tag_album=$(< "$glouglou_cache_tag" grep -i -a game= | sed 's/^.*=//')
 	tag_default "$file"
 fi
 }
@@ -483,6 +503,10 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_zxtune}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$zxtune123_bin" ]]; then
 				"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
+				if echo "|${ext_zxtune_xsf}|" | grep -i "|${ext}|" &>/dev/null; then
+					tag_xsf "${lst_vgm[i]}"
+					listenbrainz_submit "ZXTune XSF"
+				fi
 			fi
 		done
 
@@ -543,6 +567,7 @@ player_dependency=(
 export PATH=$PATH:/home/$USER/.local/bin
 glouglou_config_dir="/home/$USER/.config/glouglou"
 glouglou_config_file="/home/$USER/.config/glouglou/config"
+glouglou_cache_tag="/tmp/glouglou-tag"
 
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
@@ -561,9 +586,9 @@ ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
 ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|v2m|ym"
-ext_zxtune_xfs="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
+ext_zxtune_xsf="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"
-ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xfs}|${ext_zxtune_zx_spectrum}"
+ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 
 # Setup
 adplay_bin
