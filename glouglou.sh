@@ -452,6 +452,8 @@ if (( "${#lst_vgm[@]}" )); then
 			# Play
 			if echo "|${ext_adplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
 				"$adplay_bin" "${lst_vgm[i]}" -v -r -o
+				tag_default "${lst_vgm[i]}"
+				listenbrainz_submit "AdPlay"
 
 			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$mpv_bin" ]]; then
 				"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
@@ -488,6 +490,8 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_timidity}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
 				"$timidity_bin" "${lst_vgm[i]}" -in --volume=100
+				tag_default "${lst_vgm[i]}"
+				listenbrainz_submit "TiMidity++"
 
 			elif echo "|${ext_uade}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				"$uade123_bin" "${lst_vgm[i]}" -v
