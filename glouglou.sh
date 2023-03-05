@@ -310,6 +310,27 @@ if [[ -z "$tag_album" ]]; then
 	tag_album=$(dirname "$file" | rev | cut -d'/' -f-1 | rev)
 fi
 }
+tag_sap() {
+local file
+file=("$@")
+
+if [[ -n "$xxd_bin" ]] \
+&& [[ -n "$listenbrainz_scrobb" ]] \
+&& [[ -n "$listenbrainz_token" ]]; then
+
+	strings -e S "$file" | head -15 > "$glouglou_cache_tag"
+
+	tag_artist=$(< "$glouglou_cache_tag" grep -i -a "AUTHOR" | awk -F'"' '$0=$2')
+	if [[ "$tag_artist" = "<?>" ]]; then
+		unset tag_artist
+	fi
+	tag_album=$(< "$glouglou_cache_tag" grep -i -a "NAME" | awk -F'"' '$0=$2')
+	if [[ "$tag_album" = "<?>" ]]; then
+		unset tag_album
+	fi
+	tag_default "$file"
+fi
+}
 tag_spc() {
 local file
 file=("$@")
@@ -471,7 +492,6 @@ if (( "${#lst_vgm[@]}" )); then
 				fi
 
 			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
-
 				if [[ -n "$zxtune123_bin" ]]; then
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					tag_spc "${lst_vgm[i]}"
@@ -510,6 +530,9 @@ if (( "${#lst_vgm[@]}" )); then
 				if echo "|${ext_zxtune_xsf}|" | grep -i "|${ext}|" &>/dev/null; then
 					tag_xsf "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune XSF"
+				elif [[ "${ext}" = "sap" ]]; then
+					tag_sap "${lst_vgm[i]}"
+					listenbrainz_submit "ZXTune SAP"
 				else
 					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
