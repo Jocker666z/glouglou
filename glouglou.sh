@@ -506,6 +506,9 @@ if (( "${#lst_vgm[@]}" )); then
 				if echo "|${ext_zxtune_xsf}|" | grep -i "|${ext}|" &>/dev/null; then
 					tag_xsf "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune XSF"
+				else
+					tag_default "${lst_vgm[i]}"
+					listenbrainz_submit "ZXTune"
 				fi
 			fi
 		done
