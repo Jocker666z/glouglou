@@ -263,37 +263,48 @@ if [[ -n "$curl_bin" ]] \
 && [[ -n "$listenbrainz_scrobb" ]] \
 && [[ -n "$listenbrainz_token" ]] \
 && [[ -n "$tag_title" ]]; then
+
 	local unix_date
 	local player
+	local diff_in_s
+	local time_formated
 
-	player="$1"
-	unix_date=$(date +%s)
+	# Prevent repeat scrobb, limit to 5s
+	last_submit_time=$(date +%s)
+	submit_diff_in_s=$(( last_submit_time - new_submit_time ))
 
-	"$curl_bin" --silent --output /dev/null \
-		-X POST -H "Authorization: token $listenbrainz_token" \
-		--header "Content-Type:application/json" \
-		-d '{
-		"listen_type": "single",
-		"payload": [{
-			"listened_at": "'"$unix_date"'",
-			"track_metadata": {
-				"additional_info": {
-					"listening_from": "'"$player"'",
-					"release_mbid": "",
-					"artist_mbids": [""],
-					"recording_mbid": "",
-					"tags": []
-					},
-				"artist_name": "'"$tag_artist"'",
-				"track_name": "'"$tag_title"'",
-				"release_name": "'"$tag_album"'"
-		}}]}' \
-		https://api.listenbrainz.org/1/submit-listens
-		
-		# Reset
-		unset tag_title
-		unset tag_artist
-		unset tag_album
+	if [[ "$submit_diff_in_s" -gt "5" ]]; then
+	
+		new_submit_time=$(date +%s)
+		player="$1"
+		unix_date=$(date +%s)
+
+		"$curl_bin" --silent --output /dev/null \
+			-X POST -H "Authorization: token $listenbrainz_token" \
+			--header "Content-Type:application/json" \
+			-d '{
+			"listen_type": "single",
+			"payload": [{
+				"listened_at": "'"$unix_date"'",
+				"track_metadata": {
+					"additional_info": {
+						"listening_from": "'"$player"'",
+						"release_mbid": "",
+						"artist_mbids": [""],
+						"recording_mbid": "",
+						"tags": []
+						},
+					"artist_name": "'"$tag_artist"'",
+					"track_name": "'"$tag_title"'",
+					"release_name": "'"$tag_album"'"
+			}}]}' \
+			https://api.listenbrainz.org/1/submit-listens
+
+			# Reset
+			unset tag_title
+			unset tag_artist
+			unset tag_album
+	fi
 fi
 }
 tag_default() {
@@ -682,6 +693,7 @@ while [[ $# -gt 0 ]]; do
 				exit
 			else
 				listenbrainz_scrobb="1"
+				new_submit_time=$(date +%s)
 			fi
 		;;
 		-t|--token)
