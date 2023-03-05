@@ -7,7 +7,7 @@
 # https://github.com/Jocker666z/glouglou/
 # Licence : unlicense
 
-# Test dependencies
+# Setup
 adplay_bin() {
 local bin_name
 local system_bin_location
@@ -175,6 +175,11 @@ if [[ -z "$spc2wav_bin" ]] \
 	unset ext_snes
 fi
 }
+glouglou_config() {
+if [ ! -d "$glouglou_config_dir" ]; then
+	mkdir "$glouglou_config_dir"
+fi
+}
 # Tools
 term_size() {
 term_width=$(stty size | awk '{print $2}')
@@ -224,6 +229,67 @@ echo_truncate "  ${lst_vgm_aft_one}"
 echo_truncate "  ${lst_vgm_aft_two}"
 echo_separator
 }
+# ListenBrainz
+listenbrainz_token() {
+if [[ -n "$listenbrainz_register" ]]; then
+	echo "listenbrainz_token=${listenbrainz_register}" > "$glouglou_config_file"
+	echo "${listenbrainz_register} has been registered as your new ListenBrainz token."
+fi
+if [[ -f "$glouglou_config_file" ]]; then
+listenbrainz_token=$(< "$glouglou_config_file" grep "listenbrainz_token=" \
+					| awk -F"=" '{ print $2 }')
+fi
+}
+listenbrainz_submit() {
+if [[ -n "$listenbrainz_token" ]]; then
+	local unix_date
+	local player
+
+	player="$1"
+	unix_date=$(date +%s)
+
+	curl --silent --output /dev/null \
+		-X POST -H "Authorization: token $listenbrainz_token" \
+		--header "Content-Type:application/json" \
+		-d '{
+		"listen_type": "single",
+		"payload": [{
+			"listened_at": "'"$unix_date"'",
+			"track_metadata": {
+				"additional_info": {
+					"listening_from": "'"$player"'",
+					"release_mbid": "",
+					"artist_mbids": [""],
+					"recording_mbid": "",
+					"tags": []
+					},
+				"artist_name": "'"$tag_artist"'",
+				"track_name": "'"$tag_title"'",
+				"release_name": "'"$tag_album"'"
+		}}]}' \
+		https://api.listenbrainz.org/1/submit-listens 
+fi
+}
+tag_spc() {
+if [[ -n "$listenbrainz_token" ]]; then
+	local id666_test
+	local file
+	file=("$@")
+	id666_test=$(xxd -ps -s 0x00023h -l 1 "$file")
+
+	# If test ID666 here (1a hex = 26 dec)
+	if [ "$id666_test" = "1a" ]; then
+
+		tag_title=$(xxd -ps -s 0x0002Eh -l 32 "$file" \
+					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+		tag_artist=$(xxd -ps -s 0x000B1h -l 32 "$file" \
+					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+		tag_album=$(xxd -ps -s 0x0004Eh -l 32 "$file" \
+					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+
+	fi
+fi
+}
 # Usage
 usage() {
 cat <<- EOF
@@ -238,6 +304,7 @@ Usage: glouglou [options]
   -i|--input <directory>  Target search directory.
   -h|--help               Display this help.
   -r|--repeat_off         No repeat.
+  -t|--token <token>      Register your ListenBrainz token.
 EOF
 }
 # Test argument, if no argument set $PWD for search vgm (take a coffee)
@@ -269,9 +336,6 @@ fi
 search_vgm() {
 for input in "${input_dir[@]}"; do
 	mapfile -t -O "${#lst_vgm[@]}" lst_vgm < <(find "$input" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
-	#if [[ -n "$uade123_bin" ]]; then
-		#mapfile -t -O "${#lst_vgm[@]}" lst_vgm < <(find "$input" -type f -regextype posix-extended -iregex '.*/('$pre_uade').*' 2>/dev/null)
-	#fi
 done
 
 # Sort type: shuffle or alphabetical
@@ -348,14 +412,21 @@ if (( "${#lst_vgm[@]}" )); then
 				fi
 
 			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
+
 				if [[ -n "$zxtune123_bin" ]]; then
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
+					tag_spc "${lst_vgm[i]}"
+					listenbrainz_submit "ZXTune SNES"
 				elif [[ -n "$spc2wav_bin" ]]; then
 					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout | aplay -V stereo
+					tag_spc "${lst_vgm[i]}"
+					listenbrainz_submit "spc2wav SNES"
 				elif [[ -n "$mpv_bin" ]]; then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--term-osd-bar yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
+					tag_spc "${lst_vgm[i]}"
+					listenbrainz_submit "MPV SNES"
 				fi
 
 			elif echo "|${ext_timidity}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
@@ -363,9 +434,6 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_uade}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				"$uade123_bin" "${lst_vgm[i]}" -v
-
-			#elif echo "|${pre_uade}|" | grep -i "|${pre}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
-				#"$uade123_bin" "${lst_vgm[i]}"
 
 			elif echo "|${ext_vgmstream}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
 				"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
@@ -435,6 +503,8 @@ player_dependency=(
 	)
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
+glouglou_config_dir="/home/$USER/.config/glouglou"
+glouglou_config_file="/home/$USER/.config/glouglou/config"
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
 ext_mpv_various="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
@@ -445,7 +515,6 @@ ext_sidplayfp="sid"
 ext_snes="spc"
 ext_timidity="mid"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny"
-#pre_uade="aam|bp|cm|cus|dw|hipc|mdat|med|mod|np3|okt|rjp|rk|s7g|sfx|smus|soc|sog|p4x|tiny|xm"
 ext_vgmstream_0_c="8svx|ads|adp|adpcm|adx|aix|apc|at3|bcstm|bcwav|brstm|cfn|csmp|cps"
 ext_vgmstream_d_n="dsm|dsp|fsb|genh|hca|hps|ifs|imc|lwav|mic|mus|musx|nlsd|npsf"
 ext_vgmstream_o_z="sad|ss2|strm|p04|p16|thp|vag|vgmstream|xa|xnb|xwv"
@@ -490,6 +559,12 @@ while [[ $# -gt 0 ]]; do
 		-r|--repeat_off)
 			no_repeat="1"
 		;;
+		-t|--token)
+			shift
+			listenbrainz_register="$1"
+			listenbrainz_token
+			exit
+		;;
 		*)
 			usage
 			exit
@@ -512,6 +587,9 @@ xmp_bin
 zxtune123_bin
 multi_depend
 player_dependency_test
+glouglou_config
+listenbrainz_token
+
 # $ext_allplay contruction depend -> player_dependency_test
 ext_allplay_raw="${ext_adplay}| \
 				 ${ext_mpv}| \
