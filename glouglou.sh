@@ -328,6 +328,25 @@ if [[ -z "$tag_album" ]]; then
 	tag_album=$(dirname "$file" | rev | cut -d'/' -f-1 | rev)
 fi
 }
+tag_mpv() {
+local file
+file=("$@")
+
+if [[ -n "$listenbrainz_scrobb" ]] \
+&& [[ -n "$listenbrainz_token" ]]; then
+
+	"$mpv_bin" --terminal --no-video --vo=null --ao=null \
+		--frames=0 --quiet --no-cache --no-config "$file" \
+		--display-tags=Title,Artist,Album \
+		> "$glouglou_cache_tag"
+
+	tag_title=$(sed -n 's/Title:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
+	tag_artist=$(sed -n 's/Artist:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
+	tag_album=$(sed -n 's/Album:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
+	tag_default "$file"
+fi
+}
+
 tag_sap() {
 local file
 file=("$@")
@@ -518,6 +537,8 @@ if (( "${#lst_vgm[@]}" )); then
 				"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 					--term-osd-bar yes \
 					--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
+					tag_mpv "${lst_vgm[i]}"
+					listenbrainz_submit "MPV"
 
 			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
 				"$sc68_bin" "${lst_vgm[i]}" --track=all --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
