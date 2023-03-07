@@ -750,17 +750,17 @@ ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 
 # Setup
-#adplay_bin
-#mpv_bin
-#sc68_bin
-#sidplayfp_bin
-#spc2wav_bin
-#timidity_bin
-#uade123_bin
-#vgmstream123_bin
-#vgmplay_bin
+adplay_bin
+mpv_bin
+sc68_bin
+sidplayfp_bin
+spc2wav_bin
+timidity_bin
+uade123_bin
+vgmstream123_bin
+vgmplay_bin
 xmp_bin
-#zxtune123_bin
+zxtune123_bin
 multi_depend
 player_dependency_test
 glouglou_config
