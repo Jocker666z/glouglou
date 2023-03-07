@@ -34,6 +34,17 @@ else
 	unset ext_mpv
 fi
 }
+openmpt123_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="openmpt123"
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	openmpt123_bin="$system_bin_location"
+fi
+}
 sc68_bin() {
 local bin_name0
 local bin_name1
@@ -178,7 +189,7 @@ fi
 # Tracker
 if [[ -z "$xmp_bin" ]] \
 && [[ -z "$zxtune123_bin" ]] \
-&& [[ -z "$uade123_bin" ]] \
+&& [[ -z "$openmpt123_bin" ]] \
 && [[ -z "$mpv_bin" ]]; then
 	unset ext_tracker
 fi
@@ -643,6 +654,10 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_tracker}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$xmp_bin" ]]; then
+					"$openmpt123_bin" "${lst_vgm[i]}"
+					tag_default "${lst_vgm[i]}"
+					listenbrainz_submit "openmpt123"
+				elif [[ -n "$xmp_bin" ]]; then
 					"$xmp_bin" "${lst_vgm[i]}"
 					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "XMP"
@@ -778,6 +793,7 @@ ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 # Setup
 adplay_bin
 mpv_bin
+openmpt123_bin
 sc68_bin
 sidplayfp_bin
 spc2wav_bin
