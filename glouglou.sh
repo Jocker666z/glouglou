@@ -174,6 +174,14 @@ if [[ -z "$spc2wav_bin" ]] \
 && [[ -z "$mpv_bin" ]]; then
 	unset ext_snes
 fi
+
+# Tracker
+if [[ -z "$xmp_bin" ]] \
+&& [[ -z "$zxtune123_bin" ]] \
+&& [[ -z "$uade123_bin" ]] \
+&& [[ -z "$mpv_bin" ]]; then
+	unset ext_tracker
+fi
 }
 glouglou_config() {
 if [ ! -d "$glouglou_config_dir" ]; then
@@ -633,6 +641,23 @@ if (( "${#lst_vgm[@]}" )); then
 				tag_default "${lst_vgm[i]}"
 				listenbrainz_submit "TiMidity++"
 
+			elif echo "|${ext_tracker}|" | grep -i "|${ext}|" &>/dev/null; then
+				if [[ -n "$xmp_bin" ]]; then
+					"$xmp_bin" "${lst_vgm[i]}"
+					tag_default "${lst_vgm[i]}"
+					listenbrainz_submit "XMP"
+				elif [[ -n "$zxtune123_bin" ]]; then
+					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
+					tag_default "${lst_vgm[i]}"
+					listenbrainz_submit "ZXTune Tracker"
+				elif [[ -n "$mpv_bin" ]]; then
+					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
+						--term-osd-bar yes \
+						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
+					tag_default "${lst_vgm[i]}"
+					listenbrainz_submit "MPV Tracker"
+				fi
+
 			elif echo "|${ext_uade}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				"$uade123_bin" "${lst_vgm[i]}" -v
 				tag_default "${lst_vgm[i]}"
@@ -731,12 +756,13 @@ glouglou_cache_tag="/tmp/glouglou-tag"
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
 ext_mpv_various="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
-ext_mpv_tracker="it|cow|mo3|mms|mod|s3m|stp|plm|xm"
+ext_mpv_tracker="cow|mo3|stp|plm"
 ext_mpv="${ext_mpv_various}|${ext_mpv_tracker}"
 ext_sc68="sc68|sndh"
 ext_sidplayfp="sid"
 ext_snes="spc"
 ext_timidity="mid"
+ext_tracker="it|mod|s3m|xm"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny"
 ext_vgmstream_0_c="8svx|ads|adp|adpcm|adx|aix|apc|at3|bcstm|bcwav|brstm|cfn|csmp|cps"
 ext_vgmstream_d_n="dsm|dsp|fsb|genh|hca|hps|ifs|imc|lwav|mic|mus|musx|nlsd|npsf"
@@ -835,6 +861,7 @@ ext_allplay_raw="${ext_adplay}| \
 				 ${ext_sidplayfp}| \
 				 ${ext_snes}| \
 				 ${ext_timidity}| \
+				 ${ext_tracker}| \
 				 ${ext_uade}| \
 				 ${ext_vgmplay}| \
 				 ${ext_vgmstream}| \
