@@ -346,13 +346,11 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	tag_default "$file"
 fi
 }
-
 tag_sap() {
 local file
 file=("$@")
 
-if [[ -n "$xxd_bin" ]] \
-&& [[ -n "$listenbrainz_scrobb" ]] \
+if [[ -n "$listenbrainz_scrobb" ]] \
 && [[ -n "$listenbrainz_token" ]]; then
 
 	strings -e S "$file" | head -15 > "$glouglou_cache_tag"
@@ -365,6 +363,29 @@ if [[ -n "$xxd_bin" ]] \
 	if [[ "$tag_album" = "<?>" ]]; then
 		unset tag_album
 	fi
+	tag_default "$file"
+fi
+}
+tag_sid() {
+local file
+file=("$@")
+
+if [[ -n "$xxd_bin" ]] \
+&& [[ -n "$listenbrainz_scrobb" ]] \
+&& [[ -n "$listenbrainz_token" ]]; then
+
+	tag_artist=$(xxd -ps -s 0x36 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+	if [[ "$tag_artist" = "<?>" ]]; then
+		unset tag_artist
+	fi
+	tag_album=$(xxd -ps -s 0x16 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+	if [[ "$tag_album" = "<?>" ]]; then
+		unset tag_album
+	fi
+	tag_default "$file"
+
+elif [[ -n "$listenbrainz_scrobb" ]] \
+  && [[ -n "$listenbrainz_token" ]]; then
 	tag_default "$file"
 fi
 }
@@ -546,8 +567,12 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_sidplayfp}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$sidplayfp_bin" ]]; then
 					"$sidplayfp_bin" "${lst_vgm[i]}" -v -s --digiboost
+					tag_sid "${lst_vgm[i]}"
+					listenbrainz_submit "sidplayfp"
 				elif [[ -n "$zxtune123_bin" ]]; then
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
+					tag_sid "${lst_vgm[i]}"
+					listenbrainz_submit "ZXTune SID"
 				fi
 
 			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
