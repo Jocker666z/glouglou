@@ -198,6 +198,13 @@ if test -n "$system_bin_location"; then
 	vgm_tag_bin="$system_bin_location"
 fi
 
+# info68
+bin_name="info68"
+system_bin_location=$(command -v $bin_name)
+if test -n "$system_bin_location"; then
+	info68_bin="$system_bin_location"
+fi
+
 # xxd
 bin_name="xxd"
 system_bin_location=$(command -v $bin_name)
@@ -366,6 +373,33 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	tag_default "$file"
 fi
 }
+tag_sc68() {
+local file
+file=("$@")
+
+if [[ -n "$info68_bin" ]] \
+&& [[ -n "$listenbrainz_scrobb" ]] \
+&& [[ -n "$listenbrainz_token" ]]; then
+
+	"$info68_bin" -A "$file" > "$glouglou_cache_tag"
+
+	tag_title=$(< "$glouglou_cache_tag" grep -i -a title: | sed 's/^.*: //' | head -1)
+	if [[ -z "$tag_title" ]] \
+	|| [[ "$tag_title" = "N/A" ]]; then
+		unset tag_title
+	fi
+	tag_artist=$(< "$glouglou_cache_tag" grep -i -a artist: | sed 's/^.*: //' | head -1)
+	if [[ -z "$tag_artist" ]] \
+	|| [[ "$tag_artist" = "N/A" ]]; then
+		unset tag_artist
+	fi
+	tag_default "$file"
+
+elif [[ -n "$listenbrainz_scrobb" ]] \
+  && [[ -n "$listenbrainz_token" ]]; then
+	tag_default "$file"
+fi
+}
 tag_sid() {
 local file
 file=("$@")
@@ -374,11 +408,11 @@ if [[ -n "$xxd_bin" ]] \
 && [[ -n "$listenbrainz_scrobb" ]] \
 && [[ -n "$listenbrainz_token" ]]; then
 
-	tag_artist=$(xxd -ps -s 0x36 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+	tag_artist=$("$xxd_bin" -ps -s 0x36 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
 	if [[ "$tag_artist" = "<?>" ]]; then
 		unset tag_artist
 	fi
-	tag_album=$(xxd -ps -s 0x16 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+	tag_album=$("$xxd_bin" -ps -s 0x16 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
 	if [[ "$tag_album" = "<?>" ]]; then
 		unset tag_album
 	fi
@@ -563,6 +597,8 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
 				"$sc68_bin" "${lst_vgm[i]}" --track=all --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
+				tag_sc68 "${lst_vgm[i]}"
+				listenbrainz_submit "sc68"
 
 			elif echo "|${ext_sidplayfp}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$sidplayfp_bin" ]]; then
@@ -714,17 +750,17 @@ ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 
 # Setup
-adplay_bin
-mpv_bin
-sc68_bin
-sidplayfp_bin
-spc2wav_bin
-timidity_bin
-uade123_bin
-vgmstream123_bin
-vgmplay_bin
+#adplay_bin
+#mpv_bin
+#sc68_bin
+#sidplayfp_bin
+#spc2wav_bin
+#timidity_bin
+#uade123_bin
+#vgmstream123_bin
+#vgmplay_bin
 xmp_bin
-zxtune123_bin
+#zxtune123_bin
 multi_depend
 player_dependency_test
 glouglou_config
