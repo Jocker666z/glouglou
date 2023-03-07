@@ -528,34 +528,36 @@ for input in "${input_dir[@]}"; do
 	mapfile -t -O "${#lst_vgm[@]}" lst_vgm < <(find "$input" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
 done
 
-# Sort type: shuffle or alphabetical
-if [[ -n "$classic_player" ]]; then
-	sort_type=('sort' '-V')
-else
-	sort_type=('shuf')
-fi
+if (( "${#lst_vgm[@]}" )); then
+	# Sort type: shuffle or alphabetical
+	if [[ -n "$classic_player" ]]; then
+		sort_type=('sort' '-V')
+	else
+		sort_type=('shuf')
+	fi
 
-# Final playlist array
-## If no patern
-if [[ -z "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
-	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
-							| "${sort_type[@]}")
-## If -f
-elif [[ -n "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
-	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
-							| grep -E -i "$input_filter" \
-							| "${sort_type[@]}")
-## If -e
-elif [[ -z "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
-	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
-							| grep -E -i -v "$exclude_filter" \
-							| "${sort_type[@]}")
-## If -f -e
-elif [[ -n "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
-	mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
-							| grep -E -i -v "$exclude_filter" \
-							| grep -E -i "$input_filter" \
-							| "${sort_type[@]}")
+	# Final playlist array
+	## If no patern
+	if [[ -z "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
+		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+								| "${sort_type[@]}")
+	## If -f
+	elif [[ -n "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
+		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+								| grep -E -i "$input_filter" \
+								| "${sort_type[@]}")
+	## If -e
+	elif [[ -z "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
+		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+								| grep -E -i -v "$exclude_filter" \
+								| "${sort_type[@]}")
+	## If -f -e
+	elif [[ -n "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
+		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+								| grep -E -i -v "$exclude_filter" \
+								| grep -E -i "$input_filter" \
+								| "${sort_type[@]}")
+	fi
 fi
 }
 # Play loop
@@ -721,7 +723,7 @@ player_dependency=(
 	'xmp'
 	'zxtune123'
 	)
-	
+
 # Paths
 export PATH=$PATH:/home/$USER/.local/bin
 glouglou_config_dir="/home/$USER/.config/glouglou"
@@ -841,7 +843,7 @@ ext_allplay_raw="${ext_adplay}| \
 				 ${ext_vgmplay}| \
 				 ${ext_xmp}| \
 				 ${ext_zxtune}"
-ext_allplay="${ext_allplay_raw//[[:blank:]]/}"
+ext_allplay=$(echo ${ext_allplay_raw//[[:blank:]]/} | tr -s '|')
 test_argument
 search_vgm
 # Start time counter of process
