@@ -323,7 +323,7 @@ fi
 }
 tag_default() {
 local file
-file=("$@")
+file="$1"
 
 if [[ -z "$tag_title" ]]; then
 	tag_title=$(basename "${file%.*}")
@@ -337,7 +337,7 @@ fi
 }
 tag_mpv() {
 local file
-file=("$@")
+file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
 && [[ -n "$listenbrainz_token" ]]; then
@@ -355,7 +355,7 @@ fi
 }
 tag_sap() {
 local file
-file=("$@")
+file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
 && [[ -n "$listenbrainz_token" ]]; then
@@ -375,7 +375,7 @@ fi
 }
 tag_sc68() {
 local file
-file=("$@")
+file="$1"
 
 if [[ -n "$info68_bin" ]] \
 && [[ -n "$listenbrainz_scrobb" ]] \
@@ -402,7 +402,7 @@ fi
 }
 tag_sid() {
 local file
-file=("$@")
+file="$1"
 
 if [[ -n "$xxd_bin" ]] \
 && [[ -n "$listenbrainz_scrobb" ]] \
@@ -425,7 +425,7 @@ fi
 }
 tag_spc() {
 local file
-file=("$@")
+file="$1"
 
 if [[ -n "$xxd_bin" ]] \
 && [[ -n "$listenbrainz_scrobb" ]] \
@@ -446,7 +446,7 @@ fi
 }
 tag_vgm() {
 local file
-file=("$@")
+file="$1"
 
 if [[ -n "$vgm_tag_bin" ]] \
 && [[ -n "$listenbrainz_scrobb" ]] \
@@ -466,7 +466,7 @@ fi
 }
 tag_xsf() {
 local file
-file=("$@")
+file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
 && [[ -n "$listenbrainz_token" ]]; then
@@ -563,7 +563,6 @@ fi
 # Play loop
 main_loop () {
 local ext
-local pre
 
 # For debug
 #set -x
@@ -582,8 +581,7 @@ if (( "${#lst_vgm[@]}" )); then
 
 			# For test ext
 			ext="${lst_vgm[i]##*.}"
-			# For test prefix
-			pre=$(basename "${lst_vgm[i]%.*}")
+
 			# Play
 			if echo "|${ext_adplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
 				"$adplay_bin" "${lst_vgm[i]}" -v -r -o
