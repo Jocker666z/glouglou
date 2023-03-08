@@ -21,6 +21,17 @@ else
 	unset ext_adlib
 fi
 }
+fluidsynth_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="fluidsynth"
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	fluidsynth_bin="$system_bin_location"
+fi
+}
 mpv_bin() {
 local bin_name
 local system_bin_location
@@ -99,8 +110,6 @@ system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
 	timidity_bin="$system_bin_location"
-else
-	unset ext_timidity
 fi
 }
 uade123_bin() {
@@ -177,6 +186,12 @@ multi_depend() {
 if [[ -z "$sidplayfp_bin" ]] \
 && [[ -z "$zxtune123_bin" ]]; then
 	unset ext_sidplayfp
+fi
+
+# Midi
+if [[ -z "$timidity_bin" ]] \
+&& [[ -z "$fluidsynth_bin" ]]; then
+	unset ext_midi
 fi
 
 # SNES .spc
@@ -647,10 +662,16 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "MPV SNES"
 				fi
 
-			elif echo "|${ext_timidity}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$timidity_bin" ]]; then
-				"$timidity_bin" "${lst_vgm[i]}" -in --volume=100
-				tag_default "${lst_vgm[i]}"
-				listenbrainz_submit "TiMidity++"
+			elif echo "|${ext_midi}|" | grep -i "|${ext}|" &>/dev/null; then
+				if [[ -n "$timidity_bin" ]]; then
+					"$timidity_bin" "${lst_vgm[i]}" -in --volume=100
+					tag_default "${lst_vgm[i]}"
+					listenbrainz_submit "TiMidity++"
+				elif [[ -n "$fluidsynth_bin" ]]; then
+					"$fluidsynth_bin" "${lst_vgm[i]}"
+					tag_default "${lst_vgm[i]}"
+					listenbrainz_submit "FluidSynth"
+				fi
 
 			elif echo "|${ext_tracker}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$xmp_bin" ]]; then
@@ -776,7 +797,7 @@ ext_mpv="${ext_mpv_various}|${ext_mpv_tracker}"
 ext_sc68="sc68|sndh"
 ext_sidplayfp="sid"
 ext_snes="spc"
-ext_timidity="mid"
+ext_midi="mid"
 ext_tracker="it|mod|s3m|xm"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny"
 ext_vgmstream_0_c="8svx|ads|adp|adpcm|adx|aix|apc|at3|bcstm|bcwav|brstm|cfn|csmp|cps"
@@ -792,6 +813,7 @@ ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 
 # Setup
 adplay_bin
+fluidsynth_bin
 mpv_bin
 openmpt123_bin
 sc68_bin
@@ -876,7 +898,7 @@ ext_allplay_raw="${ext_adplay}| \
 				 ${ext_sc68}| \
 				 ${ext_sidplayfp}| \
 				 ${ext_snes}| \
-				 ${ext_timidity}| \
+				 ${ext_midi}| \
 				 ${ext_tracker}| \
 				 ${ext_uade}| \
 				 ${ext_vgmplay}| \
