@@ -41,8 +41,6 @@ system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
 	mpv_bin="$system_bin_location"
-else
-	unset ext_mpv
 fi
 }
 openmpt123_bin() {
@@ -192,6 +190,12 @@ fi
 if [[ -z "$timidity_bin" ]] \
 && [[ -z "$fluidsynth_bin" ]]; then
 	unset ext_midi
+fi
+
+# MPV
+if [[ -z "$mpv_bin" ]] \
+&& [[ -z "$vgmstream123_bin" ]]; then
+	unset ext_mpv
 fi
 
 # SNES .spc
@@ -637,12 +641,18 @@ if (( "${#lst_vgm[@]}" )); then
 				tag_default "${lst_vgm[i]}"
 				listenbrainz_submit "AdPlay"
 
-			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$mpv_bin" ]]; then
-				"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
-					--term-osd-bar yes \
-					--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
-					tag_mpv "${lst_vgm[i]}"
-					listenbrainz_submit "MPV"
+			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null; then
+				if [[ -n "$mpv_bin" ]]; then
+					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
+						--term-osd-bar yes \
+						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
+						tag_mpv "${lst_vgm[i]}"
+						listenbrainz_submit "MPV"
+				elif [[ -n "$vgmstream123_bin" ]]; then
+					"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
+					tag_default "${lst_vgm[i]}"
+					listenbrainz_submit "vgmstream"
+				fi
 
 			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
 				"$sc68_bin" "${lst_vgm[i]}" --track=all --stdout \
@@ -669,13 +679,12 @@ if (( "${#lst_vgm[@]}" )); then
 					tag_spc "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune SNES"
 				elif [[ -n "$spc2wav_bin" ]]; then
-
 					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout \
 						| "$aplay_bin" --fatal-errors -V stereo &
 					Player_PID="$!"
 					force_quit
 					tag_spc "${lst_vgm[i]}"
-					listenbrainz_submit "spc2wav SNES"
+					listenbrainz_submit "spc2wav"
 				elif [[ -n "$mpv_bin" ]]; then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--term-osd-bar yes \
@@ -723,7 +732,6 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_vgmstream}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
 				"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
-				"$xmp_bin" "${lst_vgm[i]}"
 				tag_default "${lst_vgm[i]}"
 				listenbrainz_submit "vgmstream"
 
