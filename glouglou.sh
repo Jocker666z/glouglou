@@ -21,6 +21,32 @@ else
 	unset ext_adlib
 fi
 }
+aplay_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="aplay"
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	aplay_bin="$system_bin_location"
+fi
+}
+ffmpeg_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="ffmpeg"
+system_bin_location=$(command -v $bin_name)
+
+if test -n "$system_bin_location"; then
+	ffmpeg_bin="$system_bin_location"
+fi
+
+if [[ -z "$aplay_bin" ]]; then
+	unset ffmpeg_bin
+fi
+}
 fluidsynth_bin() {
 local bin_name
 local system_bin_location
@@ -55,26 +81,20 @@ if test -n "$system_bin_location"; then
 fi
 }
 sc68_bin() {
-local bin_name0
-local bin_name1
-local system_bin_location0
-local system_bin_location1
+local bin_name
+local system_bin_location
 
-bin_name0="sc68"
-bin_name1="aplay"
-system_bin_location0=$(command -v $bin_name0)
-system_bin_location1=$(command -v $bin_name1)
+bin_name="sc68"
+system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location0"; then
-	sc68_bin="$system_bin_location0"
+if test -n "$system_bin_location"; then
+	sc68_bin="$system_bin_location"
 else
 	unset ext_sc68
 fi
 
-if test -n "$system_bin_location1"; then
-	aplay_bin="$system_bin_location1"
-else
-	unset ext_sc68
+if [[ -z "$aplay_bin" ]]; then
+	unset sc68_bin
 fi
 }
 sidplayfp_bin() {
@@ -97,6 +117,10 @@ system_bin_location=$(command -v $bin_name)
 
 if test -n "$system_bin_location"; then
 	spc2wav_bin="$system_bin_location"
+fi
+
+if [[ -z "$aplay_bin" ]]; then
+	unset spc2wav_bin
 fi
 }
 timidity_bin() {
@@ -194,6 +218,7 @@ fi
 
 # MPV
 if [[ -z "$mpv_bin" ]] \
+&& [[ -z "$ffmpeg_bin" ]] \
 && [[ -z "$vgmstream123_bin" ]]; then
 	unset ext_mpv
 fi
@@ -545,6 +570,8 @@ fi
 player_dependency_test() {
 if [[ -z "$adplay_bin" ]] \
    && [[ -z "$aplay_bin" ]] \
+   && [[ -z "$ffmpeg_bin" ]] \
+   && [[ -z "$fluidsynth_bin" ]] \
    && [[ -z "$mpv_bin" ]] \
    && [[ -z "$openmpt123_bin" ]] \
    && [[ -z "$sc68_bin" ]] \
@@ -650,6 +677,14 @@ if (( "${#lst_vgm[@]}" )); then
 						listenbrainz_submit "MPV"
 				elif [[ -n "$vgmstream123_bin" ]]; then
 					"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
+					tag_default "${lst_vgm[i]}"
+					listenbrainz_submit "vgmstream"
+				elif [[ -n "$ffmpeg_bin" ]]; then
+					"$ffmpeg_bin" -hide_banner -loglevel panic -nostats \
+						-i "${lst_vgm[i]}" -ar 44100 -f s16le -acodec pcm_s16le - \
+						| "$aplay_bin" -r 44100 -c 2 -f S16_LE -V stereo &
+					Player_PID="$!"
+					force_quit
 					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "vgmstream"
 				fi
@@ -842,7 +877,9 @@ ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 
 # Setup
+aplay_bin
 adplay_bin
+ffmpeg_bin
 fluidsynth_bin
 mpv_bin
 openmpt123_bin
