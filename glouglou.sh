@@ -542,6 +542,7 @@ player_dependency_test() {
 if [[ -z "$adplay_bin" ]] \
    && [[ -z "$aplay_bin" ]] \
    && [[ -z "$mpv_bin" ]] \
+   && [[ -z "$openmpt123_bin" ]] \
    && [[ -z "$sc68_bin" ]] \
    && [[ -z "$sidplayfp_bin" ]] \
    && [[ -z "$spc2wav_bin" ]] \
@@ -597,11 +598,25 @@ fi
 # Play loop
 main_loop () {
 local ext
+local Player_PID
 
 # For debug
 #set -x
 #printf '%s\n' "${lst_vgm[@]}"
 #exit
+
+force_quit() {
+while true; do
+	read -t0.1 -rsn1 k
+	if [[ "$k" = "q" ]]; then
+		kill -9 "$Player_PID" &>/dev/null
+		break
+	fi
+	if ! ps -p $Player_PID > /dev/null; then
+		break
+	fi
+done
+}
 
 if (( "${#lst_vgm[@]}" )); then
 	while true
@@ -630,7 +645,10 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "MPV"
 
 			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
-				"$sc68_bin" "${lst_vgm[i]}" --track=all --stdout | "$aplay_bin" -r 44100 -c 2 -f S16_LE -q
+				"$sc68_bin" "${lst_vgm[i]}" --track=all --stdout \
+					| "$aplay_bin" -r 44100 -c 2 -f S16_LE -q 2>/dev/null &
+				Player_PID="$!"
+				force_quit
 				tag_sc68 "${lst_vgm[i]}"
 				listenbrainz_submit "sc68"
 
@@ -646,12 +664,16 @@ if (( "${#lst_vgm[@]}" )); then
 				fi
 
 			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
-				if [[ -n "$zxtune123_bin" ]]; then
+				if [[ -n "$zxtune1213_bin" ]]; then
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					tag_spc "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune SNES"
 				elif [[ -n "$spc2wav_bin" ]]; then
-					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout | aplay -V stereo
+
+					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout \
+						| "$aplay_bin" --fatal-errors -V stereo &
+					Player_PID="$!"
+					force_quit
 					tag_spc "${lst_vgm[i]}"
 					listenbrainz_submit "spc2wav SNES"
 				elif [[ -n "$mpv_bin" ]]; then
