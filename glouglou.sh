@@ -664,7 +664,7 @@ if (( "${#lst_vgm[@]}" )); then
 				fi
 
 			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
-				if [[ -n "$zxtune1213_bin" ]]; then
+				if [[ -n "$zxtune123_bin" ]]; then
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					tag_spc "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune SNES"
