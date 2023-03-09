@@ -20,6 +20,7 @@ Stop it by true proper command: `ctrl+c`.
 `curl https://raw.githubusercontent.com/Jocker666z/glouglou/main/glouglou.sh > /home/$USER/.local/bin/glouglou && chmod +rx /home/$USER/.local/bin/glouglou`
 
 ## Notes
+* The shortcut "q" allows to go to the next track in almost all cases.
 * It is not necessary to have all the dependencies installed, for example if you don't want to install zxtune123 but vgmplay is installed, glouglou will only read the vgmplay files.
 * glouglou takes less than 6s to launch a playlist of more than 70000 files on LAN disk.
 * Filter & exclude is extended-regexp friendly, example: `glouglou -f "PS1|PS2" -e "Final Fantasy|Alundra"`.
