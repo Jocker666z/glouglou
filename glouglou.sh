@@ -674,9 +674,10 @@ if (( "${#lst_vgm[@]}" )); then
 				listenbrainz_submit "AdPlay"
 
 			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null; then
+
 				if [[ -n "$mpv_bin" ]]; then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
-						--term-osd-bar yes \
+						--term-osd-bar=yes \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 						tag_mpv "${lst_vgm[i]}"
 						listenbrainz_submit "MPV"
@@ -728,7 +729,7 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "spc2wav"
 				elif [[ -n "$mpv_bin" ]]; then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
-						--term-osd-bar yes \
+						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
 					tag_spc "${lst_vgm[i]}"
 					listenbrainz_submit "MPV SNES"
@@ -762,7 +763,7 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "ZXTune Tracker"
 				elif [[ -n "$mpv_bin" ]]; then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
-						--term-osd-bar yes \
+						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
 					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "MPV Tracker"
