@@ -36,6 +36,28 @@ Extensions: `adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk
 
 ---
 
+### Atari ST / Amiga
+Extensions: `sc68|sndh`
+#### Player : sc68 + aplay
+
+---
+
+### Commodore C64
+Extension: `sid`
+#### Player:
+1. sidplayfp
+2. spc2wav
+
+---
+
+### MIDI
+Extension: `mid`
+#### Player:
+1. timidity
+2. fluidsynth
+
+---
+
 ### Nintendo SNES
 Extension: `spc`
 #### Player:
@@ -67,7 +89,6 @@ tools/svn-bootstrap.sh && ./configure LDFLAGS="-static"
 make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
-For : sc68, sndh
 
 ### sidplayfp
 https://github.com/libsidplayfp/sidplayfp
@@ -75,8 +96,6 @@ https://github.com/libsidplayfp/sidplayfp
 sidplayfp is present in many official repositories for most GNU/Linux distributions.
 
 The sidplayfp configuration file must be filled in correctly, otherwise the result will be random (view: https://github.com/libsidplayfp/sidplayfp/wiki/sidplayfp.ini).
-
-For C64 sid
 
 ### spc2wav
 https://github.com/jprjr/spc2wav
