@@ -273,8 +273,12 @@ fi
 }
 # Tools
 term_size() {
-term_width=$(stty size | awk '{print $2}')
-term_width_trunc=$(stty size | awk '{print $2}' | awk '{ print $1 - 3 }')
+local term_size_raw
+term_size_raw=$(stty size)
+
+term_height="${term_size_raw%% *}"
+term_width="${term_size_raw##* }"
+term_width_trunc=$(( term_width - 3 ))
 }
 echo_truncate() {
 local label
@@ -743,7 +747,9 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_tracker}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$xmp_bin" ]]; then
-					"$openmpt123_bin" "${lst_vgm[i]}"
+					"$openmpt123_bin" --terminal-width "$term_width" \
+					--terminal-height "$term_height" --no-details \
+						"${lst_vgm[i]}"
 					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "openmpt123"
 				elif [[ -n "$xmp_bin" ]]; then
