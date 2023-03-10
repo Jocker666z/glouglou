@@ -1,5 +1,5 @@
 # glouglou
-Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
+Bad bash script for no brain, also play audio/vgm/chiptune.
 
 glouglou just play in shuffle and repeat, all the files it found. Nothing else, finally without options...
 
@@ -26,24 +26,30 @@ Stop it by true proper command: `ctrl+c`.
 * Filter & exclude is extended-regexp friendly, example: `glouglou -f "PS1|PS2" -e "Final Fantasy|Alundra"`.
 * Given the great difference between the types of playback, it is recommended to apply a normalization to the audio output (see: https://github.com/Digitalone1/EasyEffects-Presets)
 
+
+## Supported Files
+### AdLib
+Extensions: `adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm`
+#### Player :
+1. adplay
+
+### Nintendo SNES
+Extension: `spc`
+#### Player:
+1. zxtune123
+2. spc2wav + aplay
+3. mpv
+
 ## Dependencies install help:
 ### adplay
 https://adplug.github.io/
 
 adplay is present in many official repositories for most GNU/Linux distributions.
 
-For:
-* PC AdLib (OPL2/3): adl, amd, bam, cff, cmf, d00, dfm, ddt, dtm, got, hsc, hsq, imf, ksm, laa, mdi, mtk, rad, rol, sdb, sqx, wlf, xms, xsm
-
 ### mpv
 https://mpv.io/
 
 mpv is present in many official repositories for most GNU/Linux distributions.
-
-For:
-* Audio files: ape, flac, m4a, mp3, ogg, opus, wav, wv
-* Nintendo SNES: spc
-* Tracker: it, cow, mo3, mms, mod, s3m, stp, plm, xm
 
 ### sc68
 https://sourceforge.net/projects/sc68/

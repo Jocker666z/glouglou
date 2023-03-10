@@ -638,16 +638,16 @@ local Player_PID
 #exit
 
 force_quit() {
-while true; do
-	read -t0.1 -rsn1 k
-	if [[ "$k" = "q" ]]; then
-		kill -9 "$Player_PID" &>/dev/null
-		break
-	fi
-	if ! ps -p $Player_PID > /dev/null; then
-		break
-	fi
-done
+	while true; do
+		read -t0.1 -rsn1 k
+		if [[ "$k" = "q" ]]; then
+			kill -9 "$Player_PID" &>/dev/null
+			break
+		fi
+		if ! ps -p $Player_PID > /dev/null; then
+			break
+		fi
+	done
 }
 
 if (( "${#lst_vgm[@]}" )); then
@@ -681,18 +681,19 @@ if (( "${#lst_vgm[@]}" )); then
 					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "vgmstream"
 				elif [[ -n "$ffmpeg_bin" ]]; then
-					"$ffmpeg_bin" -hide_banner -loglevel panic -nostats \
+					echo "ffmpeg play"
+					"$ffmpeg_bin" -hide_banner -loglevel quiet -nostats \
 						-i "${lst_vgm[i]}" -ar 44100 -f s16le -acodec pcm_s16le - \
-						| "$aplay_bin" -r 44100 -c 2 -f S16_LE -V stereo &
+						| "$aplay_bin" -r 44100 -c 2 -f S16_LE --quiet 2>/dev/null &
 					Player_PID="$!"
 					force_quit
 					tag_default "${lst_vgm[i]}"
-					listenbrainz_submit "vgmstream"
+					listenbrainz_submit "ffmpeg"
 				fi
 
 			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
 				"$sc68_bin" "${lst_vgm[i]}" --track=all --stdout \
-					| "$aplay_bin" -r 44100 -c 2 -f S16_LE -q 2>/dev/null &
+					| "$aplay_bin" -r 44100 -c 2 -f S16_LE --quiet 2>/dev/null &
 				Player_PID="$!"
 				force_quit
 				tag_sc68 "${lst_vgm[i]}"
@@ -716,7 +717,7 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "ZXTune SNES"
 				elif [[ -n "$spc2wav_bin" ]]; then
 					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout \
-						| "$aplay_bin" --fatal-errors -V stereo &
+						| "$aplay_bin" --quiet 2>/dev/null &
 					Player_PID="$!"
 					force_quit
 					tag_spc "${lst_vgm[i]}"
@@ -804,7 +805,7 @@ if (( "${#lst_vgm[@]}" )); then
 
 	done
 else
-	echo "glouglou break, there's nothing here, no file to play."
+	echo_error "glouglou was breaked, there's nothing here, no file to play."
 fi
 }
 # Kill stat
