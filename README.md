@@ -28,42 +28,45 @@ Stop it by true proper command: `ctrl+c`.
 
 
 ## Supported Files
-The list of players is displayed in the order that glouglou selects for the file. If one is not available, it moves to the next one.
+The list of players is in the order that glouglou selects for the file. If one is not available, it moves to the next one.
 
-### AdLib
-Extensions: `adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm`
-#### Player : adplay
-
----
-
-### Atari ST / Amiga
-Extensions: `sc68|sndh`
-#### Player : sc68 + aplay
-
----
-
-### Commodore C64
-Extension: `sid`
-#### Player:
-1. sidplayfp
-2. spc2wav
-
----
-
-### MIDI
-Extension: `mid`
-#### Player:
-1. timidity
-2. fluidsynth
-
----
-
-### Nintendo SNES
-Extension: `spc`
-#### Player:
-1. zxtune123
-2. spc2wav + aplay
-3. mpv
+AdLib: `adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm`
+* adplay
+Various: `aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma`
+* mpv
+* vgmstream
+* ffmpeg
+Atari ST / Amiga: `sc68|sndh`
+* sc68
+Comodore C64: `sid`
+* sidplayfp
+* zxtune
+SNES: `spc`
+* zxtune
+* spc2wav
+* mpv
+MIDI: `mid`
+* timidity
+* fluidsynth
+Trackers: `it|mod|s3m|xm`
+* openmpt123
+* xmp
+* zxtune
+* mpv
+Amiga: `aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny`
+* uade
+Various machines: `8svx|ads|adp|adpcm|adx|aix|apc|at3|bcstm|bcwav|brstm|cfn|csmp|cps|dsm|dsp|fsb|genh|hca|hps|ifs|imc|lwav|mic|mus|musx|nlsd|npsf|sad|ss2|strm|p04|p16|thp|vag|vgmstream|xa|xnb|xwv`
+* vgmstream
+Various machines: `s98|vgm|vgz`
+* vgmplay
+Trackers: `669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm`
+* xmp
+Various machines: `ay|ams|dmf|dtt|hvl|sap|v2m|ym`
+* zxtune
+Various machines: `2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf`
+* zxtune
+ZX Spectrum: `asc|psc|pt2|pt3|sqt|stc|stp`
+* zxtune
 
 ## Dependencies install help:
 ### adplay
@@ -105,14 +108,11 @@ cd /home/$USER/.local/bin/
 wget https://github.com/jprjr/spc2wav/releases/download/v1.0.4/spc2wav-linux.tar.gz
 tar -xf spc2wav-linux.tar.gz
 ```
-For Nintendo SNES: spc
 
 ### TiMidity++
 https://timidity.sourceforge.net/
 
 timidity is present in many official repositories for most GNU/Linux distributions. 
-
-For mid
 
 ### uade
 https://gitlab.com/uade-music-player/uade
@@ -131,8 +131,6 @@ git clone https://gitlab.com/uade-music-player/uade && cd uade
 ./configure && make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
-For:
-* Tracker extension: aam, abk, ahx, amc, aon, ast, bp, bp3, bss, cm, cus, dm, dm2, dmu, dss, dw, ea, hot, fc13, fc14, med, mug, np3, s7g, sfx, smus, soc, p4x, tiny
 
 ### vgmstream-cli
 https://github.com/vgmstream/vgmstream
@@ -144,8 +142,6 @@ mkdir build && cd build && cmake ..
 make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
-For:
-* Various machines: 8svx, ads, adp, adx, aix, apc, at3, bcstm, cfn, cps, dsm, dsp, fsb, genh, hca, hps, lwav, mus, musx, npsf, sad, ss2, strm, p04, p16, thp, vag, vgmstream, xa, xwv
 
 ### vgmplay
 https://github.com/ValleyBell/vgmplay-libvgm
@@ -157,16 +153,11 @@ mkdir build && cd build && cmake ..
 make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
-For:
-* NEC PC-Engine, Sharp X1, Fujitsu FM: s98
-* Various machines: vgm, vgz
 
 ### xmp
 https://xmp.sourceforge.net/
 
 xmp is present in many official repositories for most GNU/Linux distributions. 
-
-For tracker extension: 669, amf, dbm, digi, dsm, dsym, far, gz, mdl, musx, psm
 
 ### zxtune123
 https://zxtune.bitbucket.io/
@@ -183,16 +174,3 @@ cd /home/$USER/.local/bin/
 wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5020_armhf.tar.bz2
 tar -xf zxtune123_r5020_armhf.tar.bz2 && rm zxtune123_r5020_armhf.tar.bz2
 ```
-For:
-* Atari XL/XE: sap
-* C64: sid
-* Nintendo DS: 2sf, mini2sf, ncsf, minincsf
-* Nintendo GBA: gsf, minigsf
-* Nintendo N64: usf, miniusf
-* Nintendo SNES: spc
-* Sega Saturn: minissf, ssf
-* Sega Dreamcast: dsf
-* Sony Playstation: psf, minipsf
-* Sony Playstation 2: psf2, minipsf2
-* Tracker: ams, dmf, dtt, hvl, v2m, ym
-* ZX Spectrum: asc, ay, psc, pt2, pt3, sqt, stc, stp
