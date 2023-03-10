@@ -28,10 +28,13 @@ Stop it by true proper command: `ctrl+c`.
 
 
 ## Supported Files
+The list of players is displayed in the order that glouglou selects for the file. If one is not available, it moves to the next one.
+
 ### AdLib
 Extensions: `adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm`
-#### Player :
-1. adplay
+#### Player : adplay
+
+---
 
 ### Nintendo SNES
 Extension: `spc`
