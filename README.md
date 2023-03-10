@@ -1,7 +1,7 @@
 # glouglou
 Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
 
-glouglou just play in shuffle and repeat, all the files it found. Nothing else.
+glouglou just play in shuffle and repeat, all the files it found. Nothing else, finally without options...
 
 ## Use
 Enter :

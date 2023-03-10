@@ -15,7 +15,7 @@ local system_bin_location
 bin_name="adplay"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	adplay_bin="$system_bin_location"
 else
 	unset ext_adlib
@@ -28,7 +28,7 @@ local system_bin_location
 bin_name="aplay"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	aplay_bin="$system_bin_location"
 fi
 }
@@ -39,7 +39,7 @@ local system_bin_location
 bin_name="ffmpeg"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	ffmpeg_bin="$system_bin_location"
 fi
 
@@ -54,7 +54,7 @@ local system_bin_location
 bin_name="fluidsynth"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	fluidsynth_bin="$system_bin_location"
 fi
 }
@@ -65,7 +65,7 @@ local system_bin_location
 bin_name="mpv"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	mpv_bin="$system_bin_location"
 fi
 }
@@ -76,7 +76,7 @@ local system_bin_location
 bin_name="openmpt123"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	openmpt123_bin="$system_bin_location"
 fi
 }
@@ -87,7 +87,7 @@ local system_bin_location
 bin_name="sc68"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	sc68_bin="$system_bin_location"
 else
 	unset ext_sc68
@@ -104,7 +104,7 @@ local system_bin_location
 bin_name="sidplayfp"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	sidplayfp_bin="$system_bin_location"
 fi
 }
@@ -115,7 +115,7 @@ local system_bin_location
 bin_name="spc2wav"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	spc2wav_bin="$system_bin_location"
 fi
 
@@ -130,7 +130,7 @@ local system_bin_location
 bin_name="timidity"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	timidity_bin="$system_bin_location"
 fi
 }
@@ -141,11 +141,10 @@ local system_bin_location
 bin_name="uade123"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	uade123_bin="$system_bin_location"
 else
 	unset ext_uade
-	unset pre_uade
 fi
 }
 vgmplay_bin() {
@@ -155,7 +154,7 @@ local system_bin_location
 bin_name="vgmplay"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	vgmplay_bin="$system_bin_location"
 else
 	unset ext_vgmplay
@@ -168,7 +167,7 @@ local system_bin_location
 bin_name="xmp"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	xmp_bin="$system_bin_location"
 else
 	unset ext_xmp
@@ -181,13 +180,10 @@ local system_bin_location
 bin_name="zxtune123"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	zxtune123_bin="$system_bin_location"
 else
 	unset ext_zxtune
-	if [[ -n "$spc2wav_bin" ]]; then
-		unset ext_snes
-	fi
 fi
 }
 vgmstream123_bin() {
@@ -197,7 +193,7 @@ local system_bin_location
 bin_name="vgmstream123"
 system_bin_location=$(command -v $bin_name)
 
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	vgmstream123_bin="$system_bin_location"
 else
 	unset ext_vgmstream
@@ -239,7 +235,7 @@ if [[ -z "$xmp_bin" ]] \
 fi
 }
 glouglou_config() {
-if [ ! -d "$glouglou_config_dir" ]; then
+if [[ ! -d "$glouglou_config_dir" ]]; then
 	mkdir "$glouglou_config_dir"
 fi
 }
@@ -250,28 +246,28 @@ local system_bin_location
 # curl
 bin_name="curl"
 system_bin_location=$(command -v $bin_name)
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	curl_bin="$system_bin_location"
 fi
 
 # curl
 bin_name="vgm_tag"
 system_bin_location=$(command -v $bin_name)
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	vgm_tag_bin="$system_bin_location"
 fi
 
 # info68
 bin_name="info68"
 system_bin_location=$(command -v $bin_name)
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	info68_bin="$system_bin_location"
 fi
 
 # xxd
 bin_name="xxd"
 system_bin_location=$(command -v $bin_name)
-if test -n "$system_bin_location"; then
+if [[ -n "$system_bin_location" ]]; then
 	xxd_bin="$system_bin_location"
 fi
 }
@@ -323,6 +319,12 @@ tput sgr0
 echo_truncate "  ${lst_vgm_aft_one}"
 echo_truncate "  ${lst_vgm_aft_two}"
 echo_separator
+}
+echo_error() {
+local error_label
+error_label="$1"
+
+echo "${error_label}" >&2
 }
 # ListenBrainz
 listenbrainz_token() {
@@ -569,7 +571,6 @@ fi
 # Dependencies test
 player_dependency_test() {
 if [[ -z "$adplay_bin" ]] \
-   && [[ -z "$aplay_bin" ]] \
    && [[ -z "$ffmpeg_bin" ]] \
    && [[ -z "$fluidsynth_bin" ]] \
    && [[ -z "$mpv_bin" ]] \
@@ -583,8 +584,8 @@ if [[ -z "$adplay_bin" ]] \
    && [[ -z "$xmp_bin" ]] \
    && [[ -z "$zxtune123_bin" ]] \
    && [[ -z "$vgmstream123_bin" ]]; then
-	echo "glouglou break, none dependencies are met:"
-	printf '  %s\n' "${player_dependency[@]}"
+	echo_error "glouglou was breaked, none dependencies are met:"
+	printf '  %s\n' "${player_dependency[@]}" >&2
 	exit
 fi
 }
@@ -831,12 +832,15 @@ exit
 }
 
 # Trap
-trap 'kill_stat' SIGINT
+trap 'kill_stat' INT TERM
 
 # Dependencies
 player_dependency=(
 	'adplay'
+	'ffmpeg'
+	'fluidsynth'
 	'mpv'
+	'openmpt123'
 	'sc68 + aplay'
 	'sidplayfp'
 	'spc2wav + aplay'
@@ -922,8 +926,8 @@ while [[ $# -gt 0 ]]; do
 			input_dir+=( "$1" )
 			for input in "${input_dir[@]}"; do
 				if ! [[ -d "$input" ]]; then
-					echo "glouglou was exited."
-					echo "\"$input\" directory does not exist."
+					echo_error "glouglou was breaked."
+					echo_error "\"$input\" directory does not exist."
 					exit
 				fi
 			done
@@ -933,12 +937,12 @@ while [[ $# -gt 0 ]]; do
 		;;
 		-s|--scrobb)
 			if [[ -z "$curl_bin" ]]; then
-				echo "glouglou was exited."
-				echo "curl must be installed for use ListenBrainz scrobber."
+				echo_error "glouglou was breaked."
+				echo_error "curl must be installed for use ListenBrainz scrobber."
 				exit
 			elif [[ -z "$listenbrainz_token" ]]; then
-				echo "glouglou was exited."
-				echo "ListenBrainz token must be registered for use ListenBrainz scrobber"
+				echo_error "glouglou was breaked."
+				echo_error "ListenBrainz token must be registered for use ListenBrainz scrobber"
 				exit
 			else
 				listenbrainz_scrobb="1"
