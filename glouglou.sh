@@ -337,8 +337,8 @@ if [[ -n "$listenbrainz_register" ]]; then
 	echo "${listenbrainz_register} has been registered as your new ListenBrainz token."
 fi
 if [[ -f "$glouglou_config_file" ]]; then
-listenbrainz_token=$(< "$glouglou_config_file" grep "listenbrainz_token=" \
-					| awk -F"=" '{ print $2 }')
+	listenbrainz_token=$(< "$glouglou_config_file" grep "listenbrainz_token=" \
+						| awk -F"=" '{ print $2 }')
 fi
 }
 listenbrainz_submit() {
@@ -877,7 +877,7 @@ ext_snes="spc"
 ext_midi="mid"
 ext_tracker="it|mod|s3m|xm"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny"
-ext_vgmstream_0_c="8svx|ads|adp|adpcm|adx|aix|apc|at3|bcstm|bcwav|brstm|cfn|csmp|cps"
+ext_vgmstream_0_c="8svx|ads|adp|adpcm|adx|aix|apc|at3|bcstm|bcwav|bfstm|bfwav|brstm|cfn|csmp|cps"
 ext_vgmstream_d_n="dsm|dsp|fsb|genh|hca|hps|ifs|imc|lwav|mic|mus|musx|nlsd|npsf"
 ext_vgmstream_o_z="sad|ss2|strm|p04|p16|thp|vag|vgmstream|xa|xnb|xwv"
 ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
