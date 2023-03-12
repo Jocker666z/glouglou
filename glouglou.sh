@@ -671,13 +671,13 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null; then
 
-				if [[ -n "$mpv_1bin" ]]; then
+				if [[ -n "$mpv_bin" ]]; then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--volume=100 \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 						tag_mpv "${lst_vgm[i]}"
 						listenbrainz_submit "MPV"
-				elif [[ -n "$vgmstream123_1bin" ]]; then
+				elif [[ -n "$vgmstream123_bin" ]]; then
 					"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "vgmstream"
