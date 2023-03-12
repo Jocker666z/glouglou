@@ -352,7 +352,7 @@ if [[ -n "$curl_bin" ]] \
 	last_submit_time=$(date +%s)
 	submit_diff_in_s=$(( last_submit_time - new_submit_time ))
 
-	if [[ "$submit_diff_in_s" -gt "5" ]]; then
+	if [[ "$submit_diff_in_s" -gt "10" ]]; then
 	
 		new_submit_time=$(date +%s)
 		player="$1"
@@ -665,7 +665,9 @@ if (( "${#lst_vgm[@]}" )); then
 
 			# Play
 			if echo "|${ext_adplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
-				"$adplay_bin" "${lst_vgm[i]}" -v -r -o
+				"$adplay_bin" "${lst_vgm[i]}" -v -r -o &
+				Player_PID="$!"
+				force_quit
 				tag_default "${lst_vgm[i]}"
 				listenbrainz_submit "AdPlay"
 
@@ -682,7 +684,8 @@ if (( "${#lst_vgm[@]}" )); then
 					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "vgmstream"
 				elif [[ -n "$ffplay_bin" ]]; then
-					"$ffplay_bin" -showmode 0 -hide_banner -autoexit "${lst_vgm[i]}" &
+					"$ffplay_bin" -hide_banner -showmode 0 \
+						-autoexit -volume 100 "${lst_vgm[i]}" &
 					Player_PID="$!"
 					force_quit
 					tag_default "${lst_vgm[i]}"
@@ -765,7 +768,7 @@ if (( "${#lst_vgm[@]}" )); then
 				fi
 
 			elif echo "|${ext_uade}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
-				"$uade123_bin" "${lst_vgm[i]}" -v
+				"$uade123_bin" "${lst_vgm[i]}"
 				tag_default "${lst_vgm[i]}"
 				listenbrainz_submit "UADE"
 
