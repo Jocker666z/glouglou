@@ -32,19 +32,15 @@ if [[ -n "$system_bin_location" ]]; then
 	aplay_bin="$system_bin_location"
 fi
 }
-ffmpeg_bin() {
+ffplay_bin() {
 local bin_name
 local system_bin_location
 
-bin_name="ffmpeg"
+bin_name="ffplay"
 system_bin_location=$(command -v $bin_name)
 
 if [[ -n "$system_bin_location" ]]; then
-	ffmpeg_bin="$system_bin_location"
-fi
-
-if [[ -z "$aplay_bin" ]]; then
-	unset ffmpeg_bin
+	ffplay_bin="$system_bin_location"
 fi
 }
 fluidsynth_bin() {
@@ -214,7 +210,7 @@ fi
 
 # MPV
 if [[ -z "$mpv_bin" ]] \
-&& [[ -z "$ffmpeg_bin" ]] \
+&& [[ -z "$ffplay_bin" ]] \
 && [[ -z "$vgmstream123_bin" ]]; then
 	unset ext_mpv
 fi
@@ -285,9 +281,9 @@ local label
 label="$1"
 
 if [[ "${#label}" -gt "$term_width" ]]; then
-	echo "$label" | cut -c 1-"$term_width_trunc" | awk '{print $0"..."}'
+	echo -e "$label" | cut -c 1-"$term_width_trunc" | awk '{print $0"..."}'
 else
-	echo "$label"
+	echo -e "$label"
 fi
 }
 echo_separator() {
@@ -314,11 +310,11 @@ lst_vgm_aft_two=$(echo "${lst_vgm[playlist_aft_nb_two]}" | rev | cut -d'/' -f-2 
 # Display
 clear
 tput bold sitm
-echo "  < glouglou Playlist - $vgm_counter"/"${#lst_vgm[@]} >"
+echo -e "  \u2261 glouglou playlist \u2933 $vgm_counter"/"${#lst_vgm[@]}"
 tput sgr0 dim
 echo_truncate "  ${lst_vgm_bef}"
 tput sgr0 bold
-echo_truncate "> ${lst_vgm_current}"
+echo_truncate "\u25b6 ${lst_vgm_current}"
 tput sgr0
 echo_truncate "  ${lst_vgm_aft_one}"
 echo_truncate "  ${lst_vgm_aft_two}"
@@ -412,8 +408,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 && [[ -n "$listenbrainz_token" ]]; then
 
 	"$mpv_bin" --terminal --no-video --vo=null --ao=null \
-		--frames=0 --quiet --no-cache --no-config "$file" \
 		--display-tags=Title,Artist,Album \
+		--frames=0 --quiet --no-cache --no-config "$file" \
 		> "$glouglou_cache_tag"
 
 	tag_title=$(sed -n 's/Title:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
@@ -575,7 +571,7 @@ fi
 # Dependencies test
 player_dependency_test() {
 if [[ -z "$adplay_bin" ]] \
-   && [[ -z "$ffmpeg_bin" ]] \
+   && [[ -z "$ffplay_bin" ]] \
    && [[ -z "$fluidsynth_bin" ]] \
    && [[ -z "$mpv_bin" ]] \
    && [[ -z "$openmpt123_bin" ]] \
@@ -675,25 +671,22 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null; then
 
-				if [[ -n "$mpv_bin" ]]; then
+				if [[ -n "$mpv_1bin" ]]; then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
-						--term-osd-bar=yes \
+						--volume=100 \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 						tag_mpv "${lst_vgm[i]}"
 						listenbrainz_submit "MPV"
-				elif [[ -n "$vgmstream123_bin" ]]; then
+				elif [[ -n "$vgmstream123_1bin" ]]; then
 					"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "vgmstream"
-				elif [[ -n "$ffmpeg_bin" ]]; then
-					echo "ffmpeg play"
-					"$ffmpeg_bin" -hide_banner -loglevel quiet -nostats \
-						-i "${lst_vgm[i]}" -ar 44100 -f s16le -acodec pcm_s16le - \
-						| "$aplay_bin" -r 44100 -c 2 -f S16_LE --quiet 2>/dev/null &
+				elif [[ -n "$ffplay_bin" ]]; then
+					"$ffplay_bin" -showmode 0 -hide_banner -autoexit "${lst_vgm[i]}" &
 					Player_PID="$!"
 					force_quit
 					tag_default "${lst_vgm[i]}"
-					listenbrainz_submit "ffmpeg"
+					listenbrainz_submit "ffplay"
 				fi
 
 			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
@@ -729,6 +722,7 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "spc2wav"
 				elif [[ -n "$mpv_bin" ]]; then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
+						--volume=100 \
 						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
 					tag_spc "${lst_vgm[i]}"
@@ -763,6 +757,7 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "ZXTune Tracker"
 				elif [[ -n "$mpv_bin" ]]; then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
+						--volume=100 \
 						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
 					tag_default "${lst_vgm[i]}"
@@ -845,7 +840,7 @@ trap 'kill_stat' INT TERM
 # Dependencies
 player_dependency=(
 	'adplay'
-	'ffmpeg'
+	'ffplay'
 	'fluidsynth'
 	'mpv'
 	'openmpt123'
@@ -891,7 +886,7 @@ ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 # Setup
 aplay_bin
 adplay_bin
-ffmpeg_bin
+ffplay_bin
 fluidsynth_bin
 mpv_bin
 openmpt123_bin
