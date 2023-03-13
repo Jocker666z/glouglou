@@ -63,7 +63,7 @@ The list of players is in the order that glouglou selects for the file. If one i
 * `aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny`
 	* uade
 
-* `8svx|ads|adp|adpcm|adx|aix|apc|at3|bcstm|bcwav|bfstm|bfwav|brstm|cfn|csb|csmp|cps|dsm|dsp|fsb|genh|hca|hps|ifs|imc|kma|lwav|mic|mus|musx|nlsd|npsf|sad|ss2|strm|p04|p16|thp|vag|vgmstream|xa|xnb|xwv`
+* `8svx|acm|ads|adp|adpcm|adx|aix|apc|at3|bcstm|bcwav|bfstm|bfwav|brstm|cfn|csb|csmp|cps|dsm|dsp|fsb|genh|hca|hps|ifs|imc|kma|lwav|mic|mus|musx|nlsd|nop|npsf|sad|ss2|strm|p04|p16|thp|vag|vgmstream|xa|xnb|xwv`
 	* vgmstream
 
 * `s98|vgm|vgz`
