@@ -746,7 +746,8 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_tracker}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$xmp_bin" ]]; then
 					"$openmpt123_bin" --terminal-width "$term_width" \
-					--terminal-height "$term_height" --no-details \
+						--terminal-height "$term_height" --no-details \
+						--gain 7 \
 						"${lst_vgm[i]}"
 					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "openmpt123"
