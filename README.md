@@ -33,9 +33,8 @@ The list of players is in the order that glouglou selects for the file. If one i
 * `adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm`
 	* adplay
 
-* `aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma`
+* `aac|ac3|aif|aiff|ape|dsf|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma`
 	* mpv
-	* vgmstream
 	* ffplay
 	
 * `sc68|sndh`

@@ -210,8 +210,7 @@ fi
 
 # MPV
 if [[ -z "$mpv_bin" ]] \
-&& [[ -z "$ffplay_bin" ]] \
-&& [[ -z "$vgmstream123_bin" ]]; then
+&& [[ -z "$ffplay_bin" ]]; then
 	unset ext_mpv
 fi
 
@@ -679,10 +678,6 @@ if (( "${#lst_vgm[@]}" )); then
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 						tag_mpv "${lst_vgm[i]}"
 						listenbrainz_submit "MPV"
-				elif [[ -n "$vgmstream123_bin" ]]; then
-					"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
-					tag_default "${lst_vgm[i]}"
-					listenbrainz_submit "vgmstream"
 				elif [[ -n "$ffplay_bin" ]]; then
 					"$ffplay_bin" -hide_banner -showmode 0 \
 						-autoexit -volume 100 "${lst_vgm[i]}" &
@@ -867,7 +862,7 @@ glouglou_cache_tag="/tmp/glouglou-tag"
 
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
-ext_mpv_various="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
+ext_mpv_various="aac|ac3|aif|aiff|ape|dsf|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
 ext_mpv_tracker="cow|mo3|stp|plm"
 ext_mpv="${ext_mpv_various}|${ext_mpv_tracker}"
 ext_sc68="sc68|sndh"
