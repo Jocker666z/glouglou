@@ -328,8 +328,23 @@ echo "${error_label}" >&2
 # Publish tags
 publish_tags() {
 local player
-player="$1"
+local file
+local dir
+local cover
 
+player="$1"
+file="$2"
+dir=$(realpath "$(dirname "${file}")")
+
+# Cover search
+for img in "${cover_name[@]}"; do
+	if [[ -f "${dir}/${img}" ]]; then
+		cover="${dir}/${img}"
+		break
+	fi
+done
+
+# Record
 if [[ -n "$publish_tags" ]] \
 && [[ -n "$tag_title" ]]; then
 
@@ -338,6 +353,7 @@ if [[ -n "$publish_tags" ]] \
 		echo "$tag_artist"
 		echo "$tag_album"
 		echo "$player"
+		echo "$cover"
 	} > "$glouglou_tags"
 
 fi
@@ -554,9 +570,9 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 	strings -e S "$file" | sed -n '/TAG/,$p' > "$glouglou_cache_tag"
 
-	tag_title=$(< "$glouglou_cache_tag" grep -i -a title= | sed 's/^.*=//')
-	tag_artist=$(< "$glouglou_cache_tag" grep -i -a artist= | sed 's/^.*=//')
-	tag_album=$(< "$glouglou_cache_tag" grep -i -a game= | sed 's/^.*=//')
+	tag_title=$(< "$glouglou_cache_tag" grep -i -a title= | awk -F'=' '$0=$NF')
+	tag_artist=$(< "$glouglou_cache_tag" grep -i -a artist= | awk -F'=' '$0=$NF')
+	tag_album=$(< "$glouglou_cache_tag" grep -i -a game= | awk -F'=' '$0=$NF')
 	tag_default "$file"
 fi
 }
@@ -683,7 +699,7 @@ if (( "${#lst_vgm[@]}" )); then
 			# Play
 			if echo "|${ext_adplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
 				tag_default "${lst_vgm[i]}"
-				publish_tags "AdPlay"
+				publish_tags "AdPlay" "${lst_vgm[i]}"
 				"$adplay_bin" "${lst_vgm[i]}" -v -r -o &
 				Player_PID="$!"
 				force_quit
@@ -692,14 +708,14 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$mpv_bin" ]]; then
 					tag_mpv "${lst_vgm[i]}"
-					publish_tags "MPV"
+					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--volume=100 \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 					listenbrainz_submit "MPV"
 				elif [[ -n "$ffplay_bin" ]]; then
 					tag_default "${lst_vgm[i]}"
-					publish_tags "ffplay"
+					publish_tags "ffplay" "${lst_vgm[i]}"
 					"$ffplay_bin" -hide_banner -showmode 0 \
 						-autoexit -volume 100 "${lst_vgm[i]}" &
 					Player_PID="$!"
@@ -709,7 +725,7 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
 				tag_sc68 "${lst_vgm[i]}"
-				publish_tags "sc68"
+				publish_tags "sc68" "${lst_vgm[i]}"
 				"$sc68_bin" "${lst_vgm[i]}" --track=all --stdout \
 					| "$aplay_bin" -r 44100 -c 2 -f S16_LE --quiet 2>/dev/null &
 				Player_PID="$!"
@@ -719,11 +735,11 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_sidplayfp}|" | grep -i "|${ext}|" &>/dev/null; then
 					tag_sid "${lst_vgm[i]}"
 				if [[ -n "$sidplayfp_bin" ]]; then
-					publish_tags "sidplayfp"
+					publish_tags "sidplayfp" "${lst_vgm[i]}"
 					"$sidplayfp_bin" "${lst_vgm[i]}" -v -s --digiboost
 					listenbrainz_submit "sidplayfp"
 				elif [[ -n "$zxtune123_bin" ]]; then
-					publish_tags "ZXTune"
+					publish_tags "ZXTune" "${lst_vgm[i]}"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
 				fi
@@ -731,18 +747,18 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
 				tag_spc "${lst_vgm[i]}"
 				if [[ -n "$zxtune123_bin" ]]; then
-					publish_tags "ZXTune"
+					publish_tags "ZXTune" "${lst_vgm[i]}"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
 				elif [[ -n "$spc2wav_bin" ]]; then
-					publish_tags "spc2wav"
+					publish_tags "spc2wav" "${lst_vgm[i]}"
 					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout \
 						| "$aplay_bin" --quiet 2>/dev/null &
 					Player_PID="$!"
 					force_quit
 					listenbrainz_submit "spc2wav"
 				elif [[ -n "$mpv_bin" ]]; then
-					publish_tags "MPV"
+					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--volume=100 \
 						--term-osd-bar=yes \
@@ -753,11 +769,11 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_midi}|" | grep -i "|${ext}|" &>/dev/null; then
 					tag_default "${lst_vgm[i]}"
 				if [[ -n "$timidity_bin" ]]; then
-					publish_tags "TiMidity++"
+					publish_tags "TiMidity++" "${lst_vgm[i]}"
 					"$timidity_bin" "${lst_vgm[i]}" -in --volume=100
 					listenbrainz_submit "TiMidity++"
 				elif [[ -n "$fluidsynth_bin" ]]; then
-					publish_tags "FluidSynth"
+					publish_tags "FluidSynth" "${lst_vgm[i]}"
 					"$fluidsynth_bin" "${lst_vgm[i]}"
 					listenbrainz_submit "FluidSynth"
 				fi
@@ -765,22 +781,22 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_tracker}|" | grep -i "|${ext}|" &>/dev/null; then
 				tag_default "${lst_vgm[i]}"
 				if [[ -n "$openmpt123_bin" ]]; then
-					publish_tags "openmpt123"
+					publish_tags "openmpt123" "${lst_vgm[i]}"
 					"$openmpt123_bin" --terminal-width "$term_width" \
 						--terminal-height "$term_height" --no-details \
 						--gain 4 \
 						"${lst_vgm[i]}"
 					listenbrainz_submit "openmpt123"
 				elif [[ -n "$xmp_bin" ]]; then
-					publish_tags "XMP"
+					publish_tags "XMP" "${lst_vgm[i]}"
 					"$xmp_bin" "${lst_vgm[i]}"
 					listenbrainz_submit "XMP"
 				elif [[ -n "$zxtune123_bin" ]]; then
-					publish_tags "ZXTune"
+					publish_tags "ZXTune" "${lst_vgm[i]}"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
 				elif [[ -n "$mpv_bin" ]]; then
-					publish_tags "MPV"
+					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--volume=100 \
 						--term-osd-bar=yes \
@@ -790,25 +806,25 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_uade}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				tag_default "${lst_vgm[i]}"
-				publish_tags "UADE"
+				publish_tags "UADE" "${lst_vgm[i]}"
 				"$uade123_bin" "${lst_vgm[i]}"
 				listenbrainz_submit "UADE"
 
 			elif echo "|${ext_vgmstream}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
 				tag_default "${lst_vgm[i]}"
-				publish_tags "vgmstream"
+				publish_tags "vgmstream" "${lst_vgm[i]}"
 				"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 				listenbrainz_submit "vgmstream"
 
 			elif echo "|${ext_vgmplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmplay_bin" ]]; then
 				tag_vgm "${lst_vgm[i]}"
-				publish_tags "VGMPlay"
+				publish_tags "VGMPlay" "${lst_vgm[i]}"
 				"$vgmplay_bin" "${lst_vgm[i]}"
 				listenbrainz_submit "VGMPlay"
 
 			elif echo "|${ext_xmp}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
 				tag_default "${lst_vgm[i]}"
-				publish_tags "XMP"
+				publish_tags "XMP" "${lst_vgm[i]}"
 				"$xmp_bin" "${lst_vgm[i]}"
 				listenbrainz_submit "XMP"
 
@@ -820,7 +836,7 @@ if (( "${#lst_vgm[@]}" )); then
 				else
 					tag_default "${lst_vgm[i]}"
 				fi
-				publish_tags "ZXTune"
+				publish_tags "ZXTune" "${lst_vgm[i]}"
 				"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 				listenbrainz_submit "ZXTune"
 			fi
@@ -882,6 +898,20 @@ player_dependency=(
 	'vgmplay'
 	'xmp'
 	'zxtune123'
+	)
+
+# Covers
+cover_name=(
+	'cover.jpg'
+	'cover.png'
+	'front.jpg'
+	'front.png'
+	'thumb.jpg'
+	'thumb.png'
+	'AlbumArt.jpg'
+	'AlbumArt.png'
+	'AlbumArtSmall.jpg'
+	'AlbumArtSmall.png'
 	)
 
 # Paths

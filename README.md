@@ -89,6 +89,7 @@ Each line corresponds to a tag, like this:
 2. ARTIST
 3. ALBUM
 4. PLAYER
+5. COVER URI
 
 ## Install help:
 ### adplay
