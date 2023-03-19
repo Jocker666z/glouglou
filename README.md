@@ -12,6 +12,7 @@ Enter :
 * `glouglou -c` for playlist in alphabetical order.
 * `glouglou -r` for no repeat playlist.
 * `glouglou -s` for use ListenBrainz scrobber.
+* `glouglou -p` for publish tags in /tmp/glouglou-tags.
 * `glouglou -t <token>` for register your ListenBrainz token.
 
 Stop it by true proper command: `ctrl+c`.
@@ -25,7 +26,7 @@ Stop it by true proper command: `ctrl+c`.
 * glouglou takes less than 6s to launch a playlist of more than 70000 files on LAN disk.
 * Filter & exclude is extended-regexp friendly, example: `glouglou -f "PS1|PS2" -e "Final Fantasy|Alundra"`.
 * Given the great difference between the types of playback, it is recommended to apply a normalization to the audio output (see: https://github.com/Digitalone1/EasyEffects-Presets)
-
+* `glouglou -p` can be useful to get the glouglou informations from your system monitor (example: conky). See below the specifications of the file.
 
 ## Supported Files
 The list of players is in the order that glouglou selects for the file. If one is not available, it moves to the next one.
@@ -80,7 +81,16 @@ The list of players is in the order that glouglou selects for the file. If one i
 * `asc|psc|pt2|pt3|sqt|stc|stp`
 	* zxtune
 
-## Dependencies install help:
+## Publish tags specifications
+Location this file is : `/tmp/glouglou-tags`
+
+Each line corresponds to a tag, like this:
+1. TITLE
+2. ARTIST
+3. ALBUM
+4. PLAYER
+
+## Install help:
 ### adplay
 https://adplug.github.io/
 

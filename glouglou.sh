@@ -234,7 +234,7 @@ if [[ ! -d "$glouglou_config_dir" ]]; then
 	mkdir "$glouglou_config_dir"
 fi
 }
-listenbrainz_bin() {
+various_bin() {
 local bin_name
 local system_bin_location
 
@@ -245,7 +245,7 @@ if [[ -n "$system_bin_location" ]]; then
 	curl_bin="$system_bin_location"
 fi
 
-# curl
+# vgm_tag
 bin_name="vgm_tag"
 system_bin_location=$(command -v $bin_name)
 if [[ -n "$system_bin_location" ]]; then
@@ -325,6 +325,23 @@ error_label="$1"
 
 echo "${error_label}" >&2
 }
+# Publish tags
+publish_tags() {
+local player
+player="$1"
+
+if [[ -n "$publish_tags" ]] \
+&& [[ -n "$tag_title" ]]; then
+
+	{
+		echo "$tag_title"
+		echo "$tag_artist"
+		echo "$tag_album"
+		echo "$player"
+	} > "$glouglou_tags"
+
+fi
+}
 # ListenBrainz
 listenbrainz_token() {
 if [[ -n "$listenbrainz_register" ]]; then
@@ -389,22 +406,26 @@ tag_default() {
 local file
 file="$1"
 
-if [[ -z "$tag_title" ]]; then
-	tag_title=$(basename "${file%.*}")
-fi
-if [[ -z "$tag_artist" ]]; then
-	tag_artist="Unknow"
-fi
-if [[ -z "$tag_album" ]]; then
-	tag_album=$(dirname "$file" | rev | cut -d'/' -f-1 | rev)
+if [[ -n "$listenbrainz_scrobb" && -n "$listenbrainz_token" ]] \
+|| [[ -n "$publish_tags" ]]; then
+	if [[ -z "$tag_title" ]]; then
+		tag_title=$(basename "${file%.*}")
+	fi
+	if [[ -z "$tag_artist" ]]; then
+		tag_artist="Unknow"
+	fi
+	if [[ -z "$tag_album" ]]; then
+		tag_album=$(dirname "$file" | rev | cut -d'/' -f-1 | rev)
+	fi
 fi
 }
+# Tag
 tag_mpv() {
 local file
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-&& [[ -n "$listenbrainz_token" ]]; then
+|| [[ -n "$publish_tags" ]]; then
 
 	"$mpv_bin" --terminal --no-video --vo=null --ao=null \
 		--display-tags=Title,Artist,Album \
@@ -422,7 +443,7 @@ local file
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-&& [[ -n "$listenbrainz_token" ]]; then
+|| [[ -n "$publish_tags" ]]; then
 
 	strings -e S "$file" | head -15 > "$glouglou_cache_tag"
 
@@ -441,9 +462,8 @@ tag_sc68() {
 local file
 file="$1"
 
-if [[ -n "$info68_bin" ]] \
-&& [[ -n "$listenbrainz_scrobb" ]] \
-&& [[ -n "$listenbrainz_token" ]]; then
+if [[ -n "$info68_bin" && -n "$listenbrainz_scrobb" && -n "$listenbrainz_token" ]] \
+|| [[ -n "$xxdinfo68_bin_bin" && -n "$publish_tags" ]]; then
 
 	"$info68_bin" -A "$file" > "$glouglou_cache_tag"
 
@@ -460,7 +480,7 @@ if [[ -n "$info68_bin" ]] \
 	tag_default "$file"
 
 elif [[ -n "$listenbrainz_scrobb" ]] \
-  && [[ -n "$listenbrainz_token" ]]; then
+  || [[ -n "$publish_tags" ]]; then
 	tag_default "$file"
 fi
 }
@@ -468,9 +488,8 @@ tag_sid() {
 local file
 file="$1"
 
-if [[ -n "$xxd_bin" ]] \
-&& [[ -n "$listenbrainz_scrobb" ]] \
-&& [[ -n "$listenbrainz_token" ]]; then
+if [[ -n "$xxd_bin" && -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$xxd_bin" && -n "$publish_tags" ]]; then
 
 	tag_artist=$("$xxd_bin" -ps -s 0x36 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
 	if [[ "$tag_artist" = "<?>" ]]; then
@@ -483,7 +502,7 @@ if [[ -n "$xxd_bin" ]] \
 	tag_default "$file"
 
 elif [[ -n "$listenbrainz_scrobb" ]] \
-  && [[ -n "$listenbrainz_token" ]]; then
+  || [[ -n "$publish_tags" ]]; then
 	tag_default "$file"
 fi
 }
@@ -491,9 +510,8 @@ tag_spc() {
 local file
 file="$1"
 
-if [[ -n "$xxd_bin" ]] \
-&& [[ -n "$listenbrainz_scrobb" ]] \
-&& [[ -n "$listenbrainz_token" ]]; then
+if [[ -n "$xxd_bin" && -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$xxd_bin" && -n "$publish_tags" ]]; then
 
 	tag_title=$("$xxd_bin" -ps -s 0x0002Eh -l 32 "$file" \
 				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
@@ -504,7 +522,7 @@ if [[ -n "$xxd_bin" ]] \
 	tag_default "$file"
 
 elif [[ -n "$listenbrainz_scrobb" ]] \
-  && [[ -n "$listenbrainz_token" ]]; then
+  || [[ -n "$publish_tags" ]]; then
 	tag_default "$file"
 fi
 }
@@ -512,9 +530,8 @@ tag_vgm() {
 local file
 file="$1"
 
-if [[ -n "$vgm_tag_bin" ]] \
-&& [[ -n "$listenbrainz_scrobb" ]] \
-&& [[ -n "$listenbrainz_token" ]]; then
+if [[ -n "$vgm_tag_bin" && -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$vgm_tag_bin" && -n "$publish_tags" ]]; then
 
 	"$vgm_tag_bin" -ShowTag8 "$file" > "$glouglou_cache_tag"
 
@@ -524,7 +541,7 @@ if [[ -n "$vgm_tag_bin" ]] \
 	tag_default "$file"
 
 elif [[ -n "$listenbrainz_scrobb" ]] \
-  && [[ -n "$listenbrainz_token" ]]; then
+  || [[ -n "$publish_tags" ]]; then
 	tag_default "$file"
 fi
 }
@@ -533,7 +550,7 @@ local file
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-&& [[ -n "$listenbrainz_token" ]]; then
+|| [[ -n "$publish_tags" ]]; then
 
 	strings -e S "$file" | sed -n '/TAG/,$p' > "$glouglou_cache_tag"
 
@@ -558,6 +575,7 @@ Usage: glouglou [options]
   -h|--help               Display this help.
   -r|--repeat_off         No repeat.
   -s|--scrobb             Use ListenBrainz scrobber.
+  -p|--publish_tags       Publish tags in $glouglou_tags.
   -t|--token <token>      Register your ListenBrainz token.
 EOF
 }
@@ -664,137 +682,147 @@ if (( "${#lst_vgm[@]}" )); then
 
 			# Play
 			if echo "|${ext_adplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
+				tag_default "${lst_vgm[i]}"
+				publish_tags "AdPlay"
 				"$adplay_bin" "${lst_vgm[i]}" -v -r -o &
 				Player_PID="$!"
 				force_quit
-				tag_default "${lst_vgm[i]}"
 				listenbrainz_submit "AdPlay"
 
 			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null; then
-
 				if [[ -n "$mpv_bin" ]]; then
+					tag_mpv "${lst_vgm[i]}"
+					publish_tags "MPV"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--volume=100 \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
-						tag_mpv "${lst_vgm[i]}"
-						listenbrainz_submit "MPV"
+					listenbrainz_submit "MPV"
 				elif [[ -n "$ffplay_bin" ]]; then
+					tag_default "${lst_vgm[i]}"
+					publish_tags "ffplay"
 					"$ffplay_bin" -hide_banner -showmode 0 \
 						-autoexit -volume 100 "${lst_vgm[i]}" &
 					Player_PID="$!"
 					force_quit
-					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "ffplay"
 				fi
 
 			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
+				tag_sc68 "${lst_vgm[i]}"
+				publish_tags "sc68"
 				"$sc68_bin" "${lst_vgm[i]}" --track=all --stdout \
 					| "$aplay_bin" -r 44100 -c 2 -f S16_LE --quiet 2>/dev/null &
 				Player_PID="$!"
 				force_quit
-				tag_sc68 "${lst_vgm[i]}"
 				listenbrainz_submit "sc68"
 
 			elif echo "|${ext_sidplayfp}|" | grep -i "|${ext}|" &>/dev/null; then
-				if [[ -n "$sidplayfp_bin" ]]; then
-					"$sidplayfp_bin" "${lst_vgm[i]}" -v -s --digiboost
 					tag_sid "${lst_vgm[i]}"
+				if [[ -n "$sidplayfp_bin" ]]; then
+					publish_tags "sidplayfp"
+					"$sidplayfp_bin" "${lst_vgm[i]}" -v -s --digiboost
 					listenbrainz_submit "sidplayfp"
 				elif [[ -n "$zxtune123_bin" ]]; then
+					publish_tags "ZXTune"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
-					tag_sid "${lst_vgm[i]}"
-					listenbrainz_submit "ZXTune SID"
+					listenbrainz_submit "ZXTune"
 				fi
 
 			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
+				tag_spc "${lst_vgm[i]}"
 				if [[ -n "$zxtune123_bin" ]]; then
+					publish_tags "ZXTune"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
-					tag_spc "${lst_vgm[i]}"
-					listenbrainz_submit "ZXTune SNES"
+					listenbrainz_submit "ZXTune"
 				elif [[ -n "$spc2wav_bin" ]]; then
+					publish_tags "spc2wav"
 					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout \
 						| "$aplay_bin" --quiet 2>/dev/null &
 					Player_PID="$!"
 					force_quit
-					tag_spc "${lst_vgm[i]}"
 					listenbrainz_submit "spc2wav"
 				elif [[ -n "$mpv_bin" ]]; then
+					publish_tags "MPV"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--volume=100 \
 						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
-					tag_spc "${lst_vgm[i]}"
-					listenbrainz_submit "MPV SNES"
+					listenbrainz_submit "MPV"
 				fi
 
 			elif echo "|${ext_midi}|" | grep -i "|${ext}|" &>/dev/null; then
-				if [[ -n "$timidity_bin" ]]; then
-					"$timidity_bin" "${lst_vgm[i]}" -in --volume=100
 					tag_default "${lst_vgm[i]}"
+				if [[ -n "$timidity_bin" ]]; then
+					publish_tags "TiMidity++"
+					"$timidity_bin" "${lst_vgm[i]}" -in --volume=100
 					listenbrainz_submit "TiMidity++"
 				elif [[ -n "$fluidsynth_bin" ]]; then
+					publish_tags "FluidSynth"
 					"$fluidsynth_bin" "${lst_vgm[i]}"
-					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "FluidSynth"
 				fi
 
 			elif echo "|${ext_tracker}|" | grep -i "|${ext}|" &>/dev/null; then
-				if [[ -n "$xmp_bin" ]]; then
+				tag_default "${lst_vgm[i]}"
+				if [[ -n "$openmpt123_bin" ]]; then
+					publish_tags "openmpt123"
 					"$openmpt123_bin" --terminal-width "$term_width" \
 						--terminal-height "$term_height" --no-details \
-						--gain 7 \
+						--gain 4 \
 						"${lst_vgm[i]}"
-					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "openmpt123"
 				elif [[ -n "$xmp_bin" ]]; then
+					publish_tags "XMP"
 					"$xmp_bin" "${lst_vgm[i]}"
-					tag_default "${lst_vgm[i]}"
 					listenbrainz_submit "XMP"
 				elif [[ -n "$zxtune123_bin" ]]; then
+					publish_tags "ZXTune"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
-					tag_default "${lst_vgm[i]}"
-					listenbrainz_submit "ZXTune Tracker"
+					listenbrainz_submit "ZXTune"
 				elif [[ -n "$mpv_bin" ]]; then
+					publish_tags "MPV"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--volume=100 \
 						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
-					tag_default "${lst_vgm[i]}"
-					listenbrainz_submit "MPV Tracker"
+					listenbrainz_submit "MPV"
 				fi
 
 			elif echo "|${ext_uade}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
-				"$uade123_bin" "${lst_vgm[i]}"
 				tag_default "${lst_vgm[i]}"
+				publish_tags "UADE"
+				"$uade123_bin" "${lst_vgm[i]}"
 				listenbrainz_submit "UADE"
 
 			elif echo "|${ext_vgmstream}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
-				"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 				tag_default "${lst_vgm[i]}"
+				publish_tags "vgmstream"
+				"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 				listenbrainz_submit "vgmstream"
 
 			elif echo "|${ext_vgmplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmplay_bin" ]]; then
-				"$vgmplay_bin" "${lst_vgm[i]}"
 				tag_vgm "${lst_vgm[i]}"
+				publish_tags "VGMPlay"
+				"$vgmplay_bin" "${lst_vgm[i]}"
 				listenbrainz_submit "VGMPlay"
 
 			elif echo "|${ext_xmp}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
-				"$xmp_bin" "${lst_vgm[i]}"
 				tag_default "${lst_vgm[i]}"
+				publish_tags "XMP"
+				"$xmp_bin" "${lst_vgm[i]}"
 				listenbrainz_submit "XMP"
 
 			elif echo "|${ext_zxtune}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$zxtune123_bin" ]]; then
-				"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 				if echo "|${ext_zxtune_xsf}|" | grep -i "|${ext}|" &>/dev/null; then
 					tag_xsf "${lst_vgm[i]}"
-					listenbrainz_submit "ZXTune XSF"
 				elif [[ "${ext}" = "sap" ]]; then
 					tag_sap "${lst_vgm[i]}"
-					listenbrainz_submit "ZXTune SAP"
 				else
 					tag_default "${lst_vgm[i]}"
-					listenbrainz_submit "ZXTune"
 				fi
+				publish_tags "ZXTune"
+				"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
+				listenbrainz_submit "ZXTune"
 			fi
 		done
 
@@ -829,6 +857,8 @@ echo "You have listened ${vgm_counter}/${#lst_vgm[@]} tracks".
 echo "The duration of your crazy listening was ${time_formated}".
 
 # Proper exit
+rm "$glouglou_cache_tag" &>/dev/null
+rm "$glouglou_tags" &>/dev/null
 stty sane
 exit
 }
@@ -858,7 +888,8 @@ player_dependency=(
 export PATH=$PATH:/home/$USER/.local/bin
 glouglou_config_dir="/home/$USER/.config/glouglou"
 glouglou_config_file="/home/$USER/.config/glouglou/config"
-glouglou_cache_tag="/tmp/glouglou-tag"
+glouglou_cache_tag="/tmp/glouglou-cache-tag"
+glouglou_tags="/tmp/glouglou-tags"
 
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
@@ -902,7 +933,7 @@ multi_depend
 player_dependency_test
 glouglou_config
 listenbrainz_token
-listenbrainz_bin
+various_bin
 
 # Arguments
 while [[ $# -gt 0 ]]; do
@@ -950,6 +981,9 @@ while [[ $# -gt 0 ]]; do
 				listenbrainz_scrobb="1"
 				new_submit_time=$(date +%s)
 			fi
+		;;
+		-p|--publish_tags)
+			publish_tags="1"
 		;;
 		-t|--token)
 			shift
