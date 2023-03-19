@@ -354,6 +354,7 @@ if [[ -n "$publish_tags" ]] \
 		echo "$tag_album"
 		echo "$player"
 		echo "$cover"
+		echo "$total_duration"
 	} > "$glouglou_tags"
 
 fi
@@ -524,6 +525,8 @@ fi
 }
 tag_spc() {
 local file
+local spc_duration
+local spc_fading
 file="$1"
 
 if [[ -n "$xxd_bin" && -n "$listenbrainz_scrobb" ]] \
@@ -535,6 +538,21 @@ if [[ -n "$xxd_bin" && -n "$listenbrainz_scrobb" ]] \
 				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
 	tag_album=$("$xxd_bin" -ps -s 0x0004Eh -l 32 "$file" \
 				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+
+	spc_duration=$(xxd -ps -s 0x000A9h -l 3 "$file" \
+					| xxd -r -p | tr -d '\0')
+	spc_fading=$(xxd -ps -s 0x000ACh -l 5 "$file" \
+				| xxd -r -p | tr -d '\0')
+	# Correction if empty, or not an integer
+	if [[ -z "$spc_duration" ]] || ! [[ "$spc_duration" =~ ^[0-9]*$ ]]; then
+		spc_duration="0"
+	fi
+	if [[ -z "$spc_fading" ]] || ! [[ "$spc_fading" =~ ^[0-9]*$ ]]; then
+		spc_fading="0"
+	fi
+	spc_fading=$((spc_fading/1000))
+	total_duration=$((spc_duration+spc_fading))
+
 	tag_default "$file"
 
 elif [[ -n "$listenbrainz_scrobb" ]] \
@@ -573,6 +591,10 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	tag_title=$(< "$glouglou_cache_tag" grep -i -a title= | awk -F'=' '$0=$NF')
 	tag_artist=$(< "$glouglou_cache_tag" grep -i -a artist= | awk -F'=' '$0=$NF')
 	tag_album=$(< "$glouglou_cache_tag" grep -i -a game= | awk -F'=' '$0=$NF')
+	total_duration=$(< "$glouglou_cache_tag" grep -i -a length= | awk -F'=' '$0=$NF' \
+					| awk -F '.' 'NF > 1 { printf "%s", $1; exit } 1' \
+					| awk -F":" '{ print ($1 * 60) + $2 }' \
+					| tr -d '[:space:]')
 	tag_default "$file"
 fi
 }

@@ -90,6 +90,7 @@ Each line corresponds to a tag, like this:
 3. ALBUM
 4. PLAYER
 5. COVER URI
+6. TOTAL DURATION (in second)
 
 ## Install help:
 ### adplay
