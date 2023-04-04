@@ -141,7 +141,7 @@ timidity is present in many official repositories for most GNU/Linux distributio
 ### uade
 https://gitlab.com/uade-music-player/uade
 
-Build dependencies: `git build-essential`
+Build dependencies: `git build-essential sparse`
 ```
 git clone https://gitlab.com/heikkiorsila/bencodetools && cd bencodetools
 ./configure && make -j"$(nproc)"
@@ -190,12 +190,12 @@ https://zxtune.bitbucket.io/
 x86_64:
 ```
 cd /home/$USER/.local/bin/
-wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5020_x86_64.tar.bz2
-tar -xf zxtune123_r5020_x86_64.tar.bz2 && rm zxtune123_r5020_x86_64.tar.bz2
+wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5030_x86_64.tar.bz2
+tar -xf zxtune123_r5030_x86_64.tar.bz2 && rm zxtune123_r5030_x86_64.tar.bz2
 ```
 armhf:
 ```
 cd /home/$USER/.local/bin/
-wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5020_armhf.tar.bz2
-tar -xf zxtune123_r5020_armhf.tar.bz2 && rm zxtune123_r5020_armhf.tar.bz2
+wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5030_armhf.tar.bz2
+tar -xf zxtune123_r5030_armhf.tar.bz2 && rm zxtune123_r5030_armhf.tar.bz2
 ```
