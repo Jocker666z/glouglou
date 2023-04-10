@@ -806,7 +806,6 @@ if (( "${#lst_vgm[@]}" )); then
 					publish_tags "openmpt123" "${lst_vgm[i]}"
 					"$openmpt123_bin" --terminal-width "$term_width" \
 						--terminal-height "$term_height" --no-details \
-						--gain 4 \
 						"${lst_vgm[i]}"
 					listenbrainz_submit "openmpt123"
 				elif [[ -n "$xmp_bin" ]]; then
@@ -955,7 +954,7 @@ ext_midi="mid"
 ext_tracker="it|mod|s3m|xm"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny"
 ext_vgmstream_0_c="8svx|acm|ads|adp|adpcm|adx|aix|apc|at3|at9|bcstm|bcwav|bfstm|bfwav|brstm|cfn|csb|csmp|cps"
-ext_vgmstream_d_n="dsm|dsp|dvi|fsb|genh|hca|hps|ifs|imc|kma|lwav|mic|mus|musx|nlsd|nop|npsf"
+ext_vgmstream_d_n="dsm|dsp|dvi|fsb|genh|hca|hps|ifs|imc|kma|logg|lwav|mic|mus|musx|nlsd|nop|npsf"
 ext_vgmstream_o_z="rws|sad|scd|ss2|strm|svag|p04|p16|thp|vag|vgmstream|xa|xnb|xwv"
 ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
 ext_vgmplay="s98|vgm|vgz"
