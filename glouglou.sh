@@ -748,8 +748,13 @@ if (( "${#lst_vgm[@]}" )); then
 				tag_xsf "${lst_vgm[i]}"
 				if [[ -n "$gsf2wav_bin" ]]; then
 					publish_tags "gsf2wav" "${lst_vgm[i]}"
-					"$gsf2wav_bin" "${lst_vgm[i]}" /dev/stdout \
-						| "$aplay_bin" --quiet 1>/dev/null &
+					echo "gsf2wav"
+					echo "Title: $tag_title"
+					echo "Artist: $tag_artist"
+					echo "Album: $tag_album"
+					echo "Duration: ${total_duration}s"
+					"$gsf2wav_bin" "${lst_vgm[i]}" /dev/stdout 2>/dev/null \
+						| "$aplay_bin" --quiet 2>/dev/null &
 					Player_PID="$!"
 					force_quit
 					listenbrainz_submit "gsf2wav"
