@@ -34,6 +34,10 @@ The list of players is in the order that glouglou selects for the file. If one i
 * `adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm`
 	* adplay
 
+* `gsf|minigsf`
+	* gsf2wav
+	* zxtune
+	
 * `aac|ac3|aif|aiff|ape|dsf|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma`
 	* mpv
 	* ffplay
@@ -97,6 +101,17 @@ Each line corresponds to a tag, like this:
 https://adplug.github.io/
 
 adplay is present in many official repositories for most GNU/Linux distributions.
+
+### gsf2wav
+Build dependencies: `git build-essential`
+```
+git clone https://github.com/jprjr/gsf2wav && cd gsf2wav
+git clone --recursive https://github.com/jprjr/lazygsf/
+git clone https://github.com/jprjr/psflib
+mkdir build && cd build
+cmake .. && make -j"$(nproc)"
+cp gsf2wav /home/$USER/.local/bin/
+```
 
 ### mpv
 https://mpv.io/

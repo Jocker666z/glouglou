@@ -54,6 +54,17 @@ if [[ -n "$system_bin_location" ]]; then
 	fluidsynth_bin="$system_bin_location"
 fi
 }
+gsf2wav_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="gsf2wav"
+system_bin_location=$(command -v $bin_name)
+
+if [[ -n "$system_bin_location" ]]; then
+	gsf2wav_bin="$system_bin_location"
+fi
+}
 mpv_bin() {
 local bin_name
 local system_bin_location
@@ -200,6 +211,12 @@ multi_depend() {
 if [[ -z "$sidplayfp_bin" ]] \
 && [[ -z "$zxtune123_bin" ]]; then
 	unset ext_sidplayfp
+fi
+
+# GBA
+if [[ -z "$gsf2wav_bin" ]] \
+&& [[ -z "$zxtune123_bin" ]]; then
+	unset ext_gba
 fi
 
 # Midi
@@ -727,6 +744,21 @@ if (( "${#lst_vgm[@]}" )); then
 				force_quit
 				listenbrainz_submit "AdPlay"
 
+			elif echo "|${ext_gba}|" | grep -i "|${ext}|" &>/dev/null; then
+				tag_xsf "${lst_vgm[i]}"
+				if [[ -n "$gsf2wav_bin" ]]; then
+					publish_tags "gsf2wav" "${lst_vgm[i]}"
+					"$gsf2wav_bin" "${lst_vgm[i]}" /dev/stdout \
+						| "$aplay_bin" --quiet 1>/dev/null &
+					Player_PID="$!"
+					force_quit
+					listenbrainz_submit "gsf2wav"
+				elif [[ -n "$zxtune123_bin" ]]; then
+					publish_tags "ZXTune" "${lst_vgm[i]}"
+					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
+					listenbrainz_submit "ZXTune"
+				fi
+
 			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null; then
 				if [[ -n "$mpv_bin" ]]; then
 					tag_mpv "${lst_vgm[i]}"
@@ -944,6 +976,7 @@ glouglou_tags="/tmp/glouglou-tags"
 
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
+ext_gba="gsf|minigsf"
 ext_mpv_various="aac|ac3|aif|aiff|ape|dsf|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
 ext_mpv_tracker="cow|mo3|stp|plm"
 ext_mpv="${ext_mpv_various}|${ext_mpv_tracker}"
@@ -960,7 +993,7 @@ ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
 ext_zxtune_various="ay|ams|dmf|dtt|hvl|sap|v2m|ym"
-ext_zxtune_xsf="2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
+ext_zxtune_xsf="2sf|dsf|psf|psf2|mini2sf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 
@@ -969,6 +1002,7 @@ aplay_bin
 adplay_bin
 ffplay_bin
 fluidsynth_bin
+gsf2wav_bin
 mpv_bin
 openmpt123_bin
 sc68_bin
@@ -1052,6 +1086,7 @@ done
 
 # $ext_allplay contruction depend -> player_dependency_test
 ext_allplay_raw="${ext_adplay}| \
+				 ${ext_gba}| \
 				 ${ext_mpv}| \
 				 ${ext_sc68}| \
 				 ${ext_sidplayfp}| \
