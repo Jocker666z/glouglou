@@ -754,7 +754,7 @@ if (( "${#lst_vgm[@]}" )); then
 					echo "Album: $tag_album"
 					echo "Duration: ${total_duration}s"
 					"$gsf2wav_bin" "${lst_vgm[i]}" /dev/stdout 2>/dev/null \
-						| "$aplay_bin" --quiet 2>/dev/null &
+						| "$aplay_bin" -V stereo --quiet &
 					Player_PID="$!"
 					force_quit
 					listenbrainz_submit "gsf2wav"
@@ -812,7 +812,7 @@ if (( "${#lst_vgm[@]}" )); then
 				elif [[ -n "$spc2wav_bin" ]]; then
 					publish_tags "spc2wav" "${lst_vgm[i]}"
 					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout \
-						| "$aplay_bin" --quiet 2>/dev/null &
+						| "$aplay_bin" -V stereo --quiet &
 					Player_PID="$!"
 					force_quit
 					listenbrainz_submit "spc2wav"
