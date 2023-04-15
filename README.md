@@ -94,7 +94,7 @@ By default the tags are taken with the filename and the directory that contains 
 * `s98|vgm|vgz`: vgm_tag https://github.com/vgmrips/vgmtools
 
 ### Publish tags specifications
-Location this file is : `/tmp/glouglou-tags`
+Location: `/tmp/glouglou-tags`
 
 Each line corresponds to a tag, like this:
 1. TITLE
