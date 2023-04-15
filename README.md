@@ -85,6 +85,14 @@ The list of players is in the order that glouglou selects for the file. If one i
 * `asc|psc|pt2|pt3|sqt|stc|stp`
 	* zxtune
 
+## Tags
+## Tags read
+By default the tags are taken with the filename and the directory that contains them. For more precision you will have to install the dependencies below.
+* `sc68|sndh`: info68 https://sourceforge.net/projects/sc68/ (intalled with sc68, see below)
+* `sid`: xxd (present in many official repositories)
+* `spc`: xxd (present in many official repositories)
+* `s98|vgm|vgz`: vgm_tag https://github.com/vgmrips/vgmtools
+
 ## Publish tags specifications
 Location this file is : `/tmp/glouglou-tags`
 
