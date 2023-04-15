@@ -464,11 +464,11 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	"$mpv_bin" --terminal --no-video --vo=null --ao=null \
 		--display-tags=Title,Artist,Album \
 		--frames=0 --quiet --no-cache --no-config "$file" \
-		> "$glouglou_cache_tag"
+		> "$glouglou_cache_tags"
 
-	tag_title=$(sed -n 's/Title:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
-	tag_artist=$(sed -n 's/Artist:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
-	tag_album=$(sed -n 's/Album:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
+	tag_title=$(sed -n 's/Title:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+	tag_artist=$(sed -n 's/Artist:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+	tag_album=$(sed -n 's/Album:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
 	tag_default "$file"
 fi
 }
@@ -479,13 +479,13 @@ file="$1"
 if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]]; then
 
-	strings -e S "$file" | head -15 > "$glouglou_cache_tag"
+	strings -e S "$file" | head -15 > "$glouglou_cache_tags"
 
-	tag_artist=$(< "$glouglou_cache_tag" grep -i -a "AUTHOR" | awk -F'"' '$0=$2')
+	tag_artist=$(< "$glouglou_cache_tags" grep -i -a "AUTHOR" | awk -F'"' '$0=$2')
 	if [[ "$tag_artist" = "<?>" ]]; then
 		unset tag_artist
 	fi
-	tag_album=$(< "$glouglou_cache_tag" grep -i -a "NAME" | awk -F'"' '$0=$2')
+	tag_album=$(< "$glouglou_cache_tags" grep -i -a "NAME" | awk -F'"' '$0=$2')
 	if [[ "$tag_album" = "<?>" ]]; then
 		unset tag_album
 	fi
@@ -499,14 +499,14 @@ file="$1"
 if [[ -n "$info68_bin" && -n "$listenbrainz_scrobb" && -n "$listenbrainz_token" ]] \
 || [[ -n "$xxdinfo68_bin_bin" && -n "$publish_tags" ]]; then
 
-	"$info68_bin" -A "$file" > "$glouglou_cache_tag"
+	"$info68_bin" -A "$file" > "$glouglou_cache_tags"
 
-	tag_title=$(< "$glouglou_cache_tag" grep -i -a title: | sed 's/^.*: //' | head -1)
+	tag_title=$(< "$glouglou_cache_tags" grep -i -a title: | sed 's/^.*: //' | head -1)
 	if [[ -z "$tag_title" ]] \
 	|| [[ "$tag_title" = "N/A" ]]; then
 		unset tag_title
 	fi
-	tag_artist=$(< "$glouglou_cache_tag" grep -i -a artist: | sed 's/^.*: //' | head -1)
+	tag_artist=$(< "$glouglou_cache_tags" grep -i -a artist: | sed 's/^.*: //' | head -1)
 	if [[ -z "$tag_artist" ]] \
 	|| [[ "$tag_artist" = "N/A" ]]; then
 		unset tag_artist
@@ -584,11 +584,11 @@ file="$1"
 if [[ -n "$vgm_tag_bin" && -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$vgm_tag_bin" && -n "$publish_tags" ]]; then
 
-	"$vgm_tag_bin" -ShowTag8 "$file" > "$glouglou_cache_tag"
+	"$vgm_tag_bin" -ShowTag8 "$file" > "$glouglou_cache_tags"
 
-	tag_title=$(sed -n 's/Track Title:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
-	tag_artist=$(sed -n 's/Composer:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
-	tag_album=$(sed -n 's/Game Name:/&\n/;s/.*\n//p' "$glouglou_cache_tag" | awk '{$1=$1}1')
+	tag_title=$(sed -n 's/Track Title:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+	tag_artist=$(sed -n 's/Composer:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+	tag_album=$(sed -n 's/Game Name:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
 	tag_default "$file"
 
 elif [[ -n "$listenbrainz_scrobb" ]] \
@@ -603,12 +603,12 @@ file="$1"
 if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]]; then
 
-	strings -e S "$file" | sed -n '/TAG/,$p' > "$glouglou_cache_tag"
+	strings -e S "$file" | sed -n '/TAG/,$p' > "$glouglou_cache_tags"
 
-	tag_title=$(< "$glouglou_cache_tag" grep -i -a title= | awk -F'=' '$0=$NF')
-	tag_artist=$(< "$glouglou_cache_tag" grep -i -a artist= | awk -F'=' '$0=$NF')
-	tag_album=$(< "$glouglou_cache_tag" grep -i -a game= | awk -F'=' '$0=$NF')
-	total_duration=$(< "$glouglou_cache_tag" grep -i -a length= | awk -F'=' '$0=$NF' \
+	tag_title=$(< "$glouglou_cache_tags" grep -i -a title= | awk -F'=' '$0=$NF')
+	tag_artist=$(< "$glouglou_cache_tags" grep -i -a artist= | awk -F'=' '$0=$NF')
+	tag_album=$(< "$glouglou_cache_tags" grep -i -a game= | awk -F'=' '$0=$NF')
+	total_duration=$(< "$glouglou_cache_tags" grep -i -a length= | awk -F'=' '$0=$NF' \
 					| awk -F '.' 'NF > 1 { printf "%s", $1; exit } 1' \
 					| awk -F":" '{ print ($1 * 60) + $2 }' \
 					| tr -d '[:space:]')
@@ -931,7 +931,7 @@ echo "You have listened ${vgm_counter}/${#lst_vgm[@]} tracks".
 echo "The duration of your crazy listening was ${time_formated}".
 
 # Proper exit
-rm "$glouglou_cache_tag" &>/dev/null
+rm "$glouglou_cache_tags" &>/dev/null
 rm "$glouglou_tags" &>/dev/null
 stty sane
 exit
@@ -943,6 +943,7 @@ trap 'kill_stat' INT TERM
 # Dependencies
 player_dependency=(
 	'adplay'
+	'gsf2wav + aplay'
 	'ffplay'
 	'fluidsynth'
 	'mpv'
@@ -976,7 +977,7 @@ cover_name=(
 export PATH=$PATH:/home/$USER/.local/bin
 glouglou_config_dir="/home/$USER/.config/glouglou"
 glouglou_config_file="/home/$USER/.config/glouglou/config"
-glouglou_cache_tag="/tmp/glouglou-cache-tag"
+glouglou_cache_tags="/tmp/glouglou-cache-tags"
 glouglou_tags="/tmp/glouglou-tags"
 
 # Type of files allowed by player
@@ -991,7 +992,7 @@ ext_snes="spc"
 ext_midi="mid"
 ext_tracker="it|mod|s3m|xm"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny"
-ext_vgmstream_0_c="8svx|acm|ads|adp|adpcm|adx|aix|apc|at3|at9|bcstm|bcwav|bfstm|bfwav|brstm|cfn|csb|csmp|cps"
+ext_vgmstream_0_c="8svx|acm|ads|adp|adpcm|adx|aix|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|brstm|cfn|csb|csmp|cps"
 ext_vgmstream_d_n="dsm|dsp|dvi|fsb|genh|hca|hps|ifs|imc|kma|logg|lwav|mic|mus|musx|nlsd|nop|npsf"
 ext_vgmstream_o_z="rws|sad|scd|ss2|strm|svag|p04|p16|thp|vag|vgmstream|xa|xnb|xwv"
 ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
