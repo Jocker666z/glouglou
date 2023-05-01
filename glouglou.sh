@@ -445,11 +445,14 @@ if [[ -n "$listenbrainz_scrobb" && -n "$listenbrainz_token" ]] \
 	if [[ -z "$tag_title" ]]; then
 		tag_title=$(basename "${file%.*}")
 	fi
-	if [[ -z "$tag_artist" ]]; then
-		tag_artist="Unknow"
-	fi
 	if [[ -z "$tag_album" ]]; then
 		tag_album=$(dirname "$file" | rev | cut -d'/' -f-1 | rev)
+		if [[ "$tag_album" = "." ]]; then
+			tag_album=$(pwd -P | rev | cut -d'/' -f-1 | rev)
+		fi
+	fi
+	if [[ -z "$tag_artist" ]]; then
+		tag_artist="$tag_album"
 	fi
 fi
 }
