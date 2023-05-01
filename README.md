@@ -58,7 +58,7 @@ The list of players is in the order that glouglou selects for the file. If one i
 	* timidity
 	* fluidsynth
 
-* `it|mod|s3m|xm`
+* `it|mod|mptm|s3m|xm`
 	* openmpt123
 	* xmp
 	* zxtune
