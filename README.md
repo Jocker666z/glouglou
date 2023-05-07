@@ -38,7 +38,7 @@ The list of players is in the order that glouglou selects for the file. If one i
 	* gsf2wav
 	* zxtune
 	
-* `aac|ac3|aif|aiff|ape|dsf|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma`
+* `aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma`
 	* mpv
 	* ffplay
 	
@@ -58,7 +58,7 @@ The list of players is in the order that glouglou selects for the file. If one i
 	* timidity
 	* fluidsynth
 
-* `it|mod|mptm|s3m|xm`
+* `it|mod|mptm|s3m|stm|xm`
 	* openmpt123
 	* xmp
 	* zxtune
