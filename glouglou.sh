@@ -494,11 +494,23 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	"$openmpt123_bin" --info "$file" \
 		> "$glouglou_cache_tags"
 
+	tag_title=$(< "$glouglou_cache_tags" grep "Title." \
+				| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
+	tag_artist=$(< "$glouglou_cache_tags" grep "Artist." \
+				| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
+	# Special trick, many mod not have artist
+	if [[ -n "$tag_title" ]] && [[ -z "$tag_artist" ]]; then
+		tag_artist=$(basename "${file%.*}")
+	fi
+
+	# Duration
 	duration_record=$(< "$glouglou_cache_tags" grep "Duration." \
 						| awk '{print $2}')
 	if [[ "$duration_record" == *":"* ]]; then
-		minute=$(echo "$duration_record" | awk -F ":" '{print $1}' | sed 's/^0*//' )
-		second=$(echo "$duration_record" | awk -F ":" '{print $2}' | awk '{print int($1+0.5)}' | sed 's/^0*//')
+		minute=$(echo "$duration_record" | awk -F ":" '{print $1}' \
+				| sed 's/^0*//' )
+		second=$(echo "$duration_record" | awk -F ":" '{print $2}' \
+				| awk '{print int($1+0.5)}' | sed 's/^0*//')
 		if [[ -n "$minute" ]]; then
 			minute=$((minute*60))
 		fi
