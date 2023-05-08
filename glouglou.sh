@@ -447,7 +447,7 @@ tag_default() {
 local file
 file="$1"
 
-if [[ -n "$listenbrainz_scrobb" && -n "$listenbrainz_token" ]] \
+if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]]; then
 	if [[ -z "$tag_title" ]]; then
 		tag_title=$(basename "${file%.*}")
@@ -478,6 +478,35 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	tag_title=$(sed -n 's/Title:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
 	tag_artist=$(sed -n 's/Artist:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
 	tag_album=$(sed -n 's/Album:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+	tag_default "$file"
+fi
+}
+tag_openmpt() {
+local file
+local duration_record
+local minute
+local second
+file="$1"
+
+if [[ -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$publish_tags" ]]; then
+
+	"$openmpt123_bin" --info "$file" \
+		> "$glouglou_cache_tags"
+
+	duration_record=$(< "$glouglou_cache_tags" grep "Duration." \
+						| awk '{print $2}')
+	if [[ "$duration_record" == *":"* ]]; then
+		minute=$(echo "$duration_record" | awk -F ":" '{print $1}' | sed 's/^0*//' )
+		second=$(echo "$duration_record" | awk -F ":" '{print $2}' | awk '{print int($1+0.5)}' | sed 's/^0*//')
+		if [[ -n "$minute" ]]; then
+			minute=$((minute*60))
+		fi
+		tag_total_duration=$(echo $((minute+second)))
+	else
+		tag_total_duration=$(echo "$duration_record" | awk '{print int($1+0.5)}')
+	fi
+
 	tag_default "$file"
 fi
 }
@@ -847,22 +876,25 @@ if (( "${#lst_vgm[@]}" )); then
 				fi
 
 			elif echo "|${ext_tracker}|" | grep -i "|${ext}|" &>/dev/null; then
-				tag_default "${lst_vgm[i]}"
 				if [[ -n "$openmpt123_bin" ]]; then
+					tag_openmpt "${lst_vgm[i]}"
 					publish_tags "openmpt123" "${lst_vgm[i]}"
 					"$openmpt123_bin" --terminal-width "$term_width" \
 						--terminal-height "$term_height" --no-details \
 						"${lst_vgm[i]}"
 					listenbrainz_submit "openmpt123"
 				elif [[ -n "$xmp_bin" ]]; then
+					tag_default "${lst_vgm[i]}"
 					publish_tags "XMP" "${lst_vgm[i]}"
 					"$xmp_bin" "${lst_vgm[i]}"
 					listenbrainz_submit "XMP"
 				elif [[ -n "$zxtune123_bin" ]]; then
+					tag_default "${lst_vgm[i]}"
 					publish_tags "ZXTune" "${lst_vgm[i]}"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
 				elif [[ -n "$mpv_bin" ]]; then
+					tag_default "${lst_vgm[i]}"
 					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--volume=100 \
