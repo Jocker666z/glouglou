@@ -371,7 +371,7 @@ if [[ -n "$publish_tags" ]] \
 		echo "$tag_album"
 		echo "$player"
 		echo "$cover"
-		echo "$total_duration"
+		echo "$tag_total_duration"
 	} > "$glouglou_tags"
 
 fi
@@ -430,12 +430,17 @@ if [[ -n "$curl_bin" ]] \
 			https://api.listenbrainz.org/1/submit-listens
 
 	fi
-
+fi
+}
+# Tag
+tag_reset() {
+if [[ -n "$listenbrainz_scrobb" && -n "$listenbrainz_token" ]] \
+|| [[ -n "$publish_tags" ]]; then
 	# Reset
 	unset tag_title
 	unset tag_artist
 	unset tag_album
-
+	unset tag_total_duration
 fi
 }
 tag_default() {
@@ -458,7 +463,6 @@ if [[ -n "$listenbrainz_scrobb" && -n "$listenbrainz_token" ]] \
 	fi
 fi
 }
-# Tag
 tag_mpv() {
 local file
 file="$1"
@@ -573,7 +577,7 @@ if [[ -n "$xxd_bin" && -n "$listenbrainz_scrobb" ]] \
 		spc_fading="0"
 	fi
 	spc_fading=$((spc_fading/1000))
-	total_duration=$((spc_duration+spc_fading))
+	tag_total_duration=$((spc_duration+spc_fading))
 
 	tag_default "$file"
 
@@ -613,7 +617,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	tag_title=$(< "$glouglou_cache_tags" grep -i -a title= | awk -F'=' '$0=$NF')
 	tag_artist=$(< "$glouglou_cache_tags" grep -i -a artist= | awk -F'=' '$0=$NF')
 	tag_album=$(< "$glouglou_cache_tags" grep -i -a game= | awk -F'=' '$0=$NF')
-	total_duration=$(< "$glouglou_cache_tags" grep -i -a length= | awk -F'=' '$0=$NF' \
+	tag_total_duration=$(< "$glouglou_cache_tags" grep -i -a length= | awk -F'=' '$0=$NF' \
 					| awk -F '.' 'NF > 1 { printf "%s", $1; exit } 1' \
 					| awk -F":" '{ print ($1 * 60) + $2 }' \
 					| tr -d '[:space:]')
@@ -757,7 +761,7 @@ if (( "${#lst_vgm[@]}" )); then
 					echo "Title: $tag_title"
 					echo "Artist: $tag_artist"
 					echo "Album: $tag_album"
-					echo "Duration: ${total_duration}s"
+					echo "Duration: ${tag_total_duration}s"
 					"$gsf2wav_bin" "${lst_vgm[i]}" /dev/stdout 2>/dev/null \
 						| "$aplay_bin" -V stereo --quiet &
 					Player_PID="$!"
@@ -903,6 +907,10 @@ if (( "${#lst_vgm[@]}" )); then
 				"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 				listenbrainz_submit "ZXTune"
 			fi
+
+			# Reset
+			tag_reset
+
 		done
 
 		# If no repeat
