@@ -429,11 +429,13 @@ if [[ -n "$curl_bin" ]] \
 			}}]}' \
 			https://api.listenbrainz.org/1/submit-listens
 
-			# Reset
-			unset tag_title
-			unset tag_artist
-			unset tag_album
 	fi
+
+	# Reset
+	unset tag_title
+	unset tag_artist
+	unset tag_album
+
 fi
 }
 tag_default() {
