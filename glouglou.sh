@@ -441,7 +441,7 @@ fi
 }
 # Tag
 tag_reset() {
-if [[ -n "$listenbrainz_scrobb" && -n "$listenbrainz_token" ]] \
+if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]]; then
 	# Reset
 	unset tag_title
@@ -456,6 +456,7 @@ file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]]; then
+
 	if [[ -z "$tag_title" ]]; then
 		tag_title=$(basename "${file%.*}")
 	fi
@@ -468,6 +469,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	if [[ -z "$tag_artist" ]]; then
 		tag_artist="$tag_album"
 	fi
+
 fi
 }
 tag_mpv() {
@@ -546,55 +548,61 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	if [[ "$tag_album" = "<?>" ]]; then
 		unset tag_album
 	fi
+
 	tag_default "$file"
+
 fi
 }
 tag_sc68() {
 local file
 file="$1"
 
-if [[ -n "$info68_bin" && -n "$listenbrainz_scrobb" && -n "$listenbrainz_token" ]] \
-|| [[ -n "$info68_bin" && -n "$publish_tags" ]]; then
+if [[ -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$publish_tags" ]]; then
 
-	"$info68_bin" -A "$file" > "$glouglou_cache_tags"
+	if [[ -n "$info68_bin" ]]; then
 
-	tag_title=$(< "$glouglou_cache_tags" grep -i -a title: | sed 's/^.*: //' | head -1)
-	if [[ -z "$tag_title" ]] \
-	|| [[ "$tag_title" = "N/A" ]]; then
-		unset tag_title
+		"$info68_bin" -A "$file" > "$glouglou_cache_tags"
+
+		tag_title=$(< "$glouglou_cache_tags" grep -i -a title: | sed 's/^.*: //' | head -1)
+		if [[ -z "$tag_title" ]] \
+		|| [[ "$tag_title" = "N/A" ]]; then
+			unset tag_title
+		fi
+		tag_artist=$(< "$glouglou_cache_tags" grep -i -a artist: | sed 's/^.*: //' | head -1)
+		if [[ -z "$tag_artist" ]] \
+		|| [[ "$tag_artist" = "N/A" ]]; then
+			unset tag_artist
+		fi
+
 	fi
-	tag_artist=$(< "$glouglou_cache_tags" grep -i -a artist: | sed 's/^.*: //' | head -1)
-	if [[ -z "$tag_artist" ]] \
-	|| [[ "$tag_artist" = "N/A" ]]; then
-		unset tag_artist
-	fi
+
 	tag_default "$file"
 
-elif [[ -n "$listenbrainz_scrobb" ]] \
-  || [[ -n "$publish_tags" ]]; then
-	tag_default "$file"
 fi
 }
 tag_sid() {
 local file
 file="$1"
 
-if [[ -n "$xxd_bin" && -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$xxd_bin" && -n "$publish_tags" ]]; then
+if [[ -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$publish_tags" ]]; then
 
-	tag_artist=$("$xxd_bin" -ps -s 0x36 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
-	if [[ "$tag_artist" = "<?>" ]]; then
-		unset tag_artist
+	if [[ -n "$xxd_bin" ]]; then
+
+		tag_artist=$("$xxd_bin" -ps -s 0x36 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+		if [[ "$tag_artist" = "<?>" ]]; then
+			unset tag_artist
+		fi
+		tag_album=$("$xxd_bin" -ps -s 0x16 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+		if [[ "$tag_album" = "<?>" ]]; then
+			unset tag_album
+		fi
+
 	fi
-	tag_album=$("$xxd_bin" -ps -s 0x16 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
-	if [[ "$tag_album" = "<?>" ]]; then
-		unset tag_album
-	fi
+
 	tag_default "$file"
 
-elif [[ -n "$listenbrainz_scrobb" ]] \
-  || [[ -n "$publish_tags" ]]; then
-	tag_default "$file"
 fi
 }
 tag_spc() {
@@ -603,54 +611,58 @@ local spc_duration
 local spc_fading
 file="$1"
 
-if [[ -n "$xxd_bin" && -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$xxd_bin" && -n "$publish_tags" ]]; then
+if [[ -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$publish_tags" ]]; then
 
-	tag_title=$("$xxd_bin" -ps -s 0x0002Eh -l 32 "$file" \
-				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
-	tag_artist=$("$xxd_bin" -ps -s 0x000B1h -l 32 "$file" \
-				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
-	tag_album=$("$xxd_bin" -ps -s 0x0004Eh -l 32 "$file" \
-				| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+	if [[ -n "$xxd_bin" ]]; then
 
-	spc_duration=$(xxd -ps -s 0x000A9h -l 3 "$file" \
+		tag_title=$("$xxd_bin" -ps -s 0x0002Eh -l 32 "$file" \
+					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+		tag_artist=$("$xxd_bin" -ps -s 0x000B1h -l 32 "$file" \
+					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+		tag_album=$("$xxd_bin" -ps -s 0x0004Eh -l 32 "$file" \
+					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
+
+		spc_duration=$(xxd -ps -s 0x000A9h -l 3 "$file" \
+						| xxd -r -p | tr -d '\0')
+		spc_fading=$(xxd -ps -s 0x000ACh -l 5 "$file" \
 					| xxd -r -p | tr -d '\0')
-	spc_fading=$(xxd -ps -s 0x000ACh -l 5 "$file" \
-				| xxd -r -p | tr -d '\0')
-	# Correction if empty, or not an integer
-	if [[ -z "$spc_duration" ]] || ! [[ "$spc_duration" =~ ^[0-9]*$ ]]; then
-		spc_duration="0"
+		# Correction if empty, or not an integer
+		if [[ -z "$spc_duration" ]] || ! [[ "$spc_duration" =~ ^[0-9]*$ ]]; then
+			spc_duration="0"
+		fi
+		if [[ -z "$spc_fading" ]] || ! [[ "$spc_fading" =~ ^[0-9]*$ ]]; then
+			spc_fading="0"
+		fi
+		spc_fading=$((spc_fading/1000))
+		tag_total_duration=$((spc_duration+spc_fading))
+
 	fi
-	if [[ -z "$spc_fading" ]] || ! [[ "$spc_fading" =~ ^[0-9]*$ ]]; then
-		spc_fading="0"
-	fi
-	spc_fading=$((spc_fading/1000))
-	tag_total_duration=$((spc_duration+spc_fading))
 
 	tag_default "$file"
 
-elif [[ -n "$listenbrainz_scrobb" ]] \
-  || [[ -n "$publish_tags" ]]; then
-	tag_default "$file"
 fi
 }
 tag_vgm() {
 local file
 file="$1"
 
-if [[ -n "$vgm_tag_bin" && -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$vgm_tag_bin" && -n "$publish_tags" ]]; then
+if [[ -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$publish_tags" ]]; then
 
-	"$vgm_tag_bin" -ShowTag8 "$file" > "$glouglou_cache_tags"
+	if [[ -n "$vgm_tag_bin" ]]; then
+		"$vgm_tag_bin" -ShowTag8 "$file" > "$glouglou_cache_tags"
 
-	tag_title=$(sed -n 's/Track Title:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
-	tag_artist=$(sed -n 's/Composer:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
-	tag_album=$(sed -n 's/Game Name:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+		tag_title=$(sed -n 's/Track Title:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
+					| awk '{$1=$1}1')
+		tag_artist=$(sed -n 's/Composer:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
+					| awk '{$1=$1}1')
+		tag_album=$(sed -n 's/Game Name:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
+					| awk '{$1=$1}1')
+	fi
+
 	tag_default "$file"
 
-elif [[ -n "$listenbrainz_scrobb" ]] \
-  || [[ -n "$publish_tags" ]]; then
-	tag_default "$file"
 fi
 }
 tag_vgmstream() {
