@@ -262,6 +262,13 @@ if [[ -n "$system_bin_location" ]]; then
 	curl_bin="$system_bin_location"
 fi
 
+# info68
+bin_name="info68"
+system_bin_location=$(command -v $bin_name)
+if [[ -n "$system_bin_location" ]]; then
+	info68_bin="$system_bin_location"
+fi
+
 # vgm_tag
 bin_name="vgm_tag"
 system_bin_location=$(command -v $bin_name)
@@ -269,11 +276,11 @@ if [[ -n "$system_bin_location" ]]; then
 	vgm_tag_bin="$system_bin_location"
 fi
 
-# info68
-bin_name="info68"
+# vgmstream-cli
+bin_name="vgmstream-cli"
 system_bin_location=$(command -v $bin_name)
 if [[ -n "$system_bin_location" ]]; then
-	info68_bin="$system_bin_location"
+	vgmstream_cli_bin="$system_bin_location"
 fi
 
 # xxd
@@ -547,7 +554,7 @@ local file
 file="$1"
 
 if [[ -n "$info68_bin" && -n "$listenbrainz_scrobb" && -n "$listenbrainz_token" ]] \
-|| [[ -n "$xxdinfo68_bin_bin" && -n "$publish_tags" ]]; then
+|| [[ -n "$info68_bin" && -n "$publish_tags" ]]; then
 
 	"$info68_bin" -A "$file" > "$glouglou_cache_tags"
 
@@ -646,13 +653,36 @@ elif [[ -n "$listenbrainz_scrobb" ]] \
 	tag_default "$file"
 fi
 }
+tag_vgmstream() {
+local file
+local sample_duration
+local samplerate
+file="$1"
+
+if [[ -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$publish_tags" ]]; then
+
+	if [[ -n "$vgmstream_cli_bin" ]]; then
+		"$vgmstream_cli_bin" -m "$file" > "$glouglou_cache_tags"
+
+		# Duration
+		sample_duration=$(< "$glouglou_cache_tags" grep "play duration:" \
+							| awk '{print $3}')
+		samplerate=$(< "$glouglou_cache_tags" grep "sample rate:" \
+							| awk '{print $3}')
+		tag_total_duration=$(echo "scale=4;$sample_duration/$samplerate" | bc | awk '{print int($1+0.5)}')
+	fi
+
+	tag_default "$file"
+
+fi
+}
 tag_xsf() {
 local file
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]]; then
-
 	strings -e S "$file" | sed -n '/TAG/,$p' > "$glouglou_cache_tags"
 
 	tag_title=$(< "$glouglou_cache_tags" grep -i -a title= | awk -F'=' '$0=$NF')
@@ -819,6 +849,7 @@ if (( "${#lst_vgm[@]}" )); then
 					tag_mpv "${lst_vgm[i]}"
 					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
+						--no-cache \
 						--volume=100 \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 					listenbrainz_submit "MPV"
@@ -870,6 +901,7 @@ if (( "${#lst_vgm[@]}" )); then
 					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--volume=100 \
+						--no-cache \
 						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
 					listenbrainz_submit "MPV"
@@ -909,6 +941,7 @@ if (( "${#lst_vgm[@]}" )); then
 					tag_default "${lst_vgm[i]}"
 					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
+						--no-cache \
 						--volume=100 \
 						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
@@ -922,7 +955,7 @@ if (( "${#lst_vgm[@]}" )); then
 				listenbrainz_submit "UADE"
 
 			elif echo "|${ext_vgmstream}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
-				tag_default "${lst_vgm[i]}"
+				tag_vgmstream "${lst_vgm[i]}"
 				publish_tags "vgmstream" "${lst_vgm[i]}"
 				"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 				listenbrainz_submit "vgmstream"

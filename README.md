@@ -92,6 +92,7 @@ By default the tags are taken with the filename and the directory that contains 
 * `sid`: xxd (present in many official repositories)
 * `spc`: xxd (present in many official repositories)
 * `s98|vgm|vgz`: vgm_tag https://github.com/vgmrips/vgmtools
+* vgmstream files: vgmstream-cli (installed with vgmstream123)
 
 ### Publish tags specifications
 Location: `/tmp/glouglou-tags`
