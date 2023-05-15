@@ -511,16 +511,28 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_brainz_album_id=$(< "$glouglou_cache_tags" grep -E -i -a "MUSICBRAINZ_ALBUMID=|MusicBrainz Album Id=" \
 								| sed 's/^.*=//')
 
-	elif [[ -n "$mpv_bin" ]]; then
+	fi
+	
+	if [[ -n "$mpv_bin" ]]; then
 
-		"$mpv_bin" --terminal --no-video --vo=null --ao=null \
-			--display-tags=Title,Artist,Album \
-			--frames=0 --quiet --no-cache --no-config "$file" \
-			> "$glouglou_cache_tags"
+		if [[ -z "$tag_title" ]] \
+		|| [[ -z "$tag_artist" ]] \
+		|| [[ -z "$tag_album" ]]; then
+			"$mpv_bin" --terminal --no-video --vo=null --ao=null \
+				--display-tags=Title,Artist,Album \
+				--frames=0 --quiet --no-cache --no-config "$file" \
+				> "$glouglou_cache_tags"
+		fi
 
-		tag_title=$(sed -n 's/Title:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
-		tag_artist=$(sed -n 's/Artist:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
-		tag_album=$(sed -n 's/Album:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+		if [[ -z "$tag_title" ]]; then
+			tag_title=$(sed -n 's/Title:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+		fi
+		if [[ -z "$tag_artist" ]]; then
+			tag_artist=$(sed -n 's/Artist:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+		fi
+		if [[ -z "$tag_album" ]]; then
+			tag_album=$(sed -n 's/Album:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+		fi
 
 	fi
 
