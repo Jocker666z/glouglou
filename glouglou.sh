@@ -228,7 +228,7 @@ fi
 # MPV
 if [[ -z "$mpv_bin" ]] \
 && [[ -z "$ffplay_bin" ]]; then
-	unset ext_mpv
+	unset ext_common
 fi
 
 # SNES .spc
@@ -267,6 +267,13 @@ bin_name="info68"
 system_bin_location=$(command -v $bin_name)
 if [[ -n "$system_bin_location" ]]; then
 	info68_bin="$system_bin_location"
+fi
+
+# mutagen-inspect
+bin_name="mutagen-inspect"
+system_bin_location=$(command -v $bin_name)
+if [[ -n "$system_bin_location" ]]; then
+	mutagen_inspect_bin="$system_bin_location"
 fi
 
 # vgm_tag
@@ -405,7 +412,7 @@ if [[ -n "$curl_bin" ]] \
 	local diff_in_s
 	local time_formated
 
-	# Prevent repeat scrobb, limit to 5s
+	# Prevent repeat scrobb, limit to 10s
 	last_submit_time=$(date +%s)
 	submit_diff_in_s=$(( last_submit_time - new_submit_time ))
 
@@ -425,8 +432,8 @@ if [[ -n "$curl_bin" ]] \
 				"track_metadata": {
 					"additional_info": {
 						"listening_from": "'"$player"'",
-						"release_mbid": "",
-						"artist_mbids": [""],
+						"release_mbid": "'"$tag_brainz_album_id"'",
+						"artist_mbids": ["'"$tag_brainz_artist_id"'"],
 						"recording_mbid": "",
 						"tags": []
 						},
@@ -472,22 +479,45 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 fi
 }
-tag_mpv() {
+tag_common() {
 local file
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]]; then
 
-	"$mpv_bin" --terminal --no-video --vo=null --ao=null \
-		--display-tags=Title,Artist,Album \
-		--frames=0 --quiet --no-cache --no-config "$file" \
-		> "$glouglou_cache_tags"
+	# According to https://picard-docs.musicbrainz.org/en/appendices/tag_mapping.html
+	if [[ -n "$mutagen_inspect_bin" ]]; then
 
-	tag_title=$(sed -n 's/Title:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
-	tag_artist=$(sed -n 's/Artist:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
-	tag_album=$(sed -n 's/Album:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+		"$mutagen_inspect_bin" "$file" > "$glouglou_cache_tags"
+
+		tag_title=$(< "$glouglou_cache_tags" grep -E -i -a "title=|TIT2=" \
+					| sed 's/^.*=//')
+		tag_artist=$(< "$glouglou_cache_tags" grep -i -v "album artist=" \
+					| grep -E -i -a "artist=|TPE1=" \
+					| sed 's/^.*=//')
+		tag_album=$(< "$glouglou_cache_tags" grep -E -i -a "album=|TALB=" \
+					| sed 's/^.*=//')
+		tag_brainz_artist_id=$(< "$glouglou_cache_tags" grep -E -i -a "MUSICBRAINZ_ARTISTID=|MusicBrainz Artist Id=" \
+						| sed 's/^.*=//')
+		tag_brainz_album_id=$(< "$glouglou_cache_tags" grep -E -i -a "MUSICBRAINZ_ALBUMID=|MusicBrainz Album Id=" \
+								| sed 's/^.*=//')
+
+	elif [[ -n "$mpv_bin" ]]; then
+
+		"$mpv_bin" --terminal --no-video --vo=null --ao=null \
+			--display-tags=Title,Artist,Album \
+			--frames=0 --quiet --no-cache --no-config "$file" \
+			> "$glouglou_cache_tags"
+
+		tag_title=$(sed -n 's/Title:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+		tag_artist=$(sed -n 's/Artist:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+		tag_album=$(sed -n 's/Album:/&\n/;s/.*\n//p' "$glouglou_cache_tags" | awk '{$1=$1}1')
+
+	fi
+
 	tag_default "$file"
+
 fi
 }
 tag_openmpt() {
@@ -836,6 +866,24 @@ if (( "${#lst_vgm[@]}" )); then
 				force_quit
 				listenbrainz_submit "AdPlay"
 
+			elif echo "|${ext_common}|" | grep -i "|${ext}|" &>/dev/null; then
+				tag_common "${lst_vgm[i]}"
+				if [[ -n "$mpv_bin" ]]; then
+					publish_tags "MPV" "${lst_vgm[i]}"
+					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
+						--no-cache \
+						--volume=100 \
+						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
+					listenbrainz_submit "MPV"
+				elif [[ -n "$ffplay_bin" ]]; then
+					publish_tags "ffplay" "${lst_vgm[i]}"
+					"$ffplay_bin" -hide_banner -showmode 0 \
+						-autoexit -volume 100 "${lst_vgm[i]}" &
+					Player_PID="$!"
+					force_quit
+					listenbrainz_submit "ffplay"
+				fi
+
 			elif echo "|${ext_gba}|" | grep -i "|${ext}|" &>/dev/null; then
 				tag_xsf "${lst_vgm[i]}"
 				if [[ -n "$gsf2wav_bin" ]]; then
@@ -854,25 +902,6 @@ if (( "${#lst_vgm[@]}" )); then
 					publish_tags "ZXTune" "${lst_vgm[i]}"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
-				fi
-
-			elif echo "|${ext_mpv}|" | grep -i "|${ext}|" &>/dev/null; then
-				if [[ -n "$mpv_bin" ]]; then
-					tag_mpv "${lst_vgm[i]}"
-					publish_tags "MPV" "${lst_vgm[i]}"
-					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
-						--no-cache \
-						--volume=100 \
-						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
-					listenbrainz_submit "MPV"
-				elif [[ -n "$ffplay_bin" ]]; then
-					tag_default "${lst_vgm[i]}"
-					publish_tags "ffplay" "${lst_vgm[i]}"
-					"$ffplay_bin" -hide_banner -showmode 0 \
-						-autoexit -volume 100 "${lst_vgm[i]}" &
-					Player_PID="$!"
-					force_quit
-					listenbrainz_submit "ffplay"
 				fi
 
 			elif echo "|${ext_sc68}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$sc68_bin" ]]; then
@@ -1085,14 +1114,12 @@ glouglou_tags="/tmp/glouglou-tags"
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
 ext_gba="gsf|minigsf"
-ext_mpv_various="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
-ext_mpv_tracker="cow|mo3|stp|plm"
-ext_mpv="${ext_mpv_various}|${ext_mpv_tracker}"
+ext_common="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
 ext_sc68="sc68|sndh"
 ext_sidplayfp="sid"
 ext_snes="spc"
 ext_midi="mid"
-ext_tracker="it|mod|mptm|s3m|stm|xm"
+ext_tracker="it|mod|mo3|mptm|s3m|stm|stp|plm|xm"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny"
 ext_vgmstream_0_c="8svx|acb|acm|ads|adp|adpcm|adx|aix|akb|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|brstm|bwav|cfn|ckd|cmp|csb|csmp|cps"
 ext_vgmstream_d_n="dsm|dsp|dvi|fsb|genh|hca|hps|ifs|imc|isd|kma|logg|lopus|lwav|mab|mic|mus|musx|nlsd|nop|npsf"
@@ -1195,7 +1222,7 @@ done
 # $ext_allplay contruction depend -> player_dependency_test
 ext_allplay_raw="${ext_adplay}| \
 				 ${ext_gba}| \
-				 ${ext_mpv}| \
+				 ${ext_common}| \
 				 ${ext_sc68}| \
 				 ${ext_sidplayfp}| \
 				 ${ext_snes}| \
