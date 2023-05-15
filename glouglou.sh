@@ -431,7 +431,8 @@ if [[ -n "$curl_bin" ]] \
 				"listened_at": "'"$unix_date"'",
 				"track_metadata": {
 					"additional_info": {
-						"listening_from": "'"$player"'",
+						"media_player": "'"$player"'",
+						"submission_client": "glouglou",
 						"release_mbid": "'"$tag_brainz_album_id"'",
 						"artist_mbids": ["'"$tag_brainz_artist_id"'"],
 						"recording_mbid": "",
@@ -455,6 +456,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	unset tag_artist
 	unset tag_album
 	unset tag_total_duration
+	unset tag_brainz_artist_id
+	unset tag_brainz_album_id
 fi
 }
 tag_default() {
@@ -498,6 +501,11 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 					| sed 's/^.*=//')
 		tag_album=$(< "$glouglou_cache_tags" grep -E -i -a "album=|TALB=" \
 					| sed 's/^.*=//')
+		tag_total_duration=$(< "$glouglou_cache_tags" grep "seconds" \
+							| head -1 \
+							| awk -F"seconds" '{print $1}' \
+							| awk '{print $NF}' \
+							| awk -F"." '{print $1}')
 		tag_brainz_artist_id=$(< "$glouglou_cache_tags" grep -E -i -a "MUSICBRAINZ_ARTISTID=|MusicBrainz Artist Id=" \
 						| sed 's/^.*=//')
 		tag_brainz_album_id=$(< "$glouglou_cache_tags" grep -E -i -a "MUSICBRAINZ_ALBUMID=|MusicBrainz Album Id=" \
