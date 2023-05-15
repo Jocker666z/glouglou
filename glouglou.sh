@@ -507,7 +507,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 							| awk '{print $NF}' \
 							| awk -F"." '{print $1}')
 		tag_brainz_artist_id=$(< "$glouglou_cache_tags" grep -E -i -a "MUSICBRAINZ_ARTISTID=|MusicBrainz Artist Id=" \
-						| sed 's/^.*=//')
+								| sed 's/^.*=//')
 		tag_brainz_album_id=$(< "$glouglou_cache_tags" grep -E -i -a "MUSICBRAINZ_ALBUMID=|MusicBrainz Album Id=" \
 								| sed 's/^.*=//')
 
@@ -573,7 +573,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		if [[ -n "$minute" ]]; then
 			minute=$((minute*60))
 		fi
-		tag_total_duration=$(echo $((minute+second)))
+		tag_total_duration=$((minute+second))
 	else
 		tag_total_duration=$(echo "$duration_record" | awk '{print int($1+0.5)}')
 	fi
