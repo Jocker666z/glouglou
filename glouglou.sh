@@ -759,6 +759,22 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 					| awk -F '.' 'NF > 1 { printf "%s", $1; exit } 1' \
 					| awk -F":" '{ print ($1 * 60) + $2 }' \
 					| tr -d '[:space:]')
+	if [[ "${file##*.}" = "psf" || "${file##*.}" = "minipsf" ]]; then
+		tag_system="Sony PS1"
+	elif [[ "${file##*.}" = "psf2" || "${file##*.}" = "minipsf2" ]]; then
+		tag_system="Sony PS2"
+	elif [[ "${file##*.}" = "2sf" || "${file##*.}" = "mini2sf" || "${file##*.}" = "minincsf" || "${file##*.}" = "ncsf" ]]; then
+		tag_system="Nintendo DS"
+	elif [[ "${file##*.}" = "ssf" || "${file##*.}" = "minissf" ]]; then
+		tag_system="Sega Saturn"
+	elif [[ "${file##*.}" = "gsf" || "${file##*.}" = "minigsf" ]]; then
+		tag_system="Nintendo GBA"
+	elif [[ "${file##*.}" = "usf" || "${file##*.}" = "miniusf" ]]; then
+		tag_system="Nintendo 64"
+	elif [[ "${file##*.}" = "dsf" ]]; then
+		tag_system="Sega Dreamcast"
+	fi
+
 	tag_default "$file"
 fi
 }
