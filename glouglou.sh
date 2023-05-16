@@ -386,6 +386,7 @@ if [[ -n "$publish_tags" ]] \
 		echo "$player"
 		echo "$cover"
 		echo "$tag_total_duration"
+		echo "$tag_system"
 	} > "$glouglou_tags"
 
 fi
@@ -456,7 +457,9 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	unset tag_artist
 	unset tag_album
 	unset tag_total_duration
+	unset tag_system
 	unset tag_brainz_artist_id
+	unset tag_brainz_album_id
 	unset tag_brainz_album_id
 fi
 }
@@ -512,7 +515,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 								| sed 's/^.*=//')
 
 	fi
-	
+
 	if [[ -n "$mpv_bin" ]]; then
 
 		if [[ -z "$tag_title" ]] \
@@ -709,6 +712,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 					| awk '{$1=$1}1')
 		tag_album=$(sed -n 's/Game Name:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
 					| awk '{$1=$1}1')
+		tag_system=$(sed -n 's/System:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
+			| awk '{$1=$1}1')
 	fi
 
 	tag_default "$file"

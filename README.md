@@ -105,6 +105,7 @@ Each line corresponds to a tag, like this:
 4. PLAYER
 5. COVER URI
 6. TOTAL DURATION (in second)
+7. ORIGINAL SYSTEM (if available)
 
 ## Install help:
 ### adplay
