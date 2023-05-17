@@ -753,6 +753,49 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 fi
 }
+tag_xmp() {
+local file
+local duration_record
+local minute
+local second
+file="$1"
+
+if [[ -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$publish_tags" ]]; then
+
+	"$xmp_bin" --load-only "$file" \
+		&> "$glouglou_cache_tags"
+
+	tag_title=$(< "$glouglou_cache_tags" grep "Module name" \
+				| awk -F': ' '{print $NF}' | awk '{$1=$1};1')
+	#tag_artist=$(< "$glouglou_cache_tags" grep "Artist." \
+				#| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
+	# Special trick, many mod not have artist
+	if [[ -n "$tag_title" ]] && [[ -z "$tag_artist" ]]; then
+		tag_artist=$(basename "${file%.*}")
+	fi
+	tag_system=$(< "$glouglou_cache_tags" grep "Module type" \
+				| awk -F': ' '{print $NF}' | awk '{$1=$1};1')
+
+	# Duration
+	#duration_record=$(< "$glouglou_cache_tags" grep "Duration." \
+						#| awk '{print $2}')
+	#if [[ "$duration_record" == *":"* ]]; then
+		#minute=$(echo "$duration_record" | awk -F ":" '{print $1}' \
+				#| sed 's/^0*//' )
+		#second=$(echo "$duration_record" | awk -F ":" '{print $2}' \
+				#| awk '{print int($1+0.5)}' | sed 's/^0*//')
+		#if [[ -n "$minute" ]]; then
+			#minute=$((minute*60))
+		#fi
+		#tag_total_duration=$((minute+second))
+	#else
+		#tag_total_duration=$(echo "$duration_record" | awk '{print int($1+0.5)}')
+	#fi
+
+	tag_default "$file"
+fi
+}
 tag_xsf() {
 local file
 file="$1"
@@ -1019,7 +1062,7 @@ if (( "${#lst_vgm[@]}" )); then
 						"${lst_vgm[i]}"
 					listenbrainz_submit "openmpt123"
 				elif [[ -n "$xmp_bin" ]]; then
-					tag_default "${lst_vgm[i]}"
+					tag_xmp "${lst_vgm[i]}"
 					publish_tags "XMP" "${lst_vgm[i]}"
 					"$xmp_bin" "${lst_vgm[i]}"
 					listenbrainz_submit "XMP"
@@ -1058,7 +1101,7 @@ if (( "${#lst_vgm[@]}" )); then
 				listenbrainz_submit "VGMPlay"
 
 			elif echo "|${ext_xmp}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
-				tag_default "${lst_vgm[i]}"
+				tag_xmp "${lst_vgm[i]}"
 				publish_tags "XMP" "${lst_vgm[i]}"
 				"$xmp_bin" "${lst_vgm[i]}"
 				listenbrainz_submit "XMP"
