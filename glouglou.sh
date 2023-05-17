@@ -768,12 +768,6 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 	tag_title=$(< "$glouglou_cache_tags" grep "Module name" \
 				| awk -F': ' '{print $NF}' | awk '{$1=$1};1')
-	#tag_artist=$(< "$glouglou_cache_tags" grep "Artist." \
-				#| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
-	# Special trick, many mod not have artist
-	if [[ -n "$tag_title" ]] && [[ -z "$tag_artist" ]]; then
-		tag_artist=$(basename "${file%.*}")
-	fi
 	tag_system=$(< "$glouglou_cache_tags" grep "Module type" \
 				| awk -F': ' '{print $NF}' | awk '{$1=$1};1')
 
