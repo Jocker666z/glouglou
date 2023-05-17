@@ -564,6 +564,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	if [[ -n "$tag_title" ]] && [[ -z "$tag_artist" ]]; then
 		tag_artist=$(basename "${file%.*}")
 	fi
+	tag_system=$(< "$glouglou_cache_tags" grep "Tracker....:" \
+				| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
 
 	# Duration
 	duration_record=$(< "$glouglou_cache_tags" grep "Duration." \
