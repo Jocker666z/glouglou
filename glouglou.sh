@@ -692,6 +692,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 	fi
 
+	tag_system="Super Nintendo / Super Famicom"
 	tag_default "$file"
 
 fi
@@ -704,6 +705,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]]; then
 
 	if [[ -n "$vgm_tag_bin" ]]; then
+
 		"$vgm_tag_bin" -ShowTag8 "$file" > "$glouglou_cache_tags"
 
 		tag_title=$(sed -n 's/Track Title:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
@@ -713,7 +715,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_album=$(sed -n 's/Game Name:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
 					| awk '{$1=$1}1')
 		tag_system=$(sed -n 's/System:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
-			| awk '{$1=$1}1')
+					| awk '{$1=$1}1')
+
 	fi
 
 	tag_default "$file"
@@ -730,14 +733,18 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]]; then
 
 	if [[ -n "$vgmstream_cli_bin" ]]; then
+
 		"$vgmstream_cli_bin" -m "$file" > "$glouglou_cache_tags"
 
+		tag_system=$(sed -n 's/metadata from:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
+					| awk '{$1=$1}1')
 		# Duration
 		sample_duration=$(< "$glouglou_cache_tags" grep "play duration:" \
 							| awk '{print $3}')
 		samplerate=$(< "$glouglou_cache_tags" grep "sample rate:" \
 							| awk '{print $3}')
 		tag_total_duration=$(echo "scale=4;$sample_duration/$samplerate" | bc | awk '{print int($1+0.5)}')
+
 	fi
 
 	tag_default "$file"
