@@ -1131,15 +1131,10 @@ fi
 }
 # Kill stat
 kill_stat () {
-local diff_in_s
 local time_formated
 
-# End time counter of process
-stop_process_time=$(date +%s)
-
 # Duration fomarted
-diff_in_s=$(( stop_process_time - start_process_time ))
-time_formated="$((diff_in_s/3600))h$((diff_in_s%3600/60))m$((diff_in_s%60))s"
+time_formated="$((SECONDS/3600))h$((SECONDS%3600/60))m$((SECONDS%60))s"
 
 # Print stats
 echo
@@ -1324,8 +1319,6 @@ ext_allplay_raw="${ext_adplay}| \
 ext_allplay=$(echo ${ext_allplay_raw//[[:blank:]]/} | tr -s '|')
 test_argument
 search_vgm
-# Start time counter of process
-start_process_time=$(date +%s)
 # Play
 main_loop
 
