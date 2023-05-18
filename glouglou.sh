@@ -497,7 +497,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 		"$mutagen_inspect_bin" "$file" > "$glouglou_cache_tags"
 
-		tag_title=$(< "$glouglou_cache_tags" grep -E -i -a "title=|TIT2=" \
+		tag_title=$(< "$glouglou_cache_tags" grep -E -i -v "DiscSubtitle=" \
+					| grep -E -i -a "title=|TIT2=" \
 					| sed 's/^.*=//')
 		tag_artist=$(< "$glouglou_cache_tags" grep -E -i -v "albumartist=|album artist=" \
 					| grep -E -i -a "artist=|TPE1=" \
