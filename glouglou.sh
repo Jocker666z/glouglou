@@ -772,20 +772,19 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 				| awk -F': ' '{print $NF}' | awk '{$1=$1};1')
 
 	# Duration
-	#duration_record=$(< "$glouglou_cache_tags" grep "Duration." \
-						#| awk '{print $2}')
-	#if [[ "$duration_record" == *":"* ]]; then
-		#minute=$(echo "$duration_record" | awk -F ":" '{print $1}' \
-				#| sed 's/^0*//' )
-		#second=$(echo "$duration_record" | awk -F ":" '{print $2}' \
-				#| awk '{print int($1+0.5)}' | sed 's/^0*//')
-		#if [[ -n "$minute" ]]; then
-			#minute=$((minute*60))
-		#fi
-		#tag_total_duration=$((minute+second))
-	#else
-		#tag_total_duration=$(echo "$duration_record" | awk '{print int($1+0.5)}')
-	#fi
+	duration_record=$(< "$glouglou_cache_tags" grep "Duration" \
+						| awk -F ":" '{print $2}')
+	duration_record="${duration_record//s/}"
+	if [[ "$duration_record" == *"min"* ]]; then
+		minute=$(echo "$duration_record" | awk -F "min" '{print $1}' \
+				| sed 's/^0*//' )
+		second=$(echo "$duration_record" | awk -F "min" '{print $2}' \
+				| awk '{print int($1+0.5)}' | sed 's/^0*//')
+		if [[ -n "$minute" ]]; then
+			minute=$((minute*60))
+		fi
+		tag_total_duration=$((minute+second))
+	fi
 
 	tag_default "$file"
 fi
