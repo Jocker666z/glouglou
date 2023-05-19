@@ -483,6 +483,44 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_artist="$tag_album"
 	fi
 
+	# tag_sytem by files ext.
+	shopt -s nocasematch
+	# uade
+	if [[ "${file##*.}" = "bp" ]]; then
+		tag_system="SoundMon 2.0"
+	elif [[ "${file##*.}" = "cm" ]] || [[ "${file##*.}" = "rk" ]]; then
+		tag_system="CustomMade"
+	elif [[ "${file##*.}" = "dw" ]]; then
+		tag_system="David Whittaker"
+	elif [[ "${file##*.}" = "np3" ]]; then
+		tag_system="Noise Packer 3.0"
+	elif [[ "${file##*.}" = "okt" ]]; then
+		tag_system="Oktalyzer"
+	elif [[ "${file##*.}" = "s7g" ]]; then
+		tag_system="Jochen Hippel 7V"
+	elif [[ "${file##*.}" = "soc" ]]; then
+		tag_system="Hippel-COSO"
+	elif [[ "${file##*.}" = "tiny" ]]; then
+		tag_system="Sonix Music Driver"
+
+	# xfs
+	elif [[ "${file##*.}" = "psf" || "${file##*.}" = "minipsf" ]]; then
+		tag_system="Sony PS1"
+	elif [[ "${file##*.}" = "psf2" || "${file##*.}" = "minipsf2" ]]; then
+		tag_system="Sony PS2"
+	elif [[ "${file##*.}" = "2sf" || "${file##*.}" = "mini2sf" || "${file##*.}" = "minincsf" || "${file##*.}" = "ncsf" ]]; then
+		tag_system="Nintendo DS"
+	elif [[ "${file##*.}" = "ssf" || "${file##*.}" = "minissf" ]]; then
+		tag_system="Sega Saturn"
+	elif [[ "${file##*.}" = "gsf" || "${file##*.}" = "minigsf" ]]; then
+		tag_system="Nintendo GBA"
+	elif [[ "${file##*.}" = "usf" || "${file##*.}" = "miniusf" ]]; then
+		tag_system="Nintendo 64"
+	elif [[ "${file##*.}" = "dsf" ]]; then
+		tag_system="Sega Dreamcast"
+	fi
+	shopt -u nocasematch
+
 fi
 }
 tag_common() {
@@ -739,7 +777,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 		"$vgmstream_cli_bin" -m "$file" > "$glouglou_cache_tags"
 
-		tag_system=$(sed -n 's/metadata from:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
+		tag_system=$(sed -n 's/encoding:/&\n/;s/.*\n//p' "$glouglou_cache_tags" \
 					| awk '{$1=$1}1')
 		# Duration
 		sample_duration=$(< "$glouglou_cache_tags" grep "play duration:" \
@@ -805,21 +843,6 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 					| awk -F '.' 'NF > 1 { printf "%s", $1; exit } 1' \
 					| awk -F":" '{ print ($1 * 60) + $2 }' \
 					| tr -d '[:space:]')
-	if [[ "${file##*.}" = "psf" || "${file##*.}" = "minipsf" ]]; then
-		tag_system="Sony PS1"
-	elif [[ "${file##*.}" = "psf2" || "${file##*.}" = "minipsf2" ]]; then
-		tag_system="Sony PS2"
-	elif [[ "${file##*.}" = "2sf" || "${file##*.}" = "mini2sf" || "${file##*.}" = "minincsf" || "${file##*.}" = "ncsf" ]]; then
-		tag_system="Nintendo DS"
-	elif [[ "${file##*.}" = "ssf" || "${file##*.}" = "minissf" ]]; then
-		tag_system="Sega Saturn"
-	elif [[ "${file##*.}" = "gsf" || "${file##*.}" = "minigsf" ]]; then
-		tag_system="Nintendo GBA"
-	elif [[ "${file##*.}" = "usf" || "${file##*.}" = "miniusf" ]]; then
-		tag_system="Nintendo 64"
-	elif [[ "${file##*.}" = "dsf" ]]; then
-		tag_system="Sega Dreamcast"
-	fi
 
 	tag_default "$file"
 fi
@@ -1202,7 +1225,7 @@ ext_sidplayfp="sid"
 ext_snes="spc"
 ext_midi="mid"
 ext_tracker="it|mod|mo3|mptm|s3m|stm|stp|plm|xm"
-ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|sfx|smus|soc|p4x|tiny"
+ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|okt|rk|s7g|sfx|smus|soc|p4x|tiny"
 ext_vgmstream_0_c="8svx|acb|acm|ads|adp|adpcm|adx|aix|akb|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|brstm|bwav|cfn|ckd|cmp|csb|csmp|cps"
 ext_vgmstream_d_n="dsm|dsp|dvi|fsb|genh|hca|hps|ifs|imc|isd|kma|logg|lopus|lwav|mab|mic|mus|musx|nlsd|nop|npsf"
 ext_vgmstream_o_z="ras|rws|sad|scd|ss2|strm|svag|p04|p16|thp|txtp|vag|vgmstream|wem|xa|xnb|xwv"
