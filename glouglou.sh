@@ -541,7 +541,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_artist=$(< "$glouglou_cache_tags" grep -E -i -v "albumartist=|album artist=" \
 					| grep -E -i -a "artist=|TPE1=" \
 					| sed 's/^.*=//')
-		tag_album=$(< "$glouglou_cache_tags" grep -E -i -a "album=|TALB=" \
+		tag_album=$(< "$glouglou_cache_tags" grep -E -i -v "MUSICBRAINZ_NONAlbum=" \
+					|grep -E -i -a "album=|TALB=" \
 					| sed 's/^.*=//')
 		tag_total_duration=$(< "$glouglou_cache_tags" grep "seconds" \
 							| head -1 \
