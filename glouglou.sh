@@ -535,23 +535,25 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 		"$mutagen_inspect_bin" "$file" > "$glouglou_cache_tags"
 
-		tag_title=$(< "$glouglou_cache_tags" grep -E -i -v "DiscSubtitle=" \
-					| grep -E -i -a "title=|TIT2=" \
+		tag_title=$(< "$glouglou_cache_tags" \
+					| grep -E -i -a "^title=|^TIT2=" \
 					| sed 's/^.*=//')
-		tag_artist=$(< "$glouglou_cache_tags" grep -E -i -v "albumartist=|album artist=" \
-					| grep -E -i -a "artist=|TPE1=" \
+		tag_artist=$(< "$glouglou_cache_tags" \
+					| grep -E -i -a "^artist=|^TPE1=" \
 					| sed 's/^.*=//')
-		tag_album=$(< "$glouglou_cache_tags" grep -E -i -v "MUSICBRAINZ_NONAlbum=" \
-					|grep -E -i -a "album=|TALB=" \
+		tag_album=$(< "$glouglou_cache_tags" \
+					| grep -E -i -a "^album=|^TALB=" \
 					| sed 's/^.*=//')
 		tag_total_duration=$(< "$glouglou_cache_tags" grep "seconds" \
 							| head -1 \
 							| awk -F"seconds" '{print $1}' \
 							| awk '{print $NF}' \
 							| awk -F"." '{print $1}')
-		tag_brainz_artist_id=$(< "$glouglou_cache_tags" grep -E -i -a "MUSICBRAINZ_ARTISTID=|MusicBrainz Artist Id=" \
+		tag_brainz_artist_id=$(< "$glouglou_cache_tags" \
+								| grep -E -i -a "^MUSICBRAINZ_ARTISTID=|^TXXX:MusicBrainz Artist Id=" \
 								| sed 's/^.*=//')
-		tag_brainz_album_id=$(< "$glouglou_cache_tags" grep -E -i -a "MUSICBRAINZ_ALBUMID=|MusicBrainz Album Id=" \
+		tag_brainz_album_id=$(< "$glouglou_cache_tags" \
+								| grep -E -i -a "^MUSICBRAINZ_ALBUMID=|^TXXX:MusicBrainz Artist Id=" \
 								| sed 's/^.*=//')
 
 	fi
