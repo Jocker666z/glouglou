@@ -485,8 +485,13 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 	# tag_sytem by files ext.
 	shopt -s nocasematch
+
+	# Tracker
+	if [[ "${file##*.}" = "v2m" ]]; then
+		tag_system="Farbrausch V2M"
+
 	# uade
-	if [[ "${file##*.}" = "bp" ]]; then
+	elif [[ "${file##*.}" = "bp" ]]; then
 		tag_system="SoundMon 2.0"
 	elif [[ "${file##*.}" = "cm" ]] || [[ "${file##*.}" = "rk" ]]; then
 		tag_system="CustomMade"
@@ -1202,6 +1207,8 @@ player_dependency=(
 cover_name=(
 	'cover.jpg'
 	'cover.png'
+	'folder.jpg'
+	'folder.png'
 	'front.jpg'
 	'front.png'
 	'thumb.jpg'
