@@ -67,7 +67,7 @@ The list of players is in the order that glouglou selects for the file. If one i
 * `aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|okt|rk|s7g|sfx|smus|soc|p4x|tiny`
 	* uade
 
-* `8svx|acb|acm|ads|adp|adpcm|adx|aix|akb|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|brstm|bwav|cfn|ckd|csb|cmp|csmp|cps|dsm|dsp|dvi|fsb|genh|hca|hps|ifs|imc|isd|kma|logg|lopus|lwav|mab|mic|mus|musx|nlsd|nop|npsf|ras|rws|sad|scd|ss2|strm|svag|p04|p16|thp|txtp|vag|vgmstream|wem|xa|xnb|xwv`
+* `8svx|acb|acm|ads|adp|adpcm|adx|aix|akb|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|brstm|bwav|cfn|ckd|csb|cmp|csmp|cps|dsm|dsp|dvi|fsb|genh|hca|hps|ifs|imc|isd|kma|logg|lopus|lstm|lwav|mab|mic|mus|musx|nlsd|nop|npsf|ras|rws|sad|scd|ss2|strm|svag|p04|p16|thp|txtp|vag|vgmstream|wem|xa|xnb|xwv`
 	* vgmstream
 
 * `s98|vgm|vgz`
