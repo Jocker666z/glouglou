@@ -549,7 +549,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_album=$(< "$glouglou_cache_tags" \
 					| grep -E -i -a "^album=|^TALB=" \
 					| sed 's/^.*=//')
-		tag_total_duration=$(< "$glouglou_cache_tags" grep "seconds" \
+		tag_total_duration=$(< "$glouglou_cache_tags" \
+							| grep "seconds" \
 							| head -1 \
 							| awk -F"seconds" '{print $1}' \
 							| awk '{print $NF}' \
@@ -989,7 +990,6 @@ if (( "${#lst_vgm[@]}" )); then
 				if [[ -n "$mpv_bin" ]]; then
 					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
-						--no-cache \
 						--volume=100 \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 					listenbrainz_submit "MPV"
@@ -1060,7 +1060,6 @@ if (( "${#lst_vgm[@]}" )); then
 					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--volume=100 \
-						--no-cache \
 						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
 					listenbrainz_submit "MPV"
@@ -1100,7 +1099,6 @@ if (( "${#lst_vgm[@]}" )); then
 					tag_default "${lst_vgm[i]}"
 					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
-						--no-cache \
 						--volume=100 \
 						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
