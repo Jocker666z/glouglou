@@ -50,8 +50,8 @@ The list of players is in the order that glouglou selects for the file. If one i
 	* zxtune
 
 * `spc`
-	* zxtune
 	* spc2wav
+	* zxtune
 	* mpv
 
 * `mid`

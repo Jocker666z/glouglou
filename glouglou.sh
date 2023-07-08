@@ -990,6 +990,7 @@ if (( "${#lst_vgm[@]}" )); then
 				if [[ -n "$mpv_bin" ]]; then
 					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
+						--rebase-start-time=no \
 						--volume=100 \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 					listenbrainz_submit "MPV"
@@ -1045,20 +1046,21 @@ if (( "${#lst_vgm[@]}" )); then
 
 			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
 				tag_spc "${lst_vgm[i]}"
-				if [[ -n "$zxtune123_bin" ]]; then
-					publish_tags "ZXTune" "${lst_vgm[i]}"
-					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
-					listenbrainz_submit "ZXTune"
-				elif [[ -n "$spc2wav_bin" ]]; then
+				if [[ -n "$spc2wav_bin" ]]; then
 					publish_tags "spc2wav" "${lst_vgm[i]}"
 					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout \
 						| "$aplay_bin" -V stereo --quiet &
 					Player_PID="$!"
 					force_quit
 					listenbrainz_submit "spc2wav"
+				elif [[ -n "$zxtune123_bin" ]]; then
+					publish_tags "ZXTune" "${lst_vgm[i]}"
+					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
+					listenbrainz_submit "ZXTune"
 				elif [[ -n "$mpv_bin" ]]; then
 					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
+						--rebase-start-time=no \
 						--volume=100 \
 						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
@@ -1099,6 +1101,7 @@ if (( "${#lst_vgm[@]}" )); then
 					tag_default "${lst_vgm[i]}"
 					publish_tags "MPV" "${lst_vgm[i]}"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
+						--rebase-start-time=no \
 						--volume=100 \
 						--term-osd-bar=yes \
 						--display-tags=Artists,Composer,Album,Track,Title,Date,Year,Artist,Genre
