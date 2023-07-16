@@ -534,6 +534,7 @@ tag_common() {
 local file
 local file_type
 local file_kbs
+local file_size
 local file_hz
 file="$1"
 
@@ -584,20 +585,29 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		if [[ $file_kbs =~ ^[0-9]+$ ]]; then
 			file_kbs=$(bc <<< "scale=0; $file_kbs/1000")
 			file_kbs="$file_kbs kb/s"
+		elif [[ $tag_total_duration =~ ^[0-9]+$ ]]; then
+			file_size=$(wc -c "$file" | awk '{print $1;}')
+			file_size=$(bc <<< "scale=0; $file_size / 1024")
+			file_kbs=$(( 8 * $file_size / $tag_total_duration))
+			file_kbs="$file_kbs kb/s"
 		else
 			unset file_kbs
 		fi
 		# tag_system kHz
-		file_hz=$(< "$glouglou_cache_tags" \
-					grep "Hz" \
-					| head -1 \
-					| awk -F"Hz" '{print $1}' \
-					| awk '{print $NF}')
-		if [[ $file_hz =~ ^[0-9]+$ ]]; then
-			file_hz=$(bc <<< "scale=1; $file_hz/1000")
-			file_hz="$file_hz kHz"
+		if [[ "$file_type" = "OPUS" ]]; then
+			file_hz="48 kHz"
 		else
-			unset file_hz
+			file_hz=$(< "$glouglou_cache_tags" \
+						grep "Hz" \
+						| head -1 \
+						| awk -F"Hz" '{print $1}' \
+						| awk '{print $NF}')
+			if [[ $file_hz =~ ^[0-9]+$ ]]; then
+				file_hz=$(bc <<< "scale=1; $file_hz/1000")
+				file_hz="$file_hz kHz"
+			else
+				unset file_hz
+			fi
 		fi
 		# tag_system
 		if [[ -z "$file_kbs" ]] \
