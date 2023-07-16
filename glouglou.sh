@@ -486,21 +486,19 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	# tag_sytem by files ext.
 	shopt -s nocasematch
 
-	# Tracker
-	if [[ "${file##*.}" = "v2m" ]]; then
-		tag_system="Farbrausch V2M"
-	elif [[ "${file##*.}" = "rmt" ]]; then
-		tag_system="Raster Music Tracker"
-
 	# sc68
-	elif [[ "${file##*.}" = "sc68" ]]; then
+	if [[ "${file##*.}" = "sc68" ]]; then
 		tag_system="SC 68000"
+
+	# SAP
+	elif [[ "${file##*.}" = "sap" ]]; then
+		tag_system="Atari 8-bit"
 
 	# SID
 	elif [[ "${file##*.}" = "sid" ]]; then
 		tag_system="Comomdore 64/128"
 
-	# uade
+	# Tracker (uade)
 	elif [[ "${file##*.}" = "bp" ]]; then
 		tag_system="SoundMon 2.0"
 	elif [[ "${file##*.}" = "cm" ]] || [[ "${file##*.}" = "rk" ]]; then
@@ -518,7 +516,13 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	elif [[ "${file##*.}" = "tiny" ]]; then
 		tag_system="Sonix Music Driver"
 
-	# xfs
+	# Tracker (zxtune)
+	elif [[ "${file##*.}" = "v2m" ]]; then
+		tag_system="Farbrausch V2M"
+	elif [[ "${file##*.}" = "rmt" ]]; then
+		tag_system="Raster Music Tracker"
+
+	# xfs (zxtune)
 	elif [[ "${file##*.}" = "psf" || "${file##*.}" = "minipsf" ]]; then
 		tag_system="Sony PS1"
 	elif [[ "${file##*.}" = "psf2" || "${file##*.}" = "minipsf2" ]]; then
