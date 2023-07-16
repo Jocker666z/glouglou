@@ -88,7 +88,7 @@ The list of players is in the order that glouglou selects for the file. If one i
 ## Tags
 ### Tags read
 By default the tags are taken with the filename and the directory that contains them. For more precision you will have to install the dependencies below.
-* `aac|ape|flac|m4a|mp3|ogg|opus|wv|wma`: mutagen-inspect (present in many official repositories as python3-mutagen)
+* `aac|ape|flac|m4a|mp3|ogg|opus|wv|wma`: mutagen-inspect & bc (present in many official repositories as python3-mutagen)
 * `sc68|sndh`: info68 https://sourceforge.net/projects/sc68/ (intalled with sc68, see below)
 * `sid`: xxd (present in many official repositories)
 * `spc`: xxd (present in many official repositories)

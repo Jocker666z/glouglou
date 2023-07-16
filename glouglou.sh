@@ -492,6 +492,14 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	elif [[ "${file##*.}" = "rmt" ]]; then
 		tag_system="Raster Music Tracker"
 
+	# sc68
+	elif [[ "${file##*.}" = "sc68" ]]; then
+		tag_system="SC 68000"
+
+	# SID
+	elif [[ "${file##*.}" = "sid" ]]; then
+		tag_system="Comomdore 64/128"
+
 	# uade
 	elif [[ "${file##*.}" = "bp" ]]; then
 		tag_system="SoundMon 2.0"
