@@ -489,6 +489,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	# Tracker
 	if [[ "${file##*.}" = "v2m" ]]; then
 		tag_system="Farbrausch V2M"
+	elif [[ "${file##*.}" = "rmt" ]]; then
+		tag_system="Raster Music Tracker"
 
 	# uade
 	elif [[ "${file##*.}" = "bp" ]]; then
@@ -530,6 +532,9 @@ fi
 }
 tag_common() {
 local file
+local file_type
+local file_kbs
+local file_hz
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
@@ -541,26 +546,73 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		"$mutagen_inspect_bin" "$file" > "$glouglou_cache_tags"
 
 		tag_title=$(< "$glouglou_cache_tags" \
-					| grep -E -i -a "^title=|^TIT2=" \
+					grep -E -i -a "^title=|^TIT2=" \
 					| sed 's/^.*=//')
 		tag_artist=$(< "$glouglou_cache_tags" \
-					| grep -E -i -a "^artist=|^TPE1=" \
+					grep -E -i -a "^artist=|^TPE1=" \
 					| sed 's/^.*=//')
 		tag_album=$(< "$glouglou_cache_tags" \
-					| grep -E -i -a "^album=|^TALB=" \
+					grep -E -i -a "^album=|^TALB=" \
 					| sed 's/^.*=//')
 		tag_total_duration=$(< "$glouglou_cache_tags" \
-							| grep "seconds" \
+							grep "seconds" \
 							| head -1 \
 							| awk -F"seconds" '{print $1}' \
 							| awk '{print $NF}' \
 							| awk -F"." '{print $1}')
 		tag_brainz_artist_id=$(< "$glouglou_cache_tags" \
-								| grep -E -i -a "^MUSICBRAINZ_ARTISTID=|^TXXX:MusicBrainz Artist Id=" \
+								grep -E -i -a "^MUSICBRAINZ_ARTISTID=|^TXXX:MusicBrainz Artist Id=" \
 								| sed 's/^.*=//')
 		tag_brainz_album_id=$(< "$glouglou_cache_tags" \
-								| grep -E -i -a "^MUSICBRAINZ_ALBUMID=|^TXXX:MusicBrainz Artist Id=" \
+								grep -E -i -a "^MUSICBRAINZ_ALBUMID=|^TXXX:MusicBrainz Artist Id=" \
 								| sed 's/^.*=//')
+
+		# tag_system type
+		file_type="${file##*.}"
+		file_type="${file_type^^}"
+		if [[ "$file_type" = "FLC" ]]; then
+			file_type="FLAC - "
+		elif [[ "$file_type" = "WV" ]]; then
+			file_type="WAVPACK"
+		fi
+		# tag_system kb/s
+		file_kbs=$(< "$glouglou_cache_tags" \
+					grep "bps" \
+					| head -1 \
+					| awk -F"bps" '{print $1}' \
+					| awk '{print $NF}')
+		if [[ $file_kbs =~ ^[0-9]+$ ]]; then
+			file_kbs=$(bc <<< "scale=0; $file_kbs/1000")
+			file_kbs="$file_kbs kb/s"
+		else
+			unset file_kbs
+		fi
+		# tag_system kHz
+		file_hz=$(< "$glouglou_cache_tags" \
+					grep "Hz" \
+					| head -1 \
+					| awk -F"Hz" '{print $1}' \
+					| awk '{print $NF}')
+		if [[ $file_hz =~ ^[0-9]+$ ]]; then
+			file_hz=$(bc <<< "scale=1; $file_hz/1000")
+			file_hz="$file_hz kHz"
+		else
+			unset file_hz
+		fi
+		# tag_system
+		if [[ -z "$file_kbs" ]] \
+		&& [[ -z "$file_hz" ]]; then
+			tag_system="${file_type}"
+		elif [[ -n "$file_kbs" ]] \
+		  && [[ -z "$file_hz" ]]; then
+			tag_system="${file_type} - ${file_kbs}"
+		elif [[ -z "$file_kbs" ]] \
+		  && [[ -n "$file_hz" ]]; then
+			tag_system="${file_type} - ${file_hz}"
+		elif [[ -n "$file_kbs" ]] \
+		  && [[ -n "$file_hz" ]]; then
+			tag_system="${file_type} - ${file_kbs}, ${file_hz}"
+		fi
 
 	fi
 
