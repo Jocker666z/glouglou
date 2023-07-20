@@ -519,6 +519,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_system="Hippel-COSO"
 	elif [[ "${file##*.}" = "tiny" ]]; then
 		tag_system="Sonix Music Driver"
+	elif [[ "${file##*.}" = "tw" ]]; then
+		tag_system="Sound Images"
 
 	# Tracker (zxtune)
 	elif [[ "${file##*.}" = "v2m" ]]; then
@@ -1339,7 +1341,7 @@ ext_snes="spc"
 ext_midi="mid"
 ext_multi_filter="sfx"
 ext_tracker="it|mod|mo3|mptm|s3m|stm|stp|plm|umx|xm"
-ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|gmc|hot|fc13|fc14|med|mug|np3|okt|pru2|rk|s7g|smus|soc|p4x|tiny"
+ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|gmc|hot|fc13|fc14|med|mug|np3|okt|pru2|rk|s7g|smus|soc|p4x|tiny|tw"
 ext_vgmstream_0_c="8svx|acb|acm|ads|adp|adpcm|adx|aix|akb|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|brstm|bwav|cfn|ckd|cmp|csb|csmp|cps"
 ext_vgmstream_d_n="dsm|dsp|dvi|fsb|gcm|genh|h4m|hca|hps|ifs|imc|isd|ivs|kma|lac3|lbin|logg|lopus|lstm|lwav|mab|mic|msf|mus|musx|nlsd|nop|npsf"
 ext_vgmstream_o_z="ras|rws|sad|scd|sgd|snd|ss2|strm|svag|p04|p16|psb|thp|trk|txtp|ulw|vag|vgmstream|wem|xa|xma|xnb|xwv"
