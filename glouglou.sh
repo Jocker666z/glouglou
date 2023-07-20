@@ -1018,6 +1018,8 @@ fi
 main_loop () {
 local ext
 local Player_PID
+local uade_test_result
+local vgmstream_test_result
 
 # For debug
 #set -x
@@ -1051,7 +1053,29 @@ if (( "${#lst_vgm[@]}" )); then
 			ext="${lst_vgm[i]##*.}"
 
 			# Play
-			if echo "|${ext_adplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
+			if echo "|${ext_multi_filter}|" | grep -i "|${ext}|" &>/dev/null; then
+				# SFX files
+				if [[ "$ext" = "sfx" ]] && [[ -n "$uade123_bin" ]]; then
+					uade_test_result=$("$uade123_bin" -g "${lst_vgm[i]}" 2>/dev/null)
+					if [[ "${#uade_test_result}" -gt "0" ]]; then
+						tag_default "${lst_vgm[i]}"
+						publish_tags "UADE" "${lst_vgm[i]}"
+						"$uade123_bin" "${lst_vgm[i]}"
+						listenbrainz_submit "UADE"
+					fi
+				fi
+				if [[ "$ext" = "sfx" ]] && [[ -n "$vgmstream_cli_bin" ]] \
+				&& [[ "${#uade_test_result}" = "0" ]]; then
+					vgmstream_test_result=$("$vgmstream_cli_bin" -m "${lst_vgm[i]}" 2>/dev/null)
+					if [[ "${#vgmstream_test_result}" -gt "0" ]]; then
+						tag_vgmstream "${lst_vgm[i]}"
+						publish_tags "vgmstream" "${lst_vgm[i]}"
+						"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
+						listenbrainz_submit "vgmstream"
+					fi
+				fi
+
+			elif echo "|${ext_adplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$adplay_bin" ]]; then
 				tag_default "${lst_vgm[i]}"
 				publish_tags "AdPlay" "${lst_vgm[i]}"
 				"$adplay_bin" "${lst_vgm[i]}" -v -r -o &
@@ -1309,8 +1333,9 @@ ext_sc68="sc68|sndh"
 ext_sidplayfp="sid"
 ext_snes="spc"
 ext_midi="mid"
+ext_multi_filter="sfx"
 ext_tracker="it|mod|mo3|mptm|s3m|stm|stp|plm|umx|xm"
-ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|okt|rk|s7g|sfx|smus|soc|p4x|tiny"
+ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|hot|fc13|fc14|med|mug|np3|okt|rk|s7g|smus|soc|p4x|tiny"
 ext_vgmstream_0_c="8svx|acb|acm|ads|adp|adpcm|adx|aix|akb|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|brstm|bwav|cfn|ckd|cmp|csb|csmp|cps"
 ext_vgmstream_d_n="dsm|dsp|dvi|fsb|gcm|genh|h4m|hca|hps|ifs|imc|isd|ivs|kma|lac3|lbin|logg|lopus|lstm|lwav|mab|mic|msf|mus|musx|nlsd|nop|npsf"
 ext_vgmstream_o_z="ras|rws|sad|scd|sgd|snd|ss2|strm|svag|p04|p16|psb|thp|trk|txtp|ulw|vag|vgmstream|wem|xa|xma|xnb|xwv"
@@ -1417,6 +1442,7 @@ ext_allplay_raw="${ext_adplay}| \
 				 ${ext_sidplayfp}| \
 				 ${ext_snes}| \
 				 ${ext_midi}| \
+				 ${ext_multi_filter}| \
 				 ${ext_tracker}| \
 				 ${ext_uade}| \
 				 ${ext_vgmplay}| \
