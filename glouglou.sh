@@ -1068,6 +1068,7 @@ if (( "${#lst_vgm[@]}" )); then
 
 			# For test ext
 			ext="${lst_vgm[i]##*.}"
+			ext="${ext,,}"
 
 			# Play
 			if echo "|${ext_multi_filter}|" | grep -i "|${ext}|" &>/dev/null; then
@@ -1089,6 +1090,24 @@ if (( "${#lst_vgm[@]}" )); then
 						publish_tags "vgmstream" "${lst_vgm[i]}"
 						"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 						listenbrainz_submit "vgmstream"
+					fi
+				fi
+				# SND files
+				if [[ "$ext" = "snd" ]] && [[ -n "$vgmstream_cli_bin" ]]; then
+					vgmstream_test_result=$("$vgmstream_cli_bin" -m "${lst_vgm[i]}" 2>/dev/null)
+					if [[ "${#vgmstream_test_result}" -gt "0" ]]; then
+						tag_vgmstream "${lst_vgm[i]}"
+						publish_tags "vgmstream" "${lst_vgm[i]}"
+						"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
+						listenbrainz_submit "vgmstream"
+					elif [[ -n "$sc68_bin" ]]; then
+						tag_sc68 "${lst_vgm[i]}"
+						publish_tags "sc68" "${lst_vgm[i]}"
+						"$sc68_bin" "${lst_vgm[i]}" --track=all --stdout \
+							| "$aplay_bin" -r 44100 -c 2 -f S16_LE --quiet 2>/dev/null &
+						Player_PID="$!"
+						force_quit
+						listenbrainz_submit "sc68"
 					fi
 				fi
 
@@ -1350,12 +1369,12 @@ ext_sc68="sc68|sndh"
 ext_sidplayfp="sid|prg"
 ext_snes="spc"
 ext_midi="mid"
-ext_multi_filter="sfx"
+ext_multi_filter="sfx|snd"
 ext_tracker="it|mod|mo3|mptm|s3m|stm|stp|plm|umx|xm"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|gmc|hot|fc13|fc14|med|mug|np3|okt|pru2|rk|s7g|smus|soc|p4x|tiny|tw"
 ext_vgmstream_0_c="8svx|acb|acm|ads|adp|adpcm|adx|aix|akb|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|brstm|bwav|cfn|ckd|cmp|csb|csmp|cps"
 ext_vgmstream_d_n="dsm|dsp|dvi|fsb|gcm|genh|h4m|hca|hps|ifs|imc|isd|ivs|kma|lac3|lbin|logg|lopus|lstm|lwav|mab|mic|msf|mus|musx|nlsd|nop|npsf"
-ext_vgmstream_o_z="ras|rws|sad|scd|sgd|snd|ss2|strm|svag|p04|p16|psb|thp|trk|txtp|ulw|vag|vgmstream|wem|xa|xma|xnb|xwv"
+ext_vgmstream_o_z="ras|rws|sad|scd|sgd|ss2|strm|svag|p04|p16|psb|thp|trk|txtp|ulw|vag|vgmstream|wem|xa|xma|xnb|xwv"
 ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"

@@ -42,7 +42,7 @@ The list of players is in the order that glouglou selects for the file. If one i
 	* mpv
 	* ffplay
 	
-* `sc68|sndh`
+* `sc68|snd|sndh`
 	* sc68
 
 * `sid`
