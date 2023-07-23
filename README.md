@@ -49,6 +49,10 @@ The list of players is in the order that glouglou selects for the file. If one i
 	* sidplayfp
 	* zxtune
 
+* `prg`
+	* sidplayfp
+	* zxtune
+	
 * `spc`
 	* spc2wav
 	* zxtune
@@ -148,7 +152,15 @@ https://github.com/libsidplayfp/sidplayfp
 
 sidplayfp is present in many official repositories for most GNU/Linux distributions.
 
-The sidplayfp configuration file must be filled in correctly, otherwise the result will be random (view: https://github.com/libsidplayfp/sidplayfp/wiki/sidplayfp.ini).
+The sidplayfp configuration file must be filled properly, otherwise the result will be random (view: https://github.com/libsidplayfp/sidplayfp/wiki/sidplayfp.ini).
+These config lines must be filled :
+* `Songlength Database =`
+* `Default Play Length =`
+* `Kernal Rom =`
+* `Basic Rom =`
+* `Chargen Rom =`
+
+The songlength DB is downloadable here: https://www.hvsc.c64.org/downloads
 
 ### spc2wav
 https://github.com/jprjr/spc2wav

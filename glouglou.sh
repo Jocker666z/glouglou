@@ -499,7 +499,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_system="Atari 8-bit"
 
 	# SID
-	elif [[ "${file##*.}" = "sid" ]]; then
+	elif [[ "${file##*.}" = "sid" ]] || [[ "${file##*.}" = "prg" ]]; then
 		tag_system="Comomdore 64/128"
 
 	# Tracker (uade)
@@ -770,12 +770,15 @@ fi
 }
 tag_sid() {
 local file
+local ext
+
 file="$1"
+ext="${file##*.}"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]]; then
 
-	if [[ -n "$xxd_bin" ]]; then
+	if [[ -n "$xxd_bin" ]] && [[ "$ext" = "sid" ]]; then
 
 		tag_artist=$("$xxd_bin" -ps -s 0x36 -l 32 "$file" | tr -d '[:space:]' | xxd -r -p | tr -d '\0')
 		if [[ "$tag_artist" = "<?>" ]]; then
@@ -1146,7 +1149,7 @@ if (( "${#lst_vgm[@]}" )); then
 					publish_tags "sidplayfp" "${lst_vgm[i]}"
 					"$sidplayfp_bin" "${lst_vgm[i]}" -v -s --digiboost
 					listenbrainz_submit "sidplayfp"
-				elif [[ -n "$zxtune123_bin" ]]; then
+				elif [[ -n "$zxtune123_bin" ]] && [[ "$ext" = "sid" ]]; then
 					publish_tags "ZXTune" "${lst_vgm[i]}"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
@@ -1340,7 +1343,7 @@ ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|
 ext_gba="gsf|minigsf"
 ext_common="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
 ext_sc68="sc68|sndh"
-ext_sidplayfp="sid"
+ext_sidplayfp="sid|prg"
 ext_snes="spc"
 ext_midi="mid"
 ext_multi_filter="sfx"
