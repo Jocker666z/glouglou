@@ -486,8 +486,12 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	# tag_sytem by files ext.
 	shopt -s nocasematch
 
+	# MIDI
+	if [[ "${file##*.}" = "mid" ]]; then
+		tag_system="MIDI"
+
 	# sc68
-	if [[ "${file##*.}" = "sc68" ]]; then
+	elif [[ "${file##*.}" = "sc68" ]]; then
 		tag_system="SC 68000"
 
 	# SAP
