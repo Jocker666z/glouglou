@@ -408,16 +408,22 @@ if [[ -n "$curl_bin" ]] \
 && [[ -n "$listenbrainz_token" ]] \
 && [[ -n "$tag_title" ]]; then
 
+	local limit_scrobb_duration
 	local unix_date
 	local player
 	local diff_in_s
 
-	# Prevent repeat scrobb, limit to 10s
+	# Prevent repeat scrobb, half total duration or limit to 10s
 	last_submit_time=$(date +%s)
 	submit_diff_in_s=$(( last_submit_time - new_submit_time ))
+	if [[ -n "$tag_total_duration" ]]; then
+		limit_scrobb_duration=$(( tag_total_duration / 2 ))
+	else
+		limit_scrobb_duration="10"
+	fi
 
-	if [[ "$submit_diff_in_s" -gt "10" ]]; then
-	
+	if [[ "$submit_diff_in_s" -gt "$limit_scrobb_duration" ]]; then
+
 		new_submit_time=$(date +%s)
 		player="$1"
 		unix_date=$(date +%s)
