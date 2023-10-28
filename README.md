@@ -216,6 +216,15 @@ make -j"$(nproc)"
 su -c "make install" -m "root"
 ```
 
+### vgm_tag
+Build dependencies: `git build-essential`
+```
+git clone https://github.com/vgmrips/vgmtools && cd vgmtools
+mkdir build && cd build && cmake .. 
+make -j"$(nproc)"
+cp vgm_tag /home/$USER/.local/bin
+```
+
 ### xmp
 https://xmp.sourceforge.net/
 

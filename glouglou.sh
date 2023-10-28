@@ -409,9 +409,9 @@ if [[ -n "$curl_bin" ]] \
 && [[ -n "$tag_title" ]]; then
 
 	local limit_scrobb_duration
+	local submit_diff_in_s
 	local unix_date
 	local player
-	local diff_in_s
 
 	# Prevent repeat scrobb, half total duration or limit to 10s
 	last_submit_time=$(date +%s)
@@ -617,7 +617,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		elif [[ $tag_total_duration =~ ^[0-9]+$ ]]; then
 			file_size=$(wc -c "$file" | awk '{print $1;}')
 			file_size=$(bc <<< "scale=0; $file_size / 1024")
-			file_kbs=$(( 8 * $file_size / $tag_total_duration))
+			file_kbs=$(( 8 * file_size / tag_total_duration))
 			file_kbs="$file_kbs kb/s"
 		else
 			unset file_kbs
