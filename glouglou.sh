@@ -1317,6 +1317,7 @@ echo "You have listened ${vgm_counter}/${#lst_vgm[@]} tracks".
 echo "The duration of your crazy listening was ${time_formated}".
 
 # Proper exit
+listenbrainz_submit "glouglou"
 rm "$glouglou_cache_tags" &>/dev/null
 rm "$glouglou_tags" &>/dev/null
 stty sane
