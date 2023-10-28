@@ -411,7 +411,6 @@ if [[ -n "$curl_bin" ]] \
 	local unix_date
 	local player
 	local diff_in_s
-	local time_formated
 
 	# Prevent repeat scrobb, limit to 10s
 	last_submit_time=$(date +%s)
@@ -1319,7 +1318,7 @@ exit
 }
 
 # Trap
-trap 'kill_stat' INT TERM
+trap 'kill_stat' INT TERM SIGHUP
 
 # Dependencies
 player_dependency=(
