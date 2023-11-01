@@ -269,6 +269,13 @@ if [[ -n "$system_bin_location" ]]; then
 	info68_bin="$system_bin_location"
 fi
 
+# ffmpeg
+bin_name="ffmpeg"
+system_bin_location=$(command -v $bin_name)
+if [[ -n "$system_bin_location" ]]; then
+	ffmpeg_bin="$system_bin_location"
+fi
+
 # mutagen-inspect
 bin_name="mutagen-inspect"
 system_bin_location=$(command -v $bin_name)
@@ -374,6 +381,26 @@ for img in "${cover_name[@]}"; do
 		break
 	fi
 done
+
+# If no cover file, try to extract from file
+if [[ -z "$cover" ]] \
+&& [[ -n "$ffmpeg_bin" ]]; then
+
+	# Reset
+	if [[ -f "$glouglou_cover" ]]; then
+		rm "$glouglou_cover" &>/dev/null
+	fi
+
+	# Try to extract
+	"$ffmpeg_bin" -hide_banner -loglevel quiet -nostats\
+		-y -i "$file" \
+		-an -c:v copy "$glouglou_cover"
+
+	# Set if exist
+	if [[ -f "$glouglou_cover" ]]; then
+		cover="$glouglou_cover"
+	fi
+fi
 
 # Record
 if [[ -n "$publish_tags" ]] \
@@ -1320,6 +1347,7 @@ echo "The duration of your crazy listening was ${time_formated}".
 listenbrainz_submit "glouglou"
 rm "$glouglou_cache_tags" &>/dev/null
 rm "$glouglou_tags" &>/dev/null
+rm "$glouglou_cover" &>/dev/null
 stty sane
 exit
 }
@@ -1368,6 +1396,7 @@ glouglou_config_dir="/home/$USER/.config/glouglou"
 glouglou_config_file="/home/$USER/.config/glouglou/config"
 glouglou_cache_tags="/tmp/glouglou-cache-tags"
 glouglou_tags="/tmp/glouglou-tags"
+glouglou_cover="/tmp/glouglou-cover.png"
 
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
