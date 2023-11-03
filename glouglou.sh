@@ -330,6 +330,16 @@ tput sgr0
 }
 echo_playlist() {
 local play_item
+local playlist_bef_nb
+local playlist_aft_nb_one
+local playlist_aft_nb_two
+local playlist_aft_nb_three
+local lst_vgm_bef
+local lst_vgm_current
+local lst_vgm_aft_one
+local lst_vgm_aft_two
+local lst_vgm_aft_three
+
 play_item="$1"
 
 # Load & reload term size
@@ -339,10 +349,12 @@ term_size
 playlist_bef_nb=$(( play_item - 1 ))
 playlist_aft_nb_one=$(( play_item + 1 ))
 playlist_aft_nb_two=$(( play_item + 2 ))
+playlist_aft_nb_three=$(( play_item + 3 ))
 lst_vgm_bef=$(echo "${lst_vgm[playlist_bef_nb]}" | rev | cut -d'/' -f-2 | rev)
 lst_vgm_current=$(echo "${lst_vgm[play_item]}" | rev | cut -d'/' -f-2 | rev)
 lst_vgm_aft_one=$(echo "${lst_vgm[playlist_aft_nb_one]}" | rev | cut -d'/' -f-2 | rev)
 lst_vgm_aft_two=$(echo "${lst_vgm[playlist_aft_nb_two]}" | rev | cut -d'/' -f-2 | rev)
+lst_vgm_aft_three=$(echo "${lst_vgm[playlist_aft_nb_three]}" | rev | cut -d'/' -f-2 | rev)
 
 # Display
 clear
@@ -355,6 +367,7 @@ echo_truncate "\u25b6 ${lst_vgm_current}"
 tput sgr0
 echo_truncate "  ${lst_vgm_aft_one}"
 echo_truncate "  ${lst_vgm_aft_two}"
+echo_truncate "  ${lst_vgm_aft_three}"
 echo_separator
 }
 echo_error() {
