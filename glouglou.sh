@@ -481,7 +481,9 @@ if [[ -n "$curl_bin" ]] \
 						"submission_client": "glouglou",
 						"release_mbid": "'"$tag_brainz_album_id"'",
 						"artist_mbids": ["'"$tag_brainz_artist_id"'"],
-						"recording_mbid": "",
+						"recording_mbid": "'"$tag_brainz_recording_id"'",
+						"release_group_mbid": "'"$tag_brainz_releasegroupid_id"'",
+						"track_mbid": "'"$tag_brainz_track_id"'",
 						"tags": []
 						},
 					"artist_name": "'"$tag_artist"'",
@@ -630,11 +632,20 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 							| awk -F"seconds" '{print $1}' \
 							| awk '{print $NF}' \
 							| awk -F"." '{print $1}')
+		tag_brainz_album_id=$(< "$glouglou_cache_tags" \
+								grep -E -i -a "^MUSICBRAINZ_ALBUMID=|^TXXX:MusicBrainz Artist Id=" \
+								| sed 's/^.*=//')
 		tag_brainz_artist_id=$(< "$glouglou_cache_tags" \
 								grep -E -i -a "^MUSICBRAINZ_ARTISTID=|^TXXX:MusicBrainz Artist Id=" \
 								| sed 's/^.*=//')
-		tag_brainz_album_id=$(< "$glouglou_cache_tags" \
-								grep -E -i -a "^MUSICBRAINZ_ALBUMID=|^TXXX:MusicBrainz Artist Id=" \
+		tag_brainz_recording_id=$(< "$glouglou_cache_tags" \
+								grep -E -i -a "^MUSICBRAINZ_TRACKID=" \
+								| sed 's/^.*=//')
+		tag_brainz_releasegroupid_id=$(< "$glouglou_cache_tags" \
+								grep -E -i -a "^MUSICBRAINZ_RELEASEGROUPID=|^TXXX:MusicBrainz Release Group Id" \
+								| sed 's/^.*=//')
+		tag_brainz_track_id=$(< "$glouglou_cache_tags" \
+								grep -E -i -a "^MUSICBRAINZ_RELEASETRACKID=|^TXXX:MusicBrainz Release Track Id" \
 								| sed 's/^.*=//')
 
 		# tag_system type
