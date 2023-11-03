@@ -507,7 +507,9 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	unset tag_system
 	unset tag_brainz_artist_id
 	unset tag_brainz_album_id
-	unset tag_brainz_album_id
+	unset tag_brainz_recording_id
+	unset tag_brainz_releasegroupid_id
+	unset tag_brainz_track_id
 fi
 }
 tag_default() {
