@@ -1,15 +1,13 @@
 # glouglou
-Bad bash script for no brain, also play audio/vgm/chiptune.
-
 glouglou just play in shuffle and repeat, all the files it found. Nothing else, finally without options...
 
 ## Use
 Enter :
 * `glouglou`for inplace recursively search files.
-* `glouglou -i /dir -i /dir...` for select one or several directories.
+* `glouglou -c` for playlist in alphabetical order.
 * `glouglou -e "pattern filter"` for exclude files/dir contain pattern.
 * `glouglou -f "pattern filter"` for select only files/dir contain pattern.
-* `glouglou -c` for playlist in alphabetical order.
+* `glouglou -i /dir -i /dir...` for select one or several directories.
 * `glouglou -r` for no repeat playlist.
 * `glouglou -s` for use ListenBrainz scrobber.
 * `glouglou -p` for publish tags in /tmp/glouglou-tags.
