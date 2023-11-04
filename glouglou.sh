@@ -396,7 +396,8 @@ for img in "${cover_name[@]}"; do
 done
 
 # If no cover file, try to extract from file
-if [[ -z "$cover" ]] \
+if echo "|${ext_common}|" | grep -i "|${ext}|" &>/dev/null \
+&& [[ -z "$cover" ]] \
 && [[ -n "$ffmpeg_bin" ]]; then
 
 	# Reset
@@ -505,8 +506,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	unset tag_album
 	unset tag_total_duration
 	unset tag_system
-	unset tag_brainz_artist_id
 	unset tag_brainz_album_id
+	unset tag_brainz_artist_id
 	unset tag_brainz_recording_id
 	unset tag_brainz_releasegroupid_id
 	unset tag_brainz_track_id
@@ -538,6 +539,10 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	# MIDI
 	if [[ "${file##*.}" = "mid" ]]; then
 		tag_system="MIDI"
+
+	# s98
+	elif [[ "${file##*.}" = "s98" ]]; then
+		tag_system="PC-Engine"
 
 	# sc68
 	elif [[ "${file##*.}" = "sc68" ]]; then
@@ -1093,8 +1098,8 @@ fi
 }
 # Play loop
 main_loop () {
-local ext
 local Player_PID
+local ext
 local uade_test_result
 local vgmstream_test_result
 
@@ -1315,7 +1320,11 @@ if (( "${#lst_vgm[@]}" )); then
 				listenbrainz_submit "vgmstream"
 
 			elif echo "|${ext_vgmplay}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmplay_bin" ]]; then
-				tag_vgm "${lst_vgm[i]}"
+				if [[ "$ext" != "s98" ]]; then
+					tag_vgm "${lst_vgm[i]}"
+				else
+					tag_default "${lst_vgm[i]}"
+				fi
 				publish_tags "VGMPlay" "${lst_vgm[i]}"
 				"$vgmplay_bin" "${lst_vgm[i]}"
 				listenbrainz_submit "VGMPlay"
