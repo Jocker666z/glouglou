@@ -20,7 +20,7 @@ Stop it by true proper command: `ctrl+c`.
 
 ## Notes
 * The shortcut "q" allows to go to the next track in almost all cases.
-* It is not necessary to have all the dependencies installed, for example if you don't want to install zxtune123 but vgmplay is installed, glouglou will only read the vgmplay files.
+* It is not necessary to have all the dependencies installed, for example if you don't want to install zxtune123 but vgmplay is installed, glouglou will only play the vgmplay files.
 * glouglou takes less than 6s to launch a playlist of more than 70000 files on LAN disk.
 * Filter & exclude is extended-regexp friendly, example: `glouglou -f "PS1|PS2" -e "Final Fantasy|Alundra"`.
 * Given the great difference between the types of playback, it is recommended to apply a normalization to the audio output (see: https://github.com/Digitalone1/EasyEffects-Presets)
@@ -87,15 +87,6 @@ The list of players is in the order that glouglou selects for the file. If one i
 	* zxtune
 
 ## Tags
-### Tags read
-By default the tags are taken with the filename and the directory that contains them. For more precision you will have to install the dependencies below.
-* `aac|ape|flac|m4a|mp3|ogg|opus|wv|wma`: mutagen-inspect & bc (present in many official repositories as python3-mutagen)
-* `sc68|sndh`: info68 https://sourceforge.net/projects/sc68/ (intalled with sc68, see below)
-* `sid`: xxd (present in many official repositories)
-* `spc`: xxd (present in many official repositories)
-* `s98|vgm|vgz`: vgm_tag https://github.com/vgmrips/vgmtools
-* vgmstream files: vgmstream-cli (installed with vgmstream123)
-
 ### Publish tags specifications
 Location: `/tmp/glouglou-tags`
 
@@ -108,7 +99,16 @@ Each line corresponds to a tag, like this:
 6. TOTAL DURATION (in second)
 7. ORIGINAL SYSTEM OR FILE INFO (if available)
 
-## Install help:
+### Tags read
+By default the tags are taken with the filename and the directory that contains them. For more precision you will have to install the dependencies below.
+* `aac|ape|flac|m4a|mp3|ogg|opus|wv|wma`: mutagen-inspect & bc (present in many official repositories as python3-mutagen)
+* `sc68|sndh`: info68 https://sourceforge.net/projects/sc68/ (intalled with sc68, see below)
+* `sid`: xxd (present in many official repositories)
+* `spc`: xxd (present in many official repositories)
+* `s98|vgm|vgz`: vgm_tag https://github.com/vgmrips/vgmtools
+* vgmstream files: vgmstream-cli (installed with vgmstream123)
+
+## Install help
 ### adplay
 https://adplug.github.io/
 
