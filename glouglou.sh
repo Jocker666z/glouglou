@@ -471,7 +471,7 @@ if [[ -n "$curl_bin" ]] \
 	if [[ -n "$tag_total_duration" ]]; then
 		limit_scrobb_duration=$(( tag_total_duration / 2 ))
 	else
-		limit_scrobb_duration="10"
+		limit_scrobb_duration="1"
 	fi
 
 	if [[ "$submit_diff_in_s" -gt "$limit_scrobb_duration" ]]; then
@@ -479,6 +479,13 @@ if [[ -n "$curl_bin" ]] \
 		new_submit_time=$(date +%s)
 		player="$1"
 		unix_date=$(date +%s)
+
+		# clean tag
+		tag_artist=$(echo "$tag_artist" | sed "s/\"/'/g")
+		tag_title=$(echo "$tag_title" | sed "s/\"/'/g")
+		tag_album=$(echo "$tag_album" | sed "s/\"/'/g")
+		tag_brainz_artist_id=$(echo "$tag_brainz_artist_id" | awk -F/ '{sub(FS,x); $1=$1}1')
+		tag_brainz_artist_id=$(printf '"%s"\n' $tag_brainz_artist_id|paste -sd, -)
 
 		"$curl_bin" --silent --output /dev/null \
 			-X POST -H "Authorization: token $listenbrainz_token" \
@@ -492,7 +499,7 @@ if [[ -n "$curl_bin" ]] \
 						"media_player": "'"$player"'",
 						"submission_client": "glouglou",
 						"release_mbid": "'"$tag_brainz_album_id"'",
-						"artist_mbids": ["'"$tag_brainz_artist_id"'"],
+						"artist_mbids": ['"$tag_brainz_artist_id"'],
 						"recording_mbid": "'"$tag_brainz_recording_id"'",
 						"release_group_mbid": "'"$tag_brainz_releasegroupid_id"'",
 						"track_mbid": "'"$tag_brainz_track_id"'",
@@ -505,6 +512,7 @@ if [[ -n "$curl_bin" ]] \
 			https://api.listenbrainz.org/1/submit-listens
 
 	fi
+
 fi
 }
 # Tag
