@@ -1196,7 +1196,7 @@ if (( "${#lst_vgm[@]}" )); then
 				elif [[ -n "$ffplay_bin" ]]; then
 					publish_tags "ffplay" "${lst_vgm[i]}"
 					"$ffplay_bin" -hide_banner -showmode 0 \
-						-autoexit -volume 100 "${lst_vgm[i]}" &
+						-vn -autoexit -volume 100 "${lst_vgm[i]}" &
 					Player_PID="$!"
 					force_quit
 					listenbrainz_submit "ffplay"
