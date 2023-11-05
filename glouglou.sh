@@ -32,6 +32,17 @@ if [[ -n "$system_bin_location" ]]; then
 	aplay_bin="$system_bin_location"
 fi
 }
+cvlc_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="cvlc"
+system_bin_location=$(command -v $bin_name)
+
+if [[ -n "$system_bin_location" ]]; then
+	cvlc_bin="$system_bin_location"
+fi
+}
 ffplay_bin() {
 local bin_name
 local system_bin_location
@@ -1120,6 +1131,23 @@ force_quit() {
 		fi
 	done
 }
+print_tag() {
+	player="$1"
+
+	echo "$1"
+	if [[ -n "$tag_title" ]]; then
+		echo "Title: $tag_title"
+	fi
+	if [[ -n "$tag_artist" ]]; then
+		echo "Artist: $tag_artist"
+	fi
+	if [[ -n "$tag_album" ]]; then
+		echo "Album: $tag_album"
+	fi
+	if [[ -n "$tag_total_duration" ]]; then
+		echo "Duration: ${tag_total_duration}s"
+	fi
+}
 
 if (( "${#lst_vgm[@]}" )); then
 	while true
@@ -1200,17 +1228,20 @@ if (( "${#lst_vgm[@]}" )); then
 					Player_PID="$!"
 					force_quit
 					listenbrainz_submit "ffplay"
+				elif [[ -n "$cvlc_bin" ]]; then
+					publish_tags "VLC" "${lst_vgm[i]}"
+					print_tag "VLC"
+					"$cvlc_bin" --play-and-exit -q "${lst_vgm[i]}" &>/dev/null &
+					Player_PID="$!"
+					force_quit
+					listenbrainz_submit "VLC"
 				fi
 
 			elif echo "|${ext_gba}|" | grep -i "|${ext}|" &>/dev/null; then
 				tag_xsf "${lst_vgm[i]}"
 				if [[ -n "$gsf2wav_bin" ]]; then
 					publish_tags "gsf2wav" "${lst_vgm[i]}"
-					echo "gsf2wav"
-					echo "Title: $tag_title"
-					echo "Artist: $tag_artist"
-					echo "Album: $tag_album"
-					echo "Duration: ${tag_total_duration}s"
+					print_tag "gsf2wav"
 					"$gsf2wav_bin" "${lst_vgm[i]}" /dev/stdout 2>/dev/null \
 						| "$aplay_bin" -V stereo --quiet &
 					Player_PID="$!"
@@ -1393,6 +1424,7 @@ trap 'kill_stat' INT TERM SIGHUP
 # Dependencies
 player_dependency=(
 	'adplay'
+	'cvlc'
 	'gsf2wav + aplay'
 	'ffplay'
 	'fluidsynth'
@@ -1458,6 +1490,7 @@ ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 # Setup
 aplay_bin
 adplay_bin
+cvlc_bin
 ffplay_bin
 fluidsynth_bin
 gsf2wav_bin
