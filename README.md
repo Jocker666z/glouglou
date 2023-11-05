@@ -3,7 +3,7 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
 
 ## Use
 Enter :
-* `glouglou`for inplace recursively search files.
+* `glouglou` for inplace recursively search files.
 * `glouglou -c` for playlist in alphabetical order.
 * `glouglou -e "pattern filter"` for exclude files/dir contain pattern.
 * `glouglou -f "pattern filter"` for select only files/dir contain pattern.
