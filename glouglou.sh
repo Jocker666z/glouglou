@@ -1109,6 +1109,15 @@ fi
 }
 # Play loop
 main_loop () {
+local _progress_bar
+local _timer_start
+local _total_time_formated
+local _timer_stop
+local _diff_in_s
+local _elapsed_time_formated
+local _progress
+local _done
+local _left
 local Player_PID
 local ext
 local uade_test_result
@@ -1120,33 +1129,58 @@ local vgmstream_test_result
 #exit
 
 force_quit() {
-	while true; do
-		read -t0.1 -rsn1 k
-		if [[ "$k" = "q" ]]; then
-			kill -9 "$Player_PID" &>/dev/null
-			break
-		fi
-		if ! ps -p $Player_PID > /dev/null; then
-			break
-		fi
-	done
+_progress_bar="$1"
+
+if [[ "$_progress_bar" = "progress" ]] && [[ -n "$tag_total_duration" ]]; then
+	# Remove previous line with total duration if progress
+	printf '\e[A\e[K'
+	# Get start time
+	_timer_start=$(date +%s)
+	_total_time_formated=$(printf '%02d:%02d\n' $((tag_total_duration%3600/60)) $((tag_total_duration%60)))
+fi
+
+while true; do
+	read -t0.1 -rsn1 k
+	if [[ "$k" = "q" ]]; then
+		kill -9 "$Player_PID" &>/dev/null
+		break
+	fi
+	if ! ps -p $Player_PID > /dev/null; then
+		break
+	fi
+
+	# Progress bar
+	if [[ "$_progress_bar" = "progress" ]] \
+	&& [[ -n "$tag_total_duration" ]]; then
+		_timer_stop=$(date +%s)
+		_diff_in_s=$(( _timer_stop - _timer_start ))
+		_elapsed_time_formated=$(printf '%02d:%02d\n' $((_diff_in_s%3600/60)) $((_diff_in_s%60)))
+		_progress=$(( ( ((_diff_in_s * 100) / tag_total_duration) * 100 ) / 100 ))
+		_done=$(( (_progress * 4) / 10 ))
+		_left=$(( 40 - _done ))
+		_done=$(printf "%${_done}s")
+		_left=$(printf "%${_left}s")
+
+		echo -e -n "\r\e[0K]${_done// /▇}${_left// / }[ ${_elapsed_time_formated}/${_total_time_formated}"
+	fi
+done
 }
 print_tag() {
-	player="$1"
+player="$1"
 
-	echo "$1"
-	if [[ -n "$tag_title" ]]; then
-		echo "Title: $tag_title"
-	fi
-	if [[ -n "$tag_artist" ]]; then
-		echo "Artist: $tag_artist"
-	fi
-	if [[ -n "$tag_album" ]]; then
-		echo "Album: $tag_album"
-	fi
-	if [[ -n "$tag_total_duration" ]]; then
-		echo "Duration: ${tag_total_duration}s"
-	fi
+echo "$1"
+if [[ -n "$tag_title" ]]; then
+	echo "Title: $tag_title"
+fi
+if [[ -n "$tag_artist" ]]; then
+	echo "Artist: $tag_artist"
+fi
+if [[ -n "$tag_album" ]]; then
+	echo "Album: $tag_album"
+fi
+if [[ -n "$tag_total_duration" ]]; then
+	echo "Duration: ${tag_total_duration}s"
+fi
 }
 
 if (( "${#lst_vgm[@]}" )); then
@@ -1221,6 +1255,13 @@ if (( "${#lst_vgm[@]}" )); then
 						--volume=100 \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 					listenbrainz_submit "MPV"
+				elif [[ -n "$cvlc_bin" ]]; then
+					publish_tags "VLC" "${lst_vgm[i]}"
+					print_tag "VLC"
+					"$cvlc_bin" --play-and-exit -q "${lst_vgm[i]}" &>/dev/null &
+					Player_PID="$!"
+					force_quit "progress"
+					listenbrainz_submit "VLC"
 				elif [[ -n "$ffplay_bin" ]]; then
 					publish_tags "ffplay" "${lst_vgm[i]}"
 					"$ffplay_bin" -hide_banner -showmode 0 \
@@ -1228,13 +1269,6 @@ if (( "${#lst_vgm[@]}" )); then
 					Player_PID="$!"
 					force_quit
 					listenbrainz_submit "ffplay"
-				elif [[ -n "$cvlc_bin" ]]; then
-					publish_tags "VLC" "${lst_vgm[i]}"
-					print_tag "VLC"
-					"$cvlc_bin" --play-and-exit -q "${lst_vgm[i]}" &>/dev/null &
-					Player_PID="$!"
-					force_quit
-					listenbrainz_submit "VLC"
 				fi
 
 			elif echo "|${ext_gba}|" | grep -i "|${ext}|" &>/dev/null; then
@@ -1243,9 +1277,9 @@ if (( "${#lst_vgm[@]}" )); then
 					publish_tags "gsf2wav" "${lst_vgm[i]}"
 					print_tag "gsf2wav"
 					"$gsf2wav_bin" "${lst_vgm[i]}" /dev/stdout 2>/dev/null \
-						| "$aplay_bin" -V stereo --quiet &
+						| "$aplay_bin" --quiet  &>/dev/null &
 					Player_PID="$!"
-					force_quit
+					force_quit "progress"
 					listenbrainz_submit "gsf2wav"
 				elif [[ -n "$zxtune123_bin" ]]; then
 					publish_tags "ZXTune" "${lst_vgm[i]}"
@@ -1279,9 +1313,9 @@ if (( "${#lst_vgm[@]}" )); then
 				if [[ -n "$spc2wav_bin" ]]; then
 					publish_tags "spc2wav" "${lst_vgm[i]}"
 					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout \
-						| "$aplay_bin" -V stereo --quiet &
+						| "$aplay_bin" --quiet  &>/dev/null &
 					Player_PID="$!"
-					force_quit
+					force_quit "progress"
 					listenbrainz_submit "spc2wav"
 				elif [[ -n "$zxtune123_bin" ]]; then
 					publish_tags "ZXTune" "${lst_vgm[i]}"

@@ -38,8 +38,8 @@ The list of players is in the order that glouglou selects for the file. If one i
 
 * `aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma`
 	* mpv
-	* ffplay
 	* cvlc
+	* ffplay
 
 * `sc68|snd|sndh`
 	* sc68
