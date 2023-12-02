@@ -672,7 +672,24 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_system="Nintendo 64"
 	elif [[ "${file##*.}" = "dsf" ]]; then
 		tag_system="Sega Dreamcast"
+
+	#ZX Spectrum (zxtune)
+	elif [[ "${file##*.}" = "asc" ]]; then
+		tag_system="ASC Sound Master"
+	elif [[ "${file##*.}" = "psc" ]]; then
+		tag_system="Pro Sound Creator"
+	elif [[ "${file##*.}" = "pt1" ]] || [[ "${file##*.}" = "pt2" ]] || [[ "${file##*.}" = "pt3" ]]; then
+		tag_system="Pro Tracker"
+	elif [[ "${file##*.}" = "sqt" ]]; then
+		tag_system="Quartet PSG Module"
+	elif [[ "${file##*.}" = "stc" ]]; then
+		tag_system="STC Sound Trackere"
+	elif [[ "${file##*.}" = "stp" ]]; then
+		tag_system="Soundtracker Pro II Module"
+	elif [[ "${file##*.}" = "tap" ]]; then
+		tag_system="ZX Spectrum Tape Image"
 	fi
+
 	shopt -u nocasematch
 
 fi
@@ -1575,7 +1592,7 @@ ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
 ext_zxtune_various="ay|ams|dmf|dtt|hvl|rmt|sap|v2m|xrns|ym"
 ext_zxtune_xsf="2sf|dsf|psf|psf2|mini2sf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
-ext_zxtune_zx_spectrum="asc|psc|pt2|pt3|sqt|stc|stp|tap"
+ext_zxtune_zx_spectrum="asc|psc|pt1|pt2|pt3|sqt|stc|stp|tap"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 
 # Setup
