@@ -555,13 +555,59 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	# tag_sytem by files ext.
 	shopt -s nocasematch
 
+	# Adlib
+	if [[ "${file##*.}" = "adl" ]]; then
+		tag_system="Westwood ADL"
+	elif [[ "${file##*.}" = "amd" ]]; then
+		tag_system="AMusic module"
+	elif [[ "${file##*.}" = "bam" ]]; then
+		tag_system="Bob's Adlib Music"
+	elif [[ "${file##*.}" = "cff" ]]; then
+		tag_system="Boom Tracker v4.0"
+	elif [[ "${file##*.}" = "cmf" ]]; then
+		tag_system="Creative Music Format"
+	elif [[ "${file##*.}" = "d00" ]]; then
+		tag_system="EdLib packed module"
+	elif [[ "${file##*.}" = "dfm" ]]; then
+		tag_system="Digital FM"
+	elif [[ "${file##*.}" = "ddt" ]]; then
+		tag_system="Jill of the Jungle Music File"
+	elif [[ "${file##*.}" = "dtm" ]]; then
+		tag_system="DeFy Tracker"
+	elif [[ "${file##*.}" = "got" ]]; then
+		tag_system="God of Thunder Music"
+	elif [[ "${file##*.}" = "hsc" ]]; then
+		tag_system="HSC AdLib Composer"
+	elif [[ "${file##*.}" = "hsq" ]]; then
+		tag_system="Herbulot AdLib"
+	elif [[ "${file##*.}" = "imf" ]] || [[ "${file##*.}" = "wlf" ]]; then
+		tag_system="Apogee IMF"
+	elif [[ "${file##*.}" = "laa" ]]; then
+		tag_system="LucasArts AdLib Module"
+	elif [[ "${file##*.}" = "ksm" ]]; then
+		tag_system="Ken's AdLib"
+	elif [[ "${file##*.}" = "mdi" ]]; then
+		tag_system="AdLib MIDIPlay Format"
+	elif [[ "${file##*.}" = "mtk" ]]; then
+		tag_system="MPU-401 Tracker"
+	elif [[ "${file##*.}" = "rad" ]]; then
+		tag_system="Reality AdLib Tracker"
+	elif [[ "${file##*.}" = "rol" ]]; then
+		tag_system="AdLib/Roland Song"
+	elif [[ "${file##*.}" = "sdb" ]] || [[ "${file##*.}" = "sqx" ]]; then
+		tag_system="Herad System"
+	elif [[ "${file##*.}" = "xms" ]]; then
+		tag_system="AMUSIC Tracker XMS"
+	elif [[ "${file##*.}" = "xsm" ]]; then
+		tag_system="eXtra Simple Music"
+
 	# MIDI
-	if [[ "${file##*.}" = "mid" ]]; then
+	elif [[ "${file##*.}" = "mid" ]]; then
 		tag_system="MIDI"
 
 	# s98
 	elif [[ "${file##*.}" = "s98" ]]; then
-		tag_system="PC-Engine"
+		tag_system="PC-Engine / TurboGrafx-16"
 
 	# sc68
 	elif [[ "${file##*.}" = "sc68" ]]; then
@@ -574,6 +620,10 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	# SID
 	elif [[ "${file##*.}" = "sid" ]] || [[ "${file##*.}" = "prg" ]]; then
 		tag_system="Comomdore 64/128"
+
+	# SNES
+	elif [[ "${file##*.}" = "spc" ]]; then
+		tag_system="Super Nintendo / Super Famicom"
 
 	# Tracker (uade)
 	elif [[ "${file##*.}" = "bp" ]]; then
@@ -917,7 +967,6 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 	fi
 
-	tag_system="Super Nintendo / Super Famicom"
 	tag_default "$file"
 
 fi
