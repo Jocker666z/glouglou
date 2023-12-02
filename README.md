@@ -30,62 +30,62 @@ Stop it by true proper command: `ctrl+c`.
 The list of players is in the order that glouglou selects for the file. If one is not available, it moves to the next one.
 
 * `adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm`
-	1. adplay
+	* adplay
 
 * `gsf|minigsf`
-	1. gsf2wav
-	1. zxtune
+	* gsf2wav
+	* zxtune
 
 * `aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma`
-	1. mpv
-	1. cvlc
-	1. ffplay
+	* mpv
+	* cvlc
+	* ffplay
 
 * `sc68|snd|sndh`
-	1. sc68
+	* sc68
 
 * `sid`
-	1. sidplayfp
-	1. zxtune
+	* sidplayfp
+	* zxtune
 
 * `prg`
-	1. sidplayfp
+	* sidplayfp
 
 * `spc`
-	1. spc2wav
-	1. zxtune
-	1. mpv
+	* spc2wav
+	* zxtune
+	* mpv
 
 * `mid`
-	1. timidity
-	1. fluidsynth
+	* timidity
+	* fluidsynth
 
 * `it|mod|mo3|mptm|s3m|stm|stp|plm|umx|xm`
-	1. openmpt123
-	1. xmp
-	1. zxtune
-	1. mpv
+	* openmpt123
+	* xmp
+	* zxtune
+	* mpv
 
 * `aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|gmc|hot|fc13|fc14|med|mug|np3|okt|pru2|rk|s7g|sfx|smus|soc|p4x|tiny|tw`
-	1. uade
+	* uade
 
 * `22k|8svx|acb|acm|ads|adp|adpcm|adx|aix|akb|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|brstm|bwav|cfn|ckd|csb|cmp|csmp|cps|dsm|dsp|dvi|fsb|gcm|genh|h4m|hca|hps|ifs|imc|isd|ivs|kma|kvs|lac3|lbin|logg|lopus|lstm|lwav|mab|mic|msf|mus|musx|nlsd|nop|npsf|ras|rws|sad|scd|sfx|sgd|snd|ss2|str|strm|svag|p04|p16|pcm|psb|thp|trk|txtp|ulw|vag|vgmstream|voi|wem|xa|xai|xma|xnb|xwv`
-	1. vgmstream
+	* vgmstream
 
 * `s98|vgm|vgz`
-	1. vgmplay
+	* vgmplay
 
 * `669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm`
-	1. xmp
+	* xmp
 
 * `ay|ams|dmf|dtt|hvl|rmt|sap|v2m|xrns|ym`
-	1. zxtune
+	* zxtune
 
 * `2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf`
-	1. zxtune
+	* zxtune
 
 * `asc|psc|pt1|pt2|pt3|sqt|stc|stp|tap`
-	1. zxtune
+	* zxtune
 
 ## Tags
 ### Publish tags specifications
