@@ -1207,6 +1207,7 @@ _progress_bar="$1"
 
 if [[ "$_progress_bar" = "progress" ]] && [[ -n "$tag_total_duration" ]]; then
 	# Remove previous line with total duration if progress
+	echo
 	printf '\e[A\e[K'
 	# Get start time
 	_timer_start=$(date +%s)
