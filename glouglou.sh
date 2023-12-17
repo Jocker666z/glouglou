@@ -1124,6 +1124,8 @@ Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
 
 Usage: glouglou [options]
                           Without option inplace recursively search files.
+  -b|--beet "pattern"     Search in beet database for common format.
+  -be|--beet_exclusive    Use only beet database.
   -c|--classic            Playlist in alphabetical order
   -e|--exclude "pattern"  Exclude files contain pattern.
   -f|--filter "pattern"   Select only files contain pattern.
@@ -1134,12 +1136,6 @@ Usage: glouglou [options]
   -p|--publish_tags       Publish tags in $glouglou_tags.
   -t|--token <token>      Register your ListenBrainz token.
 EOF
-}
-# Test argument, if no argument set $PWD for search vgm (take a coffee)
-test_argument() {
-if ! (( "${#input_dir[@]}" )); then
-	input_dir="."
-fi
 }
 # Dependencies test
 player_dependency_test() {
@@ -1164,10 +1160,38 @@ fi
 }
 # Populate vgm array
 search_vgm() {
-for input in "${input_dir[@]}"; do
-	mapfile -t -O "${#lst_vgm[@]}" lst_vgm < <(find "$input" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
-done
+local input_realpath
 
+# Search file with find
+if [[ -z "$beet_exclusive" ]]; then
+	# If no input dir
+	if ! (( "${#input_dir[@]}" )); then
+		input_dir=( "$PWD" )
+	fi
+
+	for input in "${input_dir[@]}"; do
+		input_realpath=$(realpath "$input")
+		mapfile -t -O "${#lst_vgm[@]}" lst_vgm < <(find "${input_realpath}" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
+	done
+fi
+
+# Search file in beet
+if [[ -n "$beet_pattern" ]]; then
+	for input in "${beet_pattern[@]}"; do
+		mapfile -t -O "${#lst_beet[@]}" lst_beet < <(beet ls "$input" -p)
+	done
+
+	# Merge array 
+	lst_vgm=( "${lst_vgm[@]}" "${lst_beet[@]}" )
+
+	# Remode duplicate
+	if [[ -z "$beet_exclusive" ]]; then
+		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+								| sort -u)
+	fi
+fi
+
+# Filter by filename include path
 if (( "${#lst_vgm[@]}" )); then
 	# Sort type: shuffle or alphabetical
 	if [[ -n "$classic_player" ]]; then
@@ -1643,6 +1667,13 @@ various_bin
 while [[ $# -gt 0 ]]; do
 	vgm2flac_args="$1"
 	case "$vgm2flac_args" in
+		-b|--beet)
+			shift
+			beet_pattern+=( "$1" )
+		;;
+		-be|--beet_exclusive)
+			beet_exclusive="1"
+		;;
 		-c|--classic)
 			classic_player="1"
 		;;
@@ -1720,7 +1751,6 @@ ext_allplay_raw="${ext_adplay}| \
 				 ${ext_xmp}| \
 				 ${ext_zxtune}"
 ext_allplay=$(echo ${ext_allplay_raw//[[:blank:]]/} | tr -s '|')
-test_argument
 search_vgm
 # Play
 main_loop
