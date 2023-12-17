@@ -4,12 +4,12 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
 ## Use
 Enter :
 * `glouglou` for inplace recursively search files.
-* `glouglou -b` Search in beet database for common format.
-* `glouglou -be` Use only beet database.
+* `glouglou -b "pattern" -b "pattern"...` Search in the beet database a pattern (only for common format).
+* `glouglou -be` Use only the beet database.
 * `glouglou -c` for playlist in alphabetical order.
-* `glouglou -e "pattern filter"` for exclude files/dir contain pattern.
-* `glouglou -f "pattern filter"` for select only files/dir contain pattern.
-* `glouglou -i /dir -i /dir...` for select one or several directories.
+* `glouglou -e "pattern"` for exclude files/dir contain pattern.
+* `glouglou -f "pattern"` for select only files/dir contain pattern.
+* `glouglou -i dir/ -i dir/...` for select one or several directories.
 * `glouglou -r` for no repeat playlist.
 * `glouglou -s` for use ListenBrainz scrobber.
 * `glouglou -p` for publish tags in /tmp/glouglou-tags.

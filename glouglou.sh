@@ -1124,7 +1124,7 @@ Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
 
 Usage: glouglou [options]
                           Without option inplace recursively search files.
-  -b|--beet "pattern"     Search in beet database for common format.
+  -b|--beet "pattern"     Search in pattern in beet database.
   -be|--beet_exclusive    Use only beet database.
   -c|--classic            Playlist in alphabetical order
   -e|--exclude "pattern"  Exclude files contain pattern.
