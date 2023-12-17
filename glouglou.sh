@@ -445,10 +445,29 @@ fi
 }
 # ListenBrainz
 listenbrainz_token() {
+local token_test
+
+# If update token
 if [[ -n "$listenbrainz_register" ]]; then
-	echo "listenbrainz_token=${listenbrainz_register}" > "$glouglou_config_file"
-	echo "${listenbrainz_register} has been registered as your new ListenBrainz token."
+
+	# Test token
+	token_test=$("$curl_bin" -s \
+				-X POST -H "Authorization: token $listenbrainz_register" \
+				https://api.listenbrainz.org/1/submit-listens \
+				| grep "401")
+
+	if [[ -n "$token_test" ]]; then
+		echo "${listenbrainz_register} is not a valid ListenBrainz token."
+	elif ! [[ -f "$glouglou_config_file" ]]; then
+		echo "listenbrainz_token=${listenbrainz_register}" > "$glouglou_config_file"
+		echo "${listenbrainz_register} has been registered as your new ListenBrainz token."
+	elif [[ -f "$glouglou_config_file" ]]; then
+		sed -i "s/\(listenbrainz_token *= *\).*/\1${listenbrainz_register}/" "$glouglou_config_file"
+		echo "${listenbrainz_register} has been registered as your new ListenBrainz token."
+	fi
 fi
+
+# If no update token
 if [[ -f "$glouglou_config_file" ]]; then
 	listenbrainz_token=$(< "$glouglou_config_file" grep "listenbrainz_token=" \
 						| awk -F"=" '{ print $2 }')
