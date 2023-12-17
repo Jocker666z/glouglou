@@ -1181,17 +1181,17 @@ if (( "${#lst_vgm[@]}" )); then
 	if [[ -z "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
 		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 								| "${sort_type[@]}")
-	## If -f
+	## If -f = select only files pattern
 	elif [[ -n "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
 		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 								| grep -E -i "$input_filter" \
 								| "${sort_type[@]}")
-	## If -e
+	## If -e = exclude files pattern
 	elif [[ -z "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 								| grep -E -i -v "$exclude_filter" \
 								| "${sort_type[@]}")
-	## If -f -e
+	## If -f -e = select & exclude pattern
 	elif [[ -n "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 								| grep -E -i -v "$exclude_filter" \
