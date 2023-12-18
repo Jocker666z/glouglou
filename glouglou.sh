@@ -273,6 +273,13 @@ if [[ -n "$system_bin_location" ]]; then
 	curl_bin="$system_bin_location"
 fi
 
+# curl
+bin_name="beet"
+system_bin_location=$(command -v $bin_name)
+if [[ -n "$system_bin_location" ]]; then
+	beet_bin="$system_bin_location"
+fi
+
 # info68
 bin_name="info68"
 system_bin_location=$(command -v $bin_name)
@@ -1178,7 +1185,7 @@ fi
 # Search file in beet
 if [[ -n "$beet_pattern" ]]; then
 	for input in "${beet_pattern[@]}"; do
-		mapfile -t -O "${#lst_beet[@]}" lst_beet < <(beet ls "$input" -p)
+		mapfile -t -O "${#lst_beet[@]}" lst_beet < <("$beet_bin" ls "$input" -p)
 	done
 
 	# Merge array 
@@ -1668,10 +1675,20 @@ while [[ $# -gt 0 ]]; do
 	vgm2flac_args="$1"
 	case "$vgm2flac_args" in
 		-b|--beet)
+			if [[ -z "$beet_bin" ]]; then
+				echo_error "glouglou was breaked."
+				echo_error "beets must be installed for use beets database."
+				exit
+			fi
 			shift
 			beet_pattern+=( "$1" )
 		;;
 		-be|--beet_exclusive)
+			if [[ -z "$beet_bin" ]]; then
+				echo_error "glouglou was breaked."
+				echo_error "beets must be installed for use beets database."
+				exit
+			fi
 			beet_exclusive="1"
 		;;
 		-c|--classic)
