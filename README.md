@@ -25,7 +25,7 @@ Stop it by true proper command: `ctrl+c`.
 * It is not necessary to have all the dependencies installed, for example if you don't want to install zxtune123 but vgmplay is installed, glouglou will only play the vgmplay files.
 * glouglou takes less than 6s to launch a playlist of more than 70000 files on LAN disk.
 * Filter & exclude is extended-regexp friendly, example: `glouglou -f "PS1|PS2" -e "Final Fantasy|Alundra"`.
-* Given the great difference between the types of playback, it is recommended to apply a normalization to the audio output (see: https://github.com/Digitalone1/EasyEffects-Presets)
+* Given the great difference between the types of playback, it is recommended to apply a normalization to the audio output (see: https://github.com/Digitalone1/EasyEffects-Presets).
 * `glouglou -p` may be useful to your system monitor (example: conky), so that it can obtain information about the playback in progress. [See the specifications of the file](#publish-tags-specifications).
 
 ## Supported Files
@@ -111,11 +111,20 @@ By default the tags are taken with the filename and the directory that contains 
 * `s98|vgm|vgz`: vgm_tag https://github.com/vgmrips/vgmtools
 * vgmstream files: vgmstream-cli (installed with vgmstream123)
 
+## Beets
+* With beets option `-b` `-be`, you must have installed and configured beets, glouglou doesn't check anything on this side (see: https://beets.io/).
+* beets allows you to search in tags, of classic audio files like flac, mp3, etc... This method is more flexible because it includes file path and tags.
+
 ## Install help
 ### adplay
 https://adplug.github.io/
 
 adplay is present in many official repositories for most GNU/Linux distributions.
+
+### beets
+https://beets.io/
+
+beets is present in many official repositories for most GNU/Linux distributions.
 
 ### gsf2wav
 Build dependencies: `git build-essential`
