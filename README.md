@@ -4,8 +4,8 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
 ## Use
 Enter :
 * `glouglou` for inplace recursively search files.
-* `glouglou -b "pattern" -b "pattern"...` for search in the beet database a pattern (only for common format).
-* `glouglou -be` for use only the beet database.
+* `glouglou -b "pattern" -b "pattern"...` for search in the beets database a pattern (only for common format).
+* `glouglou -be` for use only the beets database.
 * `glouglou -c` for playlist in alphabetical order.
 * `glouglou -e "pattern"` for exclude files/dir contain pattern.
 * `glouglou -f "pattern"` for select only files/dir contain pattern.
