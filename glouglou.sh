@@ -1215,7 +1215,7 @@ if [[ -n "$exclude_conf_add" ]]; then
 		sed -i "/play_blacklist=/ s/$/|${search_blacklist_register}/" "$glouglou_config_file"
 	fi
 	set_play_blacklist
-	echo "The entry has been add in your play/search blacklist, containt:"
+	echo "The entry has been added in your play/search blacklist, containt:"
 	print_blacklist
 fi
 
@@ -1717,7 +1717,7 @@ ext_midi="mid"
 ext_multi_filter="sfx|snd"
 ext_tracker="it|mod|mo3|mptm|s3m|stm|stp|plm|umx|xm"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|gmc|hot|fc13|fc14|med|mug|np3|okt|pru2|rk|s7g|smus|soc|p4x|tiny|tw"
-ext_vgmstream_0_c="22k|8svx|acb|acm|ads|adp|adpcm|adx|aix|akb|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|brstm|bwav|cfn|ckd|cmp|csb|csmp|cps"
+ext_vgmstream_0_c="22k|8svx|acb|acm|ads|adp|adpcm|adx|aix|akb|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|bik|brstm|bwav|cfn|ckd|cmp|csb|csmp|cps"
 ext_vgmstream_d_n="dsm|dsp|dvi|fsb|gcm|genh|h4m|hca|hps|ifs|imc|isd|ivs|kma|kvs|lac3|lbin|lmp3|logg|lopus|lstm|lwav|mab|mic|msf|mus|musx|nlsd|nop|npsf"
 ext_vgmstream_o_z="ras|rws|sad|scd|sgd|ss2|str|strm|svag|p04|p16|pcm|psb|thp|trk|txtp|ulw|vag|vgmstream|voi|wem|xa|xai|xma|xnb|xwv"
 ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
