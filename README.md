@@ -1,19 +1,32 @@
 # glouglou
 glouglou just play in shuffle and repeat, all the files it found. Nothing else, finally without options...
 
-## Use
-Enter :
-* `glouglou` for inplace recursively search files.
-* `glouglou -b "pattern" -b "pattern"...` for search in the beets database a pattern.
-* `glouglou -be` for use only the beets database.
-* `glouglou -c` for playlist in alphabetical order.
-* `glouglou -e "pattern"` for exclude files/dir contain pattern.
-* `glouglou -f "pattern"` for select only files/dir contain pattern.
-* `glouglou -i dir/ -i dir/...` for select one or several directories.
-* `glouglou -r` for no repeat playlist.
-* `glouglou -s` for use ListenBrainz scrobber.
-* `glouglou -p` for publish tags in /tmp/glouglou-tags.
-* `glouglou -t <token>` for register your ListenBrainz token.
+## Usage
+```
+                                   Without option inplace recursively search files.
+  -h|--help                        Display this help.
+  -p|--publish_tags                Publish tags in text file > /tmp/glouglou-tags.
+
+ Playlist manipulation:
+  -c|--classic                     Playlist in alphabetical order
+  -r|--repeat_off                  No repeat.
+  -e|--exclude "pattern"           Exclude files contain pattern.
+  --exclude_conf_add "pattern"     Add exclude pattern in config.
+  --exclude_conf_replace "pattern" Replace all exclude pattern in config.
+  --exclude_conf_list              See exclude pattern in config.
+  -f|--filter "pattern"            Select only files contain pattern.
+  -i|--input <directory>           Target search directory.
+
+   "pattern" allow mutli word/pattern: "example|example 1"
+
+ Beets database in playlist:
+  -b|--beet "pattern"              Select only a pattern in Beets database.
+  -be|--beet_exclusive             Use only Beets database.
+
+ ListenBrainz:
+  -s|--scrobb                      Use ListenBrainz scrobber.
+  -t|--token <token>               Register your ListenBrainz token
+```
 
 Stop it by true proper command: `ctrl+c`.
 
@@ -24,7 +37,7 @@ Stop it by true proper command: `ctrl+c`.
 * The shortcut "q" allows to go to the next track in almost all cases.
 * It is not necessary to have all the dependencies installed, for example if you don't want to install zxtune123 but vgmplay is installed, glouglou will only play the vgmplay files.
 * glouglou takes less than 6s to launch a playlist of more than 70000 files on LAN disk.
-* Filter & exclude is extended-regexp friendly, example: `glouglou -f "PS1|PS2" -e "Final Fantasy|Alundra"`.
+* Filter & exclude is regex friendly, example: `glouglou -f "PS1|PS2" -e "Final Fantasy|Alundra"`.
 * Given the great difference between the types of playback, it is recommended to apply a normalization to the audio output (see: https://github.com/Digitalone1/EasyEffects-Presets).
 * `glouglou -p` may be useful to your system monitor (example: conky), so that it can obtain information about the playback in progress. [See the specifications of the file](#publish-tags-specifications).
 
@@ -112,8 +125,8 @@ By default the tags are taken with the filename and the directory that contains 
 * vgmstream files: vgmstream-cli (installed with vgmstream123)
 
 ## Beets
-* With beets option `-b` `-be`, you must have installed and configured beets, glouglou doesn't check anything on this side (see: https://beets.io/).
-* beets allows you to search in tags, of classic audio files like flac, mp3, etc... This method is more flexible because it includes file path and tags.
+* With Beets option `-b` `-be`, you must have installed and configured beets, glouglou doesn't check anything on this side (see: https://beets.io/).
+* Beets allows you to search in tags, of classic audio files like flac, mp3, etc... This method is more flexible because it includes file path and tags.
 
 ## Install help
 ### adplay
@@ -121,10 +134,10 @@ https://adplug.github.io/
 
 adplay is present in many official repositories for most GNU/Linux distributions.
 
-### beets
+### Beets
 https://beets.io/
 
-beets is present in many official repositories for most GNU/Linux distributions.
+Beets is present in many official repositories for most GNU/Linux distributions.
 
 ### gsf2wav
 Build dependencies: `git build-essential`
@@ -255,3 +268,7 @@ cd /home/$USER/.local/bin/
 wget https://github.com/Jocker666z/vgm2flac-dep/raw/main/zxtune123_r5052_armhf.tar.bz2
 tar -xf zxtune123_r5052_armhf.tar.bz2 && rm zxtune123_r5052_armhf.tar.bz2
 ```
+
+## Todo/Idea
+* Resume current playlist after exit
+* Save playlists; able to see playlists & select one

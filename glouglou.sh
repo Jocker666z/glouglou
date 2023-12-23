@@ -472,9 +472,10 @@ if [[ -n "$listenbrainz_register" ]]; then
 		sed -i "s/\(listenbrainz_token *= *\).*/\1${listenbrainz_register}/" "$glouglou_config_file"
 		echo "${listenbrainz_register} has been registered as your new ListenBrainz token."
 	fi
+
 fi
 
-# If no update token
+# If no update token = set current
 if [[ -f "$glouglou_config_file" ]]; then
 	listenbrainz_token=$(< "$glouglou_config_file" grep "listenbrainz_token=" \
 						| awk -F"=" '{ print $2 }')
@@ -1130,18 +1131,29 @@ glouglou - <https://github.com/Jocker666z/glouglou>
 Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
 
 Usage: glouglou [options]
-                          Without option inplace recursively search files.
-  -b|--beet "pattern"     Search in pattern in beets database.
-  -be|--beet_exclusive    Use only beets database.
-  -c|--classic            Playlist in alphabetical order
-  -e|--exclude "pattern"  Exclude files contain pattern.
-  -f|--filter "pattern"   Select only files contain pattern.
-  -i|--input <directory>  Target search directory.
-  -h|--help               Display this help.
-  -r|--repeat_off         No repeat.
-  -s|--scrobb             Use ListenBrainz scrobber.
-  -p|--publish_tags       Publish tags in $glouglou_tags.
-  -t|--token <token>      Register your ListenBrainz token.
+                                   Without option inplace recursively search files.
+  -h|--help                        Display this help.
+  -p|--publish_tags                Publish tags in text file > $glouglou_tags.
+
+ Playlist manipulation:
+  -c|--classic                     Playlist in alphabetical order
+  -r|--repeat_off                  No repeat.
+  -e|--exclude "pattern"           Exclude files contain pattern.
+  --exclude_conf_add "pattern"     Add exclude pattern in config.
+  --exclude_conf_replace "pattern" Replace all exclude pattern in config.
+  --exclude_conf_list              See exclude pattern in config.
+  -f|--filter "pattern"            Select only files contain pattern.
+  -i|--input <directory>           Target search directory.
+
+   "pattern" allow mutli word/pattern: "example|example 1"
+
+ Beets database in playlist:
+  -b|--beet "pattern"              Select only a pattern in Beets database.
+  -be|--beet_exclusive             Use only Beets database.
+
+ ListenBrainz:
+  -s|--scrobb                      Use ListenBrainz scrobber.
+  -t|--token <token>               Register your ListenBrainz token.
 EOF
 }
 # Dependencies test
@@ -1166,6 +1178,65 @@ if [[ -z "$adplay_bin" ]] \
 fi
 }
 # Populate vgm array
+search_blacklist() {
+
+set_play_blacklist() {
+play_blacklist=$(< "$glouglou_config_file" grep "play_blacklist=" \
+					| awk -F"=" '{ print $2 }')
+}
+print_blacklist() {
+echo "${play_blacklist}" \
+	| tr "|" "\n" \
+	| awk '{print " * " $0}' \
+	| sort -V
+}
+
+# If replace blacklist
+if [[ -n "$exclude_conf_replace" ]]; then
+	search_blacklist_register="$exclude_conf_replace"
+
+	if ! [[ -f "$glouglou_config_file" ]]; then
+		echo "play_blacklist=${search_blacklist_register}" > "$glouglou_config_file"
+	elif [[ -f "$glouglou_config_file" ]]; then
+		sed -i "s/\(play_blacklist *= *\).*/\1${search_blacklist_register}/" "$glouglou_config_file"
+	fi
+	set_play_blacklist
+	echo "The entry has been registered as your play/search blacklist, containt:"
+	print_blacklist
+fi
+
+# If update blacklist
+if [[ -n "$exclude_conf_add" ]]; then
+	search_blacklist_register="$exclude_conf_add"
+
+	if ! [[ -f "$glouglou_config_file" ]]; then
+		echo "play_blacklist=${search_blacklist_register}" > "$glouglou_config_file"
+	elif [[ -f "$glouglou_config_file" ]]; then
+		sed -i "/play_blacklist=/ s/$/|${search_blacklist_register}/" "$glouglou_config_file"
+	fi
+	set_play_blacklist
+	echo "The entry has been add in your play/search blacklist, containt:"
+	print_blacklist
+fi
+
+# If print blacklist
+if [[ -n "$exclude_conf_list" ]]; then
+	set_play_blacklist
+
+	if [[ -z "$play_blacklist" ]]; then
+		echo "You have no play/search blacklist."
+	else
+		echo "You're current patterns play/search blacklist:"
+		echo "Config raw: ${play_blacklist}"
+		print_blacklist
+	fi
+fi
+
+# If no update blacklist = set current
+if [[ -f "$glouglou_config_file" ]]; then
+	set_play_blacklist
+fi
+}
 search_vgm() {
 local input_realpath
 
@@ -1182,16 +1253,16 @@ if [[ -z "$beet_exclusive" ]]; then
 	done
 fi
 
-# Search file in beet
+# Search file in beets
 if [[ -n "$beet_pattern" ]]; then
 	for input in "${beet_pattern[@]}"; do
 		mapfile -t -O "${#lst_beet[@]}" lst_beet < <("$beet_bin" ls "$input" -p)
 	done
 
-	# Merge array 
+	# Merge search array 
 	lst_vgm=( "${lst_vgm[@]}" "${lst_beet[@]}" )
 
-	# Remode duplicate
+	# Remove duplicate if find + beets
 	if [[ -z "$beet_exclusive" ]]; then
 		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 								| sort -u)
@@ -1207,6 +1278,13 @@ if (( "${#lst_vgm[@]}" )); then
 		sort_type=('shuf')
 	fi
 
+	# Use exclude pattern list from config
+	if [[ -n "$exclude_filter" ]] && [[ -n "$play_blacklist" ]]; then
+		exclude_filter="${exclude_filter}|${play_blacklist}"
+	elif [[ -z "$exclude_filter" ]] && [[ -n "$play_blacklist" ]]; then
+		exclude_filter="${play_blacklist}"
+	fi
+
 	# Final playlist array
 	## If no patern
 	if [[ -z "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
@@ -1214,16 +1292,20 @@ if (( "${#lst_vgm[@]}" )); then
 								| "${sort_type[@]}")
 	## If -f = select only files pattern
 	elif [[ -n "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
+		input_filter="${input_filter//||/|}"
 		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 								| grep -E -i "$input_filter" \
 								| "${sort_type[@]}")
 	## If -e = exclude files pattern
 	elif [[ -z "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
+		exclude_filter="${exclude_filter//||/|}"
 		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 								| grep -E -i -v "$exclude_filter" \
 								| "${sort_type[@]}")
 	## If -f -e = select & exclude pattern
 	elif [[ -n "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
+		exclude_filter="${exclude_filter//||/|}"
+		input_filter="${input_filter//||/|}"
 		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
 								| grep -E -i -v "$exclude_filter" \
 								| grep -E -i "$input_filter" \
@@ -1668,6 +1750,7 @@ multi_depend
 player_dependency_test
 glouglou_config
 listenbrainz_token
+search_blacklist
 various_bin
 
 # Arguments
@@ -1697,6 +1780,35 @@ while [[ $# -gt 0 ]]; do
 		-e|--exclude)
 			shift
 			exclude_filter="$1"
+		;;
+		--exclude_conf_add)
+			shift
+			exclude_conf_add="$1"
+			if [[ -z "$exclude_conf_add" ]]; then
+				echo_error "glouglou was breaked."
+				echo_error "Exclude pattern must be filled."
+				exit
+			else
+				search_blacklist
+			fi
+			exit
+		;;
+		--exclude_conf_replace)
+			shift
+			exclude_conf_replace="$1"
+			if [[ -z "$exclude_conf_replace" ]]; then
+				echo_error "glouglou was breaked."
+				echo_error "Exclude pattern must be filled."
+				exit
+			else
+				search_blacklist
+			fi
+			exit
+		;;
+		--exclude_conf_list)
+			exclude_conf_list="1"
+			search_blacklist
+			exit
 		;;
 		-f|--filter)
 			shift
