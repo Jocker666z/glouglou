@@ -681,6 +681,10 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_system="Raster Music Tracker"
 	elif [[ "${file##*.}" = "v2m" ]]; then
 		tag_system="Farbrausch V2M"
+	elif [[ "${file##*.}" = "vt2" ]]; then
+		tag_system="Vortex Tracker 2"
+	elif [[ "${file##*.}" = "vtx" ]]; then
+		tag_system="Vortex Tracker"
 	elif [[ "${file##*.}" = "xrns" ]]; then
 		tag_system="Renoise"
 
@@ -700,7 +704,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	elif [[ "${file##*.}" = "dsf" ]]; then
 		tag_system="Sega Dreamcast"
 
-	#ZX Spectrum (zxtune)
+	# ZX Spectrum (zxtune)
 	elif [[ "${file##*.}" = "asc" ]]; then
 		tag_system="ASC Sound Master"
 	elif [[ "${file##*.}" = "psc" ]]; then
@@ -1744,7 +1748,7 @@ ext_vgmstream_o_z="oma|ras|rws|sad|scd|sgd|ss2|str|strm|svag|p04|p16|pcm|psb|thp
 ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
-ext_zxtune_various="ay|ams|dmf|dtt|hvl|rmt|sap|v2m|xrns|ym"
+ext_zxtune_various="ay|ams|dmf|dtt|hvl|rmt|sap|v2m|vt2|vtx|xrns|ym"
 ext_zxtune_xsf="2sf|dsf|psf|psf2|mini2sf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_zx_spectrum="asc|psc|pt1|pt2|pt3|sqt|stc|stp|tap|zxs"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"

@@ -97,7 +97,7 @@ The list of players is in the order that glouglou selects for the file. If one i
 * `669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm`
 	* xmp
 
-* `ay|ams|dmf|dtt|hvl|rmt|sap|v2m|xrns|ym`
+* `ay|ams|dmf|dtt|hvl|rmt|sap|v2m|vt2|vtx|xrns|ym`
 	* zxtune
 
 * `2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf`
