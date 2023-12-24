@@ -103,7 +103,7 @@ The list of players is in the order that glouglou selects for the file. If one i
 * `2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf`
 	* zxtune
 
-* `asc|psc|pt1|pt2|pt3|sqt|stc|stp|tap`
+* `asc|psc|pt1|pt2|pt3|sqt|stc|stp|tap|zxs`
 	* zxtune
 
 ## Tags
