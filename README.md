@@ -3,9 +3,9 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
 
 ## Usage
 ```
-                                   Without option inplace recursively search files.
+                                   Without option inplace recursively search/play files.
   -h|--help                        Display this help.
-  -p|--publish_tags                Publish tags in text file > /tmp/glouglou-tags.
+  -p|--publish_tags                Publish tags in text file > $glouglou_tags.
 
  Playlist manipulation:
   -c|--classic                     Playlist in alphabetical order
@@ -17,15 +17,19 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
   -f|--filter "pattern"            Select only files contain pattern.
   -i|--input <directory>           Target search directory.
 
-   "pattern" allow mutli word/pattern: "example|example 1"
+   -e, --exclude_conf, -f are multi-word: "pattern one"
+   -e, --exclude_conf, -f are also multi-pattern: "pattern0|pattern 1"
+   -i is cumulative: -i <dir0> -i <dir1> ...
 
  Beets database in playlist:
   -b|--beet "pattern"              Select only a pattern in Beets database.
   -be|--beet_exclusive             Use only Beets database.
 
+   -b is cumulative & multi-word: -b "pattern0" -b "pattern 1" ...
+
  ListenBrainz:
   -s|--scrobb                      Use ListenBrainz scrobber.
-  -t|--token <token>               Register your ListenBrainz token
+  -t|--token <token>               Register your ListenBrainz token.
 ```
 
 Stop it by true proper command: `ctrl+c`.

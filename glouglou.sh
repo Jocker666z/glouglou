@@ -1131,7 +1131,7 @@ glouglou - <https://github.com/Jocker666z/glouglou>
 Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
 
 Usage: glouglou [options]
-                                   Without option inplace recursively search files.
+                                   Without option inplace recursively search/play files.
   -h|--help                        Display this help.
   -p|--publish_tags                Publish tags in text file > $glouglou_tags.
 
@@ -1145,11 +1145,15 @@ Usage: glouglou [options]
   -f|--filter "pattern"            Select only files contain pattern.
   -i|--input <directory>           Target search directory.
 
-   "pattern" allow mutli word/pattern: "example|example 1"
+   -e, --exclude_conf, -f are multi-word: "pattern one"
+   -e, --exclude_conf, -f are also multi-pattern: "pattern0|pattern 1"
+   -i is cumulative: -i <dir0> -i <dir1> ...
 
  Beets database in playlist:
   -b|--beet "pattern"              Select only a pattern in Beets database.
   -be|--beet_exclusive             Use only Beets database.
+
+   -b is cumulative & multi-word: -b "pattern0" -b "pattern 1" ...
 
  ListenBrainz:
   -s|--scrobb                      Use ListenBrainz scrobber.
