@@ -9,13 +9,13 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
 
  Playlist manipulation:
   -c|--classic                     Playlist in alphabetical order
-  -r|--repeat_off                  No repeat.
   -e|--exclude "pattern"           Exclude files contain pattern.
   --exclude_conf_add "pattern"     Add exclude pattern in config.
   --exclude_conf_replace "pattern" Replace all exclude pattern in config.
   --exclude_conf_list              See exclude pattern in config.
   -f|--filter "pattern"            Select only files contain pattern.
   -i|--input <directory>           Target search directory.
+  -r|--repeat_off                  No repeat.
 
    -e, --exclude_conf, -f are multi-word: "pattern one"
    -e, --exclude_conf, -f are also multi-pattern: "pattern0|pattern 1"
