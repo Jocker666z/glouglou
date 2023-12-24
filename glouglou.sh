@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2317,SC2086
+# shellcheck disable=SC2317,SC2086,SC2207
 # glouglou
 # Bad bash script for no brain, also play vgm in shuffle
 #
@@ -1239,6 +1239,9 @@ fi
 }
 search_vgm() {
 local input_realpath
+local oldIFS
+
+oldIFS="$IFS"
 
 # Search file with find
 if [[ -z "$beet_exclusive" ]]; then
@@ -1247,10 +1250,16 @@ if [[ -z "$beet_exclusive" ]]; then
 		input_dir=( "$PWD" )
 	fi
 
+	# Change IFS
+	IFS=$'\n'
+
 	for input in "${input_dir[@]}"; do
 		input_realpath=$(realpath "$input")
-		mapfile -t -O "${#lst_vgm[@]}" lst_vgm < <(find "${input_realpath}" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' 2>/dev/null)
+		lst_vgm+=( $(find "${input_realpath}" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$') )
 	done
+
+	# Reset IFS
+	IFS="$oldIFS"
 fi
 
 # Search file in beets
@@ -1285,32 +1294,40 @@ if (( "${#lst_vgm[@]}" )); then
 		exclude_filter="${play_blacklist}"
 	fi
 
+	# Change IFS
+	IFS=$'\n'
+
 	# Final playlist array
 	## If no patern
 	if [[ -z "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
-		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
-								| "${sort_type[@]}")
+		lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
+								| "${sort_type[@]}") )
 	## If -f = select only files pattern
 	elif [[ -n "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
 		input_filter="${input_filter//||/|}"
-		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+		lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
 								| grep -E -i "$input_filter" \
-								| "${sort_type[@]}")
+								| "${sort_type[@]}") )
 	## If -e = exclude files pattern
 	elif [[ -z "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 		exclude_filter="${exclude_filter//||/|}"
-		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
-								| grep -E -i -v "$exclude_filter" \
-								| "${sort_type[@]}")
+		lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
+								| grep --text -E -i -v "$exclude_filter" \
+								| "${sort_type[@]}") )
+
 	## If -f -e = select & exclude pattern
 	elif [[ -n "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 		exclude_filter="${exclude_filter//||/|}"
 		input_filter="${input_filter//||/|}"
-		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
+		lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
 								| grep -E -i -v "$exclude_filter" \
 								| grep -E -i "$input_filter" \
-								| "${sort_type[@]}")
+								| "${sort_type[@]}") )
 	fi
+
+	# Reset IFS
+	IFS="$oldIFS"
+
 fi
 }
 # Play loop
