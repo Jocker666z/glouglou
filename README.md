@@ -48,7 +48,7 @@ Stop it by true proper command: `ctrl+c`.
 ## Supported Files
 The list of players is in the order that glouglou selects for the file. If one is not available, it moves to the next one.
 
-* `adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm`
+* `adl|amd|bam|cff|cmf|d00|dfm|ddt|dmo|dtm|got|hsc|hsq|imf|laa|ksm|m|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm`
 	* adplay
 
 * `gsf|minigsf`
@@ -98,13 +98,13 @@ The list of players is in the order that glouglou selects for the file. If one i
 	* xmp
 
 * `ay|ams|dmf|dtt|hvl|rmt|sap|v2m|vt2|vtx|xrns|ym`
-	* zxtune
+	* zxtune (tracker)
 
 * `2sf|gsf|dsf|psf|psf2|mini2sf|minigsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf`
-	* zxtune
+	* zxtune (Portable Sound Format & derivate)
 
 * `asc|psc|pt1|pt2|pt3|sqt|stc|stp|tap|zxs`
-	* zxtune
+	* zxtune (ZX Spectrum)
 
 ## Tags
 ### Publish tags specifications

@@ -599,6 +599,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_system="Digital FM"
 	elif [[ "${file##*.}" = "ddt" ]]; then
 		tag_system="Jill of the Jungle Music File"
+	elif [[ "${file##*.}" = "dmo" ]]; then
+		tag_system="Twin TrackPlayer"
 	elif [[ "${file##*.}" = "dtm" ]]; then
 		tag_system="DeFy Tracker"
 	elif [[ "${file##*.}" = "got" ]]; then
@@ -613,6 +615,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_system="LucasArts AdLib Module"
 	elif [[ "${file##*.}" = "ksm" ]]; then
 		tag_system="Ken's AdLib"
+	elif [[ "${file##*.}" = "m" ]]; then
+		tag_system="Ultima 6"
 	elif [[ "${file##*.}" = "mdi" ]]; then
 		tag_system="AdLib MIDIPlay Format"
 	elif [[ "${file##*.}" = "mtk" ]]; then
@@ -1732,7 +1736,7 @@ glouglou_tags="/tmp/glouglou-tags"
 glouglou_cover="/tmp/glouglou-cover.png"
 
 # Type of files allowed by player
-ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dtm|got|hsc|hsq|imf|laa|ksm|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
+ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dmo|dtm|got|hsc|hsq|imf|laa|ksm|m|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
 ext_gba="gsf|minigsf"
 ext_common="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
 ext_sc68="sc68|sndh"
