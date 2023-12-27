@@ -1198,6 +1198,7 @@ if [[ -z "$adplay_bin" ]] \
    && [[ -z "$openmpt123_bin" ]] \
    && [[ -z "$sc68_bin" ]] \
    && [[ -z "$sidplayfp_bin" ]] \
+   && [[ -z "$simple_mdx2wav_bin" ]] \
    && [[ -z "$spc2wav_bin" ]] \
    && [[ -z "$timidity_bin" ]] \
    && [[ -z "$uade123_bin" ]] \
