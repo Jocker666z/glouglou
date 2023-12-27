@@ -709,6 +709,10 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	elif [[ "${file##*.}" = "xrns" ]]; then
 		tag_system="Renoise"
 
+	# X68000
+	elif [[ "${file##*.}" = "mdx" ]]; then
+		tag_system="Sharp X68000"
+
 	# xfs (zxtune)
 	elif [[ "${file##*.}" = "psf" || "${file##*.}" = "minipsf" ]]; then
 		tag_system="Sony PS1"
