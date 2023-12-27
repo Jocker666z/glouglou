@@ -126,6 +126,23 @@ if [[ -n "$system_bin_location" ]]; then
 	sidplayfp_bin="$system_bin_location"
 fi
 }
+simple_mdx2wav_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="simple_mdx2wav"
+system_bin_location=$(command -v $bin_name)
+
+if [[ -n "$system_bin_location" ]]; then
+	simple_mdx2wav_bin="$system_bin_location"
+else
+	unset ext_simple_mdx2wav
+fi
+
+if [[ -z "$aplay_bin" ]]; then
+	unset ext_simple_mdx2wav
+fi
+}
 spc2wav_bin() {
 local bin_name
 local system_bin_location
@@ -1533,7 +1550,7 @@ if (( "${#lst_vgm[@]}" )); then
 				listenbrainz_submit "sc68"
 
 			elif echo "|${ext_sidplayfp}|" | grep -i "|${ext}|" &>/dev/null; then
-					tag_sid "${lst_vgm[i]}"
+				tag_sid "${lst_vgm[i]}"
 				if [[ -n "$sidplayfp_bin" ]]; then
 					publish_tags "sidplayfp" "${lst_vgm[i]}"
 					"$sidplayfp_bin" "${lst_vgm[i]}" -v -s --digiboost
@@ -1542,6 +1559,18 @@ if (( "${#lst_vgm[@]}" )); then
 					publish_tags "ZXTune" "${lst_vgm[i]}"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
+				fi
+
+			elif echo "|${ext_simple_mdx2wav}|" | grep -i "|${ext}|" &>/dev/null; then
+				tag_default "${lst_vgm[i]}"
+				if [[ -n "$simple_mdx2wav_bin" ]]; then
+					print_tag "simple_mdx2wav"
+					publish_tags "simple_mdx2wav" "${lst_vgm[i]}"
+					"$simple_mdx2wav_bin" -i "${lst_vgm[i]}" -o /dev/stdout 2>/dev/null \
+						| "$aplay_bin" --quiet  &>/dev/null &
+					Player_PID="$!"
+					force_quit
+					listenbrainz_submit "simple_mdx2wav"
 				fi
 
 			elif echo "|${ext_snes}|" | grep -i "|${ext}|" &>/dev/null; then
@@ -1568,7 +1597,7 @@ if (( "${#lst_vgm[@]}" )); then
 				fi
 
 			elif echo "|${ext_midi}|" | grep -i "|${ext}|" &>/dev/null; then
-					tag_default "${lst_vgm[i]}"
+				tag_default "${lst_vgm[i]}"
 				if [[ -n "$timidity_bin" ]]; then
 					publish_tags "TiMidity++" "${lst_vgm[i]}"
 					"$timidity_bin" "${lst_vgm[i]}" -in --volume=100
@@ -1741,6 +1770,7 @@ ext_gba="gsf|minigsf"
 ext_common="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
 ext_sc68="sc68|sndh"
 ext_sidplayfp="sid|prg"
+ext_simple_mdx2wav="mdx"
 ext_snes="spc"
 ext_midi="mid"
 ext_multi_filter="sfx|snd"
@@ -1768,6 +1798,7 @@ mpv_bin
 openmpt123_bin
 sc68_bin
 sidplayfp_bin
+simple_mdx2wav_bin
 spc2wav_bin
 timidity_bin
 uade123_bin
@@ -1898,6 +1929,7 @@ ext_allplay_raw="${ext_adplay}| \
 				 ${ext_common}| \
 				 ${ext_sc68}| \
 				 ${ext_sidplayfp}| \
+				 ${ext_simple_mdx2wav}| \
 				 ${ext_snes}| \
 				 ${ext_midi}| \
 				 ${ext_multi_filter}| \

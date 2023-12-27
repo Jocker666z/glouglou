@@ -67,6 +67,9 @@ The list of players is in the order that glouglou selects for the file. If one i
 	* sidplayfp
 	* zxtune
 
+* `mdx`
+	* simple_mdx2wav
+
 * `prg`
 	* sidplayfp
 
@@ -187,6 +190,15 @@ These config lines must be filled :
 * `Chargen Rom =`
 
 The songlength DB is downloadable here: https://www.hvsc.c64.org/downloads
+
+### simple_mdx2wav
+https://github.com/yosshin4004/portable_mdx
+
+```
+git clone https://github.com/yosshin4004/portable_mdx
+bash -c 'cd portable_mdx/examples/simple_mdx2wav && bash build.sh'
+cp portable_mdx/examples/simple_mdx2wav/simple_mdx2wav /home/$USER/.local/bin/
+```
 
 ### spc2wav
 https://github.com/jprjr/spc2wav
