@@ -1192,20 +1192,22 @@ EOF
 # Dependencies test
 player_dependency_test() {
 if [[ -z "$adplay_bin" ]] \
-   && [[ -z "$ffplay_bin" ]] \
-   && [[ -z "$fluidsynth_bin" ]] \
-   && [[ -z "$mpv_bin" ]] \
-   && [[ -z "$openmpt123_bin" ]] \
-   && [[ -z "$sc68_bin" ]] \
-   && [[ -z "$sidplayfp_bin" ]] \
-   && [[ -z "$simple_mdx2wav_bin" ]] \
-   && [[ -z "$spc2wav_bin" ]] \
-   && [[ -z "$timidity_bin" ]] \
-   && [[ -z "$uade123_bin" ]] \
-   && [[ -z "$vgmplay_bin" ]] \
-   && [[ -z "$xmp_bin" ]] \
-   && [[ -z "$zxtune123_bin" ]] \
-   && [[ -z "$vgmstream123_bin" ]]; then
+&& [[ -z "$cvlc_bin" ]] \
+&& [[ -z "$ffplay_bin" ]] \
+&& [[ -z "$fluidsynth_bin" ]] \
+&& [[ -z "$gsf2wav_bin" ]] \
+&& [[ -z "$mpv_bin" ]] \
+&& [[ -z "$openmpt123_bin" ]] \
+&& [[ -z "$sc68_bin" ]] \
+&& [[ -z "$sidplayfp_bin" ]] \
+&& [[ -z "$simple_mdx2wav_bin" ]] \
+&& [[ -z "$spc2wav_bin" ]] \
+&& [[ -z "$timidity_bin" ]] \
+&& [[ -z "$uade123_bin" ]] \
+&& [[ -z "$vgmplay_bin" ]] \
+&& [[ -z "$vgmstream123_bin" ]] \
+&& [[ -z "$xmp_bin" ]] \
+&& [[ -z "$zxtune123_bin" ]]; then
 	echo_error "glouglou was breaked, none dependencies are met:"
 	printf '  %s\n' "${player_dependency[@]}" >&2
 	exit
@@ -1729,9 +1731,9 @@ trap 'kill_stat' INT TERM SIGHUP
 player_dependency=(
 	'adplay'
 	'cvlc'
-	'gsf2wav + aplay'
 	'ffplay'
 	'fluidsynth'
+	'gsf2wav + aplay'
 	'mpv'
 	'openmpt123'
 	'sc68 + aplay'
