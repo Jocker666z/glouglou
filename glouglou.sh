@@ -1735,6 +1735,7 @@ player_dependency=(
 	'openmpt123'
 	'sc68 + aplay'
 	'sidplayfp'
+	'simple_mdx2wav + aplay'
 	'spc2wav + aplay'
 	'timidity'
 	'uade123'
