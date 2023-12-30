@@ -1230,7 +1230,7 @@ local search_blacklist_register
 
 set_play_blacklist() {
 play_blacklist=$(< "$glouglou_config_file" grep "play_blacklist=" \
-					| awk -F"=" '{ print $2 }')
+					| cut -d'=' -f2-)
 }
 
 print_blacklist() {
