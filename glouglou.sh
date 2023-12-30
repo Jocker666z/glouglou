@@ -1226,7 +1226,7 @@ fi
 }
 # Populate vgm array
 search_blacklist() {
-local search_blacklist_register
+local old_play_blacklist
 
 set_play_blacklist() {
 play_blacklist=$(< "$glouglou_config_file" grep "play_blacklist=" \
@@ -1236,52 +1236,47 @@ play_blacklist=$(< "$glouglou_config_file" grep "play_blacklist=" \
 print_blacklist() {
 echo "${play_blacklist}" \
 	| tr "|" "\n" \
-	| awk '{print " * " $0}' \
-	| sort -V
+	| awk '{print " * " $0}'
 }
 
-clean_search_blacklist_register() {
-# Remove double ||
-search_blacklist_register="${search_blacklist_register//||/|}"
-# If exist remove lead |
-if [[ "${search_blacklist_register::1}" = "|" ]]; then
-	search_blacklist_register="${search_blacklist_register:1}"
-fi
-# If exist remove end |
-if [[ "${search_blacklist_register: -1}" = "|" ]]; then
-	search_blacklist_register="${search_blacklist_register::-1}"
-fi
-}
+if [[ -n "$exclude_conf_replace" ]] \
+|| [[ -n "$exclude_conf_add" ]]; then
 
-# If replace blacklist
-if [[ -n "$exclude_conf_replace" ]]; then
-	search_blacklist_register="$exclude_conf_replace"
-	clean_search_blacklist_register
-
-	sed -i "s/\(play_blacklist *= *\).*/\1${search_blacklist_register}/" "$glouglou_config_file"
-
-	set_play_blacklist
-	echo "The entry has been registered as your play/search blacklist, containt:"
-	print_blacklist
-fi
-
-# If update blacklist
-if [[ -n "$exclude_conf_add" ]]; then
-	search_blacklist_register="$exclude_conf_add"
-	clean_search_blacklist_register
-
-	# Test current  play_blacklist=
+	# Set current blacklist in config
 	set_play_blacklist
 
-	# If empty play_blacklist=
-	if [[ -z "$play_blacklist" ]] ; then
-		sed -i "s/\(play_blacklist *= *\).*/\1${search_blacklist_register}/" "$glouglou_config_file"
-	# If not empty play_blacklist=
-	else
-		sed -i "/play_blacklist=/ s/$/|${search_blacklist_register}/" "$glouglou_config_file"
+	# Store old play_blacklist
+	old_play_blacklist="$play_blacklist"
+
+	# Merge current & Input
+	if [[ -n "$exclude_conf_replace" ]]; then
+		play_blacklist="${exclude_conf_replace}"
+	elif [[ -n "$exclude_conf_add" ]]; then
+		play_blacklist="${play_blacklist}|${exclude_conf_add}"
 	fi
-	set_play_blacklist
-	echo "The entry has been added in your play/search blacklist, containt:"
+
+	# Remove duplicate pattern & sort
+	play_blacklist=$(echo "$play_blacklist" \
+								 |  tr '|' '\n' | sort -u | grep . | tr '\n' '|')
+
+	# If exist remove lead |
+	if [[ "${play_blacklist::1}" = "|" ]]; then
+		play_blacklist="${play_blacklist:1}"
+	fi
+
+	# If exist remove end |
+	if [[ "${play_blacklist: -1}" = "|" ]]; then
+		play_blacklist="${play_blacklist::-1}"
+	fi
+
+	# Write in config if different
+	if [[ "$old_play_blacklist" != "$play_blacklist" ]]; then
+		sed -i "s/\(play_blacklist *= *\).*/\1${play_blacklist}/" "$glouglou_config_file"
+		echo "The entry has been registered in your play/search blacklist, containt:"
+	else
+		echo "The entry is identical to the current pattern:"
+	fi
+
 	print_blacklist
 fi
 
