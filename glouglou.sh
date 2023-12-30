@@ -1225,11 +1225,13 @@ fi
 }
 # Populate vgm array
 search_blacklist() {
+local search_blacklist_register
 
 set_play_blacklist() {
 play_blacklist=$(< "$glouglou_config_file" grep "play_blacklist=" \
 					| awk -F"=" '{ print $2 }')
 }
+
 print_blacklist() {
 echo "${play_blacklist}" \
 	| tr "|" "\n" \
@@ -1241,9 +1243,8 @@ echo "${play_blacklist}" \
 if [[ -n "$exclude_conf_replace" ]]; then
 	search_blacklist_register="$exclude_conf_replace"
 
-	if [[ -f "$glouglou_config_file" ]]; then
-		sed -i "s/\(play_blacklist *= *\).*/\1${search_blacklist_register}/" "$glouglou_config_file"
-	fi
+	sed -i "s/\(play_blacklist *= *\).*/\1${search_blacklist_register}/" "$glouglou_config_file"
+
 	set_play_blacklist
 	echo "The entry has been registered as your play/search blacklist, containt:"
 	print_blacklist
@@ -1253,7 +1254,14 @@ fi
 if [[ -n "$exclude_conf_add" ]]; then
 	search_blacklist_register="$exclude_conf_add"
 
-	if [[ -f "$glouglou_config_file" ]]; then
+	# Test current  play_blacklist=
+	set_play_blacklist
+
+	# If empty play_blacklist=
+	if [[ -z "$play_blacklist" ]] ; then
+		sed -i "s/\(play_blacklist *= *\).*/\1${search_blacklist_register}/" "$glouglou_config_file"
+	# If not empty play_blacklist=
+	else
 		sed -i "/play_blacklist=/ s/$/|${search_blacklist_register}/" "$glouglou_config_file"
 	fi
 	set_play_blacklist
@@ -1275,9 +1283,7 @@ if [[ -n "$exclude_conf_list" ]]; then
 fi
 
 # If no update blacklist = set current
-if [[ -f "$glouglou_config_file" ]]; then
-	set_play_blacklist
-fi
+set_play_blacklist
 }
 search_vgm() {
 local input_realpath
