@@ -275,8 +275,21 @@ if [[ -z "$xmp_bin" ]] \
 fi
 }
 glouglou_config() {
-if [[ ! -d "$glouglou_config_dir" ]]; then
+if [[ ! -d "$glouglou_config_dir" ]] && [[ -w "/home/$USER/.config/" ]]; then
 	mkdir "$glouglou_config_dir"
+elif [[ ! -d "$glouglou_config_dir" ]] && [[ ! -w "/home/$USER/.config/" ]]; then
+	echo_error "glouglou was breaked."
+	echo_error "Impossible to create ${glouglou_config_dir}, not writable."
+	exit
+fi
+
+if [[ ! -f "$glouglou_config_file" ]] && [[ -w "$glouglou_config_dir" ]]; then
+	echo "listenbrainz_token=" > "$glouglou_config_file"
+	echo "play_blacklist=" >> "$glouglou_config_file"
+elif [[ ! -f "$glouglou_config_file" ]] && [[ ! -w "$glouglou_config_dir" ]]; then
+	echo_error "glouglou was breaked."
+	echo_error "Impossible to create ${glouglou_config_file}, not writable."
+	exit
 fi
 }
 various_bin() {
@@ -482,9 +495,6 @@ if [[ -n "$listenbrainz_register" ]]; then
 
 	if [[ -n "$token_test" ]]; then
 		echo "${listenbrainz_register} is not a valid ListenBrainz token."
-	elif ! [[ -f "$glouglou_config_file" ]]; then
-		echo "listenbrainz_token=${listenbrainz_register}" > "$glouglou_config_file"
-		echo "${listenbrainz_register} has been registered as your new ListenBrainz token."
 	elif [[ -f "$glouglou_config_file" ]]; then
 		sed -i "s/\(listenbrainz_token *= *\).*/\1${listenbrainz_register}/" "$glouglou_config_file"
 		echo "${listenbrainz_register} has been registered as your new ListenBrainz token."
@@ -1231,9 +1241,7 @@ echo "${play_blacklist}" \
 if [[ -n "$exclude_conf_replace" ]]; then
 	search_blacklist_register="$exclude_conf_replace"
 
-	if ! [[ -f "$glouglou_config_file" ]]; then
-		echo "play_blacklist=${search_blacklist_register}" > "$glouglou_config_file"
-	elif [[ -f "$glouglou_config_file" ]]; then
+	if [[ -f "$glouglou_config_file" ]]; then
 		sed -i "s/\(play_blacklist *= *\).*/\1${search_blacklist_register}/" "$glouglou_config_file"
 	fi
 	set_play_blacklist
@@ -1245,9 +1253,7 @@ fi
 if [[ -n "$exclude_conf_add" ]]; then
 	search_blacklist_register="$exclude_conf_add"
 
-	if ! [[ -f "$glouglou_config_file" ]]; then
-		echo "play_blacklist=${search_blacklist_register}" > "$glouglou_config_file"
-	elif [[ -f "$glouglou_config_file" ]]; then
+	if [[ -f "$glouglou_config_file" ]]; then
 		sed -i "/play_blacklist=/ s/$/|${search_blacklist_register}/" "$glouglou_config_file"
 	fi
 	set_play_blacklist

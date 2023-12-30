@@ -42,7 +42,7 @@ Stop it by true proper command: `ctrl+c`.
 * It is not necessary to have all the dependencies installed, for example if you don't want to install zxtune123 but vgmplay is installed, glouglou will only play the vgmplay files.
 * glouglou takes less than 6s to launch a playlist of more than 70000 files on LAN disk.
 * Filter & exclude is regex friendly, example: `glouglou -f "PS1|PS2" -e "Final Fantasy|Alundra"`.
-* Given the great difference between the types of playback, it is recommended to apply a normalization to the audio output (see: https://github.com/Digitalone1/EasyEffects-Presets).
+* Given the great difference between the types of playback, it is recommended a normalization. Use `easyeffects` with Digitalone1 preset (see: https://github.com/Digitalone1/EasyEffects-Presets).
 * `glouglou -p` may be useful to your system monitor (example: conky), so that it can obtain information about the playback in progress. [See the specifications of the file](#publish-tags-specifications).
 
 ## Supported Files
