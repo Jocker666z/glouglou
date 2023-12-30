@@ -1180,6 +1180,7 @@ Usage: glouglou [options]
   --exclude_conf_add "pattern"     Add exclude pattern in config.
   --exclude_conf_replace "pattern" Replace all exclude pattern in config.
   --exclude_conf_list              See exclude pattern in config.
+  --exclude_conf_remove            Remove all exclude pattern in config.
   -f|--filter "pattern"            Select only files contain pattern.
   -i|--input <directory>           Target search directory.
   -r|--repeat_off                  No repeat.
@@ -1903,6 +1904,11 @@ while [[ $# -gt 0 ]]; do
 		--exclude_conf_list)
 			exclude_conf_list="1"
 			search_blacklist
+			exit
+		;;
+		--exclude_conf_clean)
+			sed -i "s/\(play_blacklist *= *\).*/\1/" "$glouglou_config_file"
+			echo "Your play/search blacklist has been deleted."
 			exit
 		;;
 		-f|--filter)
