@@ -1239,9 +1239,23 @@ echo "${play_blacklist}" \
 	| sort -V
 }
 
+clean_search_blacklist_register() {
+# Remove double ||
+search_blacklist_register="${search_blacklist_register//||/|}"
+# If exist remove lead |
+if [[ "${search_blacklist_register::1}" = "|" ]]; then
+	search_blacklist_register="${search_blacklist_register:1}"
+fi
+# If exist remove end |
+if [[ "${search_blacklist_register: -1}" = "|" ]]; then
+	search_blacklist_register="${search_blacklist_register::-1}"
+fi
+}
+
 # If replace blacklist
 if [[ -n "$exclude_conf_replace" ]]; then
 	search_blacklist_register="$exclude_conf_replace"
+	clean_search_blacklist_register
 
 	sed -i "s/\(play_blacklist *= *\).*/\1${search_blacklist_register}/" "$glouglou_config_file"
 
@@ -1253,6 +1267,7 @@ fi
 # If update blacklist
 if [[ -n "$exclude_conf_add" ]]; then
 	search_blacklist_register="$exclude_conf_add"
+	clean_search_blacklist_register
 
 	# Test current  play_blacklist=
 	set_play_blacklist
