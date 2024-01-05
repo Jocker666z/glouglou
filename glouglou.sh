@@ -5,7 +5,7 @@
 #
 # Author : Romain Barbarot
 # https://github.com/Jocker666z/glouglou/
-# Licence : unlicense
+# Licence : Unlicense
 
 # Setup
 adplay_bin() {
@@ -606,157 +606,161 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_artist="$tag_album"
 	fi
 
-	# tag_sytem by files ext.
-	shopt -s nocasematch
+	if [[ -z "$tag_system" ]]; then
 
-	# Adlib
-	if [[ "${file##*.}" = "adl" ]]; then
-		tag_system="Westwood ADL"
-	elif [[ "${file##*.}" = "amd" ]]; then
-		tag_system="AMusic module"
-	elif [[ "${file##*.}" = "bam" ]]; then
-		tag_system="Bob's Adlib Music"
-	elif [[ "${file##*.}" = "cff" ]]; then
-		tag_system="Boom Tracker v4.0"
-	elif [[ "${file##*.}" = "cmf" ]]; then
-		tag_system="Creative Music Format"
-	elif [[ "${file##*.}" = "d00" ]]; then
-		tag_system="EdLib packed module"
-	elif [[ "${file##*.}" = "dfm" ]]; then
-		tag_system="Digital FM"
-	elif [[ "${file##*.}" = "ddt" ]]; then
-		tag_system="Jill of the Jungle Music File"
-	elif [[ "${file##*.}" = "dmo" ]]; then
-		tag_system="Twin TrackPlayer"
-	elif [[ "${file##*.}" = "dtm" ]]; then
-		tag_system="DeFy Tracker"
-	elif [[ "${file##*.}" = "got" ]]; then
-		tag_system="God of Thunder Music"
-	elif [[ "${file##*.}" = "hsc" ]]; then
-		tag_system="HSC AdLib Composer"
-	elif [[ "${file##*.}" = "hsq" ]]; then
-		tag_system="Herbulot AdLib"
-	elif [[ "${file##*.}" = "imf" ]] || [[ "${file##*.}" = "wlf" ]]; then
-		tag_system="Apogee IMF"
-	elif [[ "${file##*.}" = "laa" ]]; then
-		tag_system="LucasArts AdLib Module"
-	elif [[ "${file##*.}" = "ksm" ]]; then
-		tag_system="Ken's AdLib"
-	elif [[ "${file##*.}" = "m" ]]; then
-		tag_system="Ultima 6"
-	elif [[ "${file##*.}" = "mdi" ]]; then
-		tag_system="AdLib MIDIPlay Format"
-	elif [[ "${file##*.}" = "mtk" ]]; then
-		tag_system="MPU-401 Tracker"
-	elif [[ "${file##*.}" = "rad" ]]; then
-		tag_system="Reality AdLib Tracker"
-	elif [[ "${file##*.}" = "rol" ]]; then
-		tag_system="AdLib/Roland Song"
-	elif [[ "${file##*.}" = "sdb" ]] || [[ "${file##*.}" = "sqx" ]]; then
-		tag_system="Herad System"
-	elif [[ "${file##*.}" = "xms" ]]; then
-		tag_system="AMUSIC Tracker XMS"
-	elif [[ "${file##*.}" = "xsm" ]]; then
-		tag_system="eXtra Simple Music"
+		# tag_sytem by files ext.
+		shopt -s nocasematch
 
-	# MIDI
-	elif [[ "${file##*.}" = "mid" ]]; then
-		tag_system="MIDI"
+		# Adlib
+		if [[ "${file##*.}" = "adl" ]]; then
+			tag_system="Westwood ADL"
+		elif [[ "${file##*.}" = "amd" ]]; then
+			tag_system="AMusic module"
+		elif [[ "${file##*.}" = "bam" ]]; then
+			tag_system="Bob's Adlib Music"
+		elif [[ "${file##*.}" = "cff" ]]; then
+			tag_system="Boom Tracker v4.0"
+		elif [[ "${file##*.}" = "cmf" ]]; then
+			tag_system="Creative Music Format"
+		elif [[ "${file##*.}" = "d00" ]]; then
+			tag_system="EdLib packed module"
+		elif [[ "${file##*.}" = "dfm" ]]; then
+			tag_system="Digital FM"
+		elif [[ "${file##*.}" = "ddt" ]]; then
+			tag_system="Jill of the Jungle Music File"
+		elif [[ "${file##*.}" = "dmo" ]]; then
+			tag_system="Twin TrackPlayer"
+		elif [[ "${file##*.}" = "dtm" ]]; then
+			tag_system="DeFy Tracker"
+		elif [[ "${file##*.}" = "got" ]]; then
+			tag_system="God of Thunder Music"
+		elif [[ "${file##*.}" = "hsc" ]]; then
+			tag_system="HSC AdLib Composer"
+		elif [[ "${file##*.}" = "hsq" ]]; then
+			tag_system="Herbulot AdLib"
+		elif [[ "${file##*.}" = "imf" ]] || [[ "${file##*.}" = "wlf" ]]; then
+			tag_system="Apogee IMF"
+		elif [[ "${file##*.}" = "laa" ]]; then
+			tag_system="LucasArts AdLib Module"
+		elif [[ "${file##*.}" = "ksm" ]]; then
+			tag_system="Ken's AdLib"
+		elif [[ "${file##*.}" = "m" ]]; then
+			tag_system="Ultima 6"
+		elif [[ "${file##*.}" = "mdi" ]]; then
+			tag_system="AdLib MIDIPlay Format"
+		elif [[ "${file##*.}" = "mtk" ]]; then
+			tag_system="MPU-401 Tracker"
+		elif [[ "${file##*.}" = "rad" ]]; then
+			tag_system="Reality AdLib Tracker"
+		elif [[ "${file##*.}" = "rol" ]]; then
+			tag_system="AdLib/Roland Song"
+		elif [[ "${file##*.}" = "sdb" ]] || [[ "${file##*.}" = "sqx" ]]; then
+			tag_system="Herad System"
+		elif [[ "${file##*.}" = "xms" ]]; then
+			tag_system="AMUSIC Tracker XMS"
+		elif [[ "${file##*.}" = "xsm" ]]; then
+			tag_system="eXtra Simple Music"
 
-	# s98
-	elif [[ "${file##*.}" = "s98" ]]; then
-		tag_system="PC-Engine / TurboGrafx-16"
+		# MIDI
+		elif [[ "${file##*.}" = "mid" ]]; then
+			tag_system="MIDI"
 
-	# sc68
-	elif [[ "${file##*.}" = "sc68" ]]; then
-		tag_system="SC 68000"
+		# s98
+		elif [[ "${file##*.}" = "s98" ]]; then
+			tag_system="PC-Engine / TurboGrafx-16"
 
-	# SAP
-	elif [[ "${file##*.}" = "sap" ]]; then
-		tag_system="Atari 8-bit"
+		# sc68
+		elif [[ "${file##*.}" = "sc68" ]]; then
+			tag_system="SC 68000"
 
-	# SID
-	elif [[ "${file##*.}" = "sid" ]] || [[ "${file##*.}" = "prg" ]]; then
-		tag_system="Comomdore 64/128"
+		# SAP
+		elif [[ "${file##*.}" = "sap" ]]; then
+			tag_system="Atari 8-bit"
 
-	# SNES
-	elif [[ "${file##*.}" = "spc" ]]; then
-		tag_system="Super Nintendo / Super Famicom"
+		# SID
+		elif [[ "${file##*.}" = "sid" ]] || [[ "${file##*.}" = "prg" ]]; then
+			tag_system="Comomdore 64/128"
 
-	# Tracker (uade)
-	elif [[ "${file##*.}" = "bp" ]]; then
-		tag_system="SoundMon 2.0"
-	elif [[ "${file##*.}" = "cm" ]] || [[ "${file##*.}" = "rk" ]]; then
-		tag_system="CustomMade"
-	elif [[ "${file##*.}" = "dw" ]]; then
-		tag_system="David Whittaker"
-	elif [[ "${file##*.}" = "gmc" ]]; then
-		tag_system="Game Music Creator"
-	elif [[ "${file##*.}" = "np3" ]]; then
-		tag_system="Noise Packer 3.0"
-	elif [[ "${file##*.}" = "okt" ]]; then
-		tag_system="Oktalyzer"
-	elif [[ "${file##*.}" = "pru2" ]]; then
-		tag_system="Prorunner 2.0"
-	elif [[ "${file##*.}" = "s7g" ]]; then
-		tag_system="Jochen Hippel 7V"
-	elif [[ "${file##*.}" = "soc" ]]; then
-		tag_system="Hippel-COSO"
-	elif [[ "${file##*.}" = "tiny" ]]; then
-		tag_system="Sonix Music Driver"
-	elif [[ "${file##*.}" = "tw" ]]; then
-		tag_system="Sound Images"
+		# SNES
+		elif [[ "${file##*.}" = "spc" ]]; then
+			tag_system="Super Nintendo / Super Famicom"
 
-	# Tracker (zxtune)
-	elif [[ "${file##*.}" = "rmt" ]]; then
-		tag_system="Raster Music Tracker"
-	elif [[ "${file##*.}" = "v2m" ]]; then
-		tag_system="Farbrausch V2M"
-	elif [[ "${file##*.}" = "vt2" ]]; then
-		tag_system="Vortex Tracker 2"
-	elif [[ "${file##*.}" = "vtx" ]]; then
-		tag_system="Vortex Tracker"
-	elif [[ "${file##*.}" = "xrns" ]]; then
-		tag_system="Renoise"
+		# Tracker (uade)
+		elif [[ "${file##*.}" = "bp" ]]; then
+			tag_system="SoundMon 2.0"
+		elif [[ "${file##*.}" = "cm" ]] || [[ "${file##*.}" = "rk" ]]; then
+			tag_system="CustomMade"
+		elif [[ "${file##*.}" = "dw" ]]; then
+			tag_system="David Whittaker"
+		elif [[ "${file##*.}" = "gmc" ]]; then
+			tag_system="Game Music Creator"
+		elif [[ "${file##*.}" = "np3" ]]; then
+			tag_system="Noise Packer 3.0"
+		elif [[ "${file##*.}" = "okt" ]]; then
+			tag_system="Oktalyzer"
+		elif [[ "${file##*.}" = "pru2" ]]; then
+			tag_system="Prorunner 2.0"
+		elif [[ "${file##*.}" = "s7g" ]]; then
+			tag_system="Jochen Hippel 7V"
+		elif [[ "${file##*.}" = "soc" ]]; then
+			tag_system="Hippel-COSO"
+		elif [[ "${file##*.}" = "tiny" ]]; then
+			tag_system="Sonix Music Driver"
+		elif [[ "${file##*.}" = "tw" ]]; then
+			tag_system="Sound Images"
 
-	# X68000
-	elif [[ "${file##*.}" = "mdx" ]]; then
-		tag_system="Sharp X68000"
+		# Tracker (zxtune)
+		elif [[ "${file##*.}" = "rmt" ]]; then
+			tag_system="Raster Music Tracker"
+		elif [[ "${file##*.}" = "v2m" ]]; then
+			tag_system="Farbrausch V2M"
+		elif [[ "${file##*.}" = "vt2" ]]; then
+			tag_system="Vortex Tracker 2"
+		elif [[ "${file##*.}" = "vtx" ]]; then
+			tag_system="Vortex Tracker"
+		elif [[ "${file##*.}" = "xrns" ]]; then
+			tag_system="Renoise"
 
-	# xfs (zxtune)
-	elif [[ "${file##*.}" = "psf" || "${file##*.}" = "minipsf" ]]; then
-		tag_system="Sony PS1"
-	elif [[ "${file##*.}" = "psf2" || "${file##*.}" = "minipsf2" ]]; then
-		tag_system="Sony PS2"
-	elif [[ "${file##*.}" = "2sf" || "${file##*.}" = "mini2sf" || "${file##*.}" = "minincsf" || "${file##*.}" = "ncsf" ]]; then
-		tag_system="Nintendo DS"
-	elif [[ "${file##*.}" = "ssf" || "${file##*.}" = "minissf" ]]; then
-		tag_system="Sega Saturn"
-	elif [[ "${file##*.}" = "gsf" || "${file##*.}" = "minigsf" ]]; then
-		tag_system="Nintendo GBA"
-	elif [[ "${file##*.}" = "usf" || "${file##*.}" = "miniusf" ]]; then
-		tag_system="Nintendo 64"
-	elif [[ "${file##*.}" = "dsf" ]]; then
-		tag_system="Sega Dreamcast"
+		# X68000
+		elif [[ "${file##*.}" = "mdx" ]]; then
+			tag_system="Sharp X68000"
 
-	# ZX Spectrum (zxtune)
-	elif [[ "${file##*.}" = "asc" ]]; then
-		tag_system="ASC Sound Master"
-	elif [[ "${file##*.}" = "psc" ]]; then
-		tag_system="Pro Sound Creator"
-	elif [[ "${file##*.}" = "pt1" ]] || [[ "${file##*.}" = "pt2" ]] || [[ "${file##*.}" = "pt3" ]]; then
-		tag_system="Pro Tracker"
-	elif [[ "${file##*.}" = "sqt" ]]; then
-		tag_system="Quartet PSG Module"
-	elif [[ "${file##*.}" = "stc" ]]; then
-		tag_system="STC Sound Trackere"
-	elif [[ "${file##*.}" = "stp" ]]; then
-		tag_system="Soundtracker Pro II Module"
-	elif [[ "${file##*.}" = "tap" ]]; then
-		tag_system="ZX Spectrum Tape Image"
+		# xfs (zxtune)
+		elif [[ "${file##*.}" = "psf" || "${file##*.}" = "minipsf" ]]; then
+			tag_system="Sony PS1"
+		elif [[ "${file##*.}" = "psf2" || "${file##*.}" = "minipsf2" ]]; then
+			tag_system="Sony PS2"
+		elif [[ "${file##*.}" = "2sf" || "${file##*.}" = "mini2sf" || "${file##*.}" = "minincsf" || "${file##*.}" = "ncsf" ]]; then
+			tag_system="Nintendo DS"
+		elif [[ "${file##*.}" = "ssf" || "${file##*.}" = "minissf" ]]; then
+			tag_system="Sega Saturn"
+		elif [[ "${file##*.}" = "gsf" || "${file##*.}" = "minigsf" ]]; then
+			tag_system="Nintendo GBA"
+		elif [[ "${file##*.}" = "usf" || "${file##*.}" = "miniusf" ]]; then
+			tag_system="Nintendo 64"
+		elif [[ "${file##*.}" = "dsf" ]]; then
+			tag_system="Sega Dreamcast"
+
+		# ZX Spectrum (zxtune)
+		elif [[ "${file##*.}" = "asc" ]]; then
+			tag_system="ASC Sound Master"
+		elif [[ "${file##*.}" = "psc" ]]; then
+			tag_system="Pro Sound Creator"
+		elif [[ "${file##*.}" = "pt1" ]] || [[ "${file##*.}" = "pt2" ]] || [[ "${file##*.}" = "pt3" ]]; then
+			tag_system="Pro Tracker"
+		elif [[ "${file##*.}" = "sqt" ]]; then
+			tag_system="Quartet PSG Module"
+		elif [[ "${file##*.}" = "stc" ]]; then
+			tag_system="STC Sound Trackere"
+		elif [[ "${file##*.}" = "stp" ]]; then
+			tag_system="Soundtracker Pro II Module"
+		elif [[ "${file##*.}" = "tap" ]]; then
+			tag_system="ZX Spectrum Tape Image"
+		fi
+
+		shopt -u nocasematch
+
 	fi
-
-	shopt -u nocasematch
 
 fi
 }
@@ -1846,8 +1850,8 @@ various_bin
 
 # Arguments
 while [[ $# -gt 0 ]]; do
-	vgm2flac_args="$1"
-	case "$vgm2flac_args" in
+	glouglou_arg="$1"
+	case "$glouglou_arg" in
 		-b|--beet)
 			if [[ -z "$beet_bin" ]]; then
 				echo_error "glouglou was breaked."
@@ -1924,7 +1928,7 @@ while [[ $# -gt 0 ]]; do
 					exit
 				fi
 			done
-			;;
+		;;
 		-r|--repeat_off)
 			no_repeat="1"
 		;;
@@ -1976,7 +1980,7 @@ ext_allplay_raw="${ext_adplay}| \
 				 ${ext_vgmplay}| \
 				 ${ext_xmp}| \
 				 ${ext_zxtune}"
-ext_allplay=$(echo ${ext_allplay_raw//[[:blank:]]/} | tr -s '|')
+ext_allplay=$(echo "${ext_allplay_raw//[[:blank:]]/}" | tr -s '|')
 search_vgm
 # Play
 main_loop
