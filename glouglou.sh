@@ -1003,12 +1003,14 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 		tag_artist=$("$xxd_bin" -ps -s 0x36 -l 32 "$file" \
 				| tr -d '[:space:]' | xxd -r -p | tr -d '\0' \
+				| iconv -f latin1 -t ascii//TRANSLIT \
 				| awk '{$1=$1}1')
 		if [[ "$tag_artist" = "<?>" ]]; then
 			unset tag_artist
 		fi
 		tag_album=$("$xxd_bin" -ps -s 0x16 -l 32 "$file" \
 				| tr -d '[:space:]' | xxd -r -p | tr -d '\0' \
+				| iconv -f latin1 -t ascii//TRANSLIT \
 				| awk '{$1=$1}1')
 		if [[ "$tag_album" = "<?>" ]]; then
 			unset tag_album
