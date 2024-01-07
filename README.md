@@ -126,7 +126,7 @@ Each line corresponds to a tag, like this:
 ### Tags read
 By default the tags are taken with the filename and the directory that contains them. For more precision you will have to install the dependencies below.
 * `aac|ape|flac|m4a|mp3|ogg|opus|wv|wma`: mutagen-inspect & bc (present in many official repositories as python3-mutagen)
-* `sc68|sndh`: info68 https://sourceforge.net/projects/sc68/ (intalled with sc68, see below)
+* `sc68|snd|sndh`: info68 https://sourceforge.net/projects/sc68/ (intalled with sc68, see below)
 * `sid`: xxd (present in many official repositories)
 * `spc`: xxd (present in many official repositories)
 * `s98|vgm|vgz`: vgm_tag https://github.com/vgmrips/vgmtools

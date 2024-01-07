@@ -661,6 +661,9 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		elif [[ "${file##*.}" = "xsm" ]]; then
 			tag_system="eXtra Simple Music"
 
+		elif [[ "${file##*.}" = "ay" ]]; then
+			tag_system="AY-3-8910"
+
 		# MIDI
 		elif [[ "${file##*.}" = "mid" ]]; then
 			tag_system="MIDI"
@@ -690,6 +693,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 			tag_system="SoundMon 2.0"
 		elif [[ "${file##*.}" = "cm" ]] || [[ "${file##*.}" = "rk" ]]; then
 			tag_system="CustomMade"
+		elif [[ "${file##*.}" = "cus" ]]; then
+			tag_system="DeliTracker Custom"
 		elif [[ "${file##*.}" = "dw" ]]; then
 			tag_system="David Whittaker"
 		elif [[ "${file##*.}" = "gmc" ]]; then
@@ -702,6 +707,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 			tag_system="Prorunner 2.0"
 		elif [[ "${file##*.}" = "s7g" ]]; then
 			tag_system="Jochen Hippel 7V"
+		elif [[ "${file##*.}" = "sfx" ]]; then
+			tag_system="SoundFX"
 		elif [[ "${file##*.}" = "soc" ]]; then
 			tag_system="Hippel-COSO"
 		elif [[ "${file##*.}" = "tiny" ]]; then
@@ -740,6 +747,9 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 			tag_system="Nintendo 64"
 		elif [[ "${file##*.}" = "dsf" ]]; then
 			tag_system="Sega Dreamcast"
+
+		elif [[ "${file##*.}" = "ym" ]]; then
+			tag_system="Yamaha Music"
 
 		# ZX Spectrum (zxtune)
 		elif [[ "${file##*.}" = "asc" ]]; then
@@ -919,7 +929,10 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	fi
 	tag_system=$(< "$glouglou_cache_tags" grep "Tracker....:" \
 				| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
-
+	if [[ "${tag_system}" = "Unknown" ]]; then
+		tag_system=$(< "$temp_cache_tags" grep "Type.......:" \
+					| awk -F'[()]' '{print $2}')
+	fi
 	# Duration
 	duration_record=$(< "$glouglou_cache_tags" grep "Duration." \
 						| awk '{print $2}')
