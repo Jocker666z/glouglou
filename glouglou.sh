@@ -569,6 +569,43 @@ if [[ -n "$curl_bin" ]] \
 
 fi
 }
+# vgmfdb
+vgmfdb_tags() {
+local i
+local file
+local vgmfdb_tag_path
+local vgmfdb_tag_size
+local vgmfdb_tag_timestamp
+
+file="$1"
+
+if [[ -n "$listenbrainz_scrobb" ]] \
+|| [[ -n "$publish_tags" ]] \
+&& [[ -n "$vgmfdb" ]]; then
+
+	# Get id
+	vgmfdb_tag_path="$file"
+	vgmfdb_tag_size=$(wc -c "$file" | awk '{print $1;}')
+	vgmfdb_tag_timestamp=$(date -r "$file" "+%s")
+	vgmfdb_tag_id=$(echo "${vgmfdb_tag_path}${vgmfdb_tag_size}${vgmfdb_tag_timestamp}" \
+					| sha256sum | awk '{print $1;}')
+
+	# Get all tags
+	mapfile -t vgmfdb_tags < <( sqlite3 "$vgmfdb_database" "SELECT * FROM vgm WHERE id = '${vgmfdb_tag_id}'" \
+								| awk '{gsub(/\|/,"\n")}1' )
+
+	# Assign tags
+	if (( "${#vgmfdb_tags[@]}" )); then
+		tag_title="${vgmfdb_tags[2]}"
+		tag_artist="${vgmfdb_tags[3]}"
+		tag_album="${vgmfdb_tags[4]}"
+		tag_total_duration="${vgmfdb_tags[8]}"
+		tag_system="${vgmfdb_tags[9]}"
+		vgmfdb_id="1"
+	fi
+
+fi
+}
 # Tag
 tag_reset() {
 if [[ -n "$listenbrainz_scrobb" ]] \
@@ -583,7 +620,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	unset tag_brainz_artist_id
 	unset tag_brainz_recording_id
 	unset tag_brainz_releasegroupid_id
-	unset tag_brainz_track_id
+	unset vgmfdb_id
 fi
 }
 tag_default() {
@@ -591,7 +628,8 @@ local file
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$publish_tags" ]]; then
+|| [[ -n "$publish_tags" ]] \
+&& [[ -z "$vgmfdb_id" ]]; then
 
 	if [[ -z "$tag_title" ]]; then
 		tag_title=$(basename "${file%.*}")
@@ -914,7 +952,8 @@ local second
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$publish_tags" ]]; then
+|| [[ -n "$publish_tags" ]] \
+&& [[ -z "$vgmfdb_id" ]]; then
 
 	"$openmpt123_bin" --info "$file" \
 		> "$glouglou_cache_tags"
@@ -930,7 +969,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	tag_system=$(< "$glouglou_cache_tags" grep "Tracker....:" \
 				| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
 	if [[ "${tag_system}" = "Unknown" ]]; then
-		tag_system=$(< "$temp_cache_tags" grep "Type.......:" \
+		tag_system=$(< "$glouglou_cache_tags" grep "Type.......:" \
 					| awk -F'[()]' '{print $2}')
 	fi
 	# Duration
@@ -957,7 +996,8 @@ local file
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$publish_tags" ]]; then
+|| [[ -n "$publish_tags" ]] \
+&& [[ -z "$vgmfdb_id" ]]; then
 
 	strings -e S "$file" | head -15 > "$glouglou_cache_tags"
 
@@ -979,7 +1019,8 @@ local file
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$publish_tags" ]]; then
+|| [[ -n "$publish_tags" ]] \
+&& [[ -z "$vgmfdb_id" ]]; then
 
 	if [[ -n "$info68_bin" ]]; then
 
@@ -1010,7 +1051,8 @@ file="$1"
 ext="${file##*.}"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$publish_tags" ]]; then
+|| [[ -n "$publish_tags" ]] \
+&& [[ -z "$vgmfdb_id" ]]; then
 
 	if [[ -n "$xxd_bin" ]] && [[ "$ext" = "sid" ]]; then
 
@@ -1042,7 +1084,8 @@ local spc_fading
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$publish_tags" ]]; then
+|| [[ -n "$publish_tags" ]] \
+&& [[ -z "$vgmfdb_id" ]]; then
 
 	if [[ -n "$xxd_bin" ]]; then
 
@@ -1078,7 +1121,8 @@ local file
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$publish_tags" ]]; then
+|| [[ -n "$publish_tags" ]] \
+&& [[ -z "$vgmfdb_id" ]]; then
 
 	if [[ -n "$vgm_tag_bin" ]]; then
 
@@ -1106,7 +1150,8 @@ local samplerate
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$publish_tags" ]]; then
+|| [[ -n "$publish_tags" ]] \
+&& [[ -z "$vgmfdb_id" ]]; then
 
 	if [[ -n "$vgmstream_cli_bin" ]]; then
 
@@ -1135,7 +1180,8 @@ local second
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$publish_tags" ]]; then
+|| [[ -n "$publish_tags" ]] \
+&& [[ -z "$vgmfdb_id" ]]; then
 
 	"$xmp_bin" --load-only "$file" \
 		&> "$glouglou_cache_tags"
@@ -1168,7 +1214,9 @@ local file
 file="$1"
 
 if [[ -n "$listenbrainz_scrobb" ]] \
-|| [[ -n "$publish_tags" ]]; then
+|| [[ -n "$publish_tags" ]] \
+&& [[ -z "$vgmfdb_id" ]]; then
+
 	strings -e S "$file" | sed -n '/TAG/,$p' > "$glouglou_cache_tags"
 
 	tag_title=$(< "$glouglou_cache_tags" grep -i -a title= | awk -F'=' '$0=$NF')
@@ -1180,6 +1228,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 					| tr -d '[:space:]')
 
 	tag_default "$file"
+
 fi
 }
 # Usage
@@ -1420,6 +1469,7 @@ local _progress
 local _done
 local _left
 local Player_PID
+local i
 local ext
 local uade_test_result
 local vgmstream_test_result
@@ -1491,6 +1541,9 @@ if (( "${#lst_vgm[@]}" )); then
 		for i in "${!lst_vgm[@]}"; do
 			# For final stat & playlist display
 			vgm_counter=$(( vgm_counter + 1 ))
+
+			# Try to get tag from vgmfdb
+			vgmfdb_tags "${lst_vgm[i]}"
 
 			# Playlist display
 			echo_playlist "$i"
@@ -1813,6 +1866,7 @@ glouglou_config_file="/home/$USER/.config/glouglou/config"
 glouglou_cache_tags="/tmp/glouglou-cache-tags"
 glouglou_tags="/tmp/glouglou-tags"
 glouglou_cover="/tmp/glouglou-cover.png"
+vgmfdb_database="/home/$USER/.config/vgmfdb/vgm.db"
 
 # Type of files allowed by player
 ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dmo|dtm|got|hsc|hsq|imf|laa|ksm|m|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
@@ -1969,6 +2023,15 @@ while [[ $# -gt 0 ]]; do
 			listenbrainz_register="$1"
 			listenbrainz_token
 			exit
+		;;
+		--vgmfdb)
+			if [[ -f "$vgmfdb_database" ]]; then
+				vgmfdb="1"
+			else
+				echo_error "glouglou was breaked."
+				echo_error "vgmfdb database not present in $vgmfdb_database"
+				exit
+			fi
 		;;
 		*)
 			usage
