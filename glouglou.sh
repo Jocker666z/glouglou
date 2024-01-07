@@ -620,6 +620,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	unset tag_brainz_artist_id
 	unset tag_brainz_recording_id
 	unset tag_brainz_releasegroupid_id
+	unset tag_brainz_track_id
 	unset vgmfdb_id
 fi
 }
@@ -1256,6 +1257,9 @@ Usage: glouglou [options]
    -e, --exclude_conf, -f are multi-word: "pattern one"
    -e, --exclude_conf, -f are also multi-pattern: "pattern0|pattern 1"
    -i is cumulative: -i <dir0> -i <dir1> ...
+
+ VGM Files Database for tags:
+  --vgmfdb                         Use vgmfdb tag instead glouglou extract
 
  Beets database in playlist:
   -b|--beet "pattern"              Select only a pattern in Beets database.

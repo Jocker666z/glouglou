@@ -22,6 +22,9 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
    -e, --exclude_conf, -f are also multi-pattern: "pattern0|pattern 1"
    -i is cumulative: -i <dir0> -i <dir1> ...
 
+ VGM Files Database for tags:
+  --vgmfdb                         Use vgmfdb tag instead glouglou extract
+
  Beets database in playlist:
   -b|--beet "pattern"              Select only a pattern in Beets database.
   -be|--beet_exclusive             Use only Beets database.
@@ -111,6 +114,9 @@ The list of players is in the order that glouglou selects for the file. If one i
 	* zxtune (ZX Spectrum)
 
 ## Tags
+### Use VGM Files Database
+To use the tags in the vgmfdb database, all you need to do is generate it (https://github.com/Jocker666z/vgm_files_database). If the file being play is not in the database, glouglou extracts the tags.
+
 ### Publish tags specifications
 Location: `/tmp/glouglou-tags`
 
