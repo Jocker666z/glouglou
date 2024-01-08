@@ -973,7 +973,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	fi
 	tag_system=$(< "$glouglou_cache_tags" grep "Tracker....:" \
 				| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
-	if [[ "${tag_system}" = "Unknown" ]]; then
+	if [[ "${tag_system}" = "Unknown" ]] \
+	|| [[ "${tag_system}" = "..converted.." ]]; then
 		tag_system=$(< "$glouglou_cache_tags" grep "Type.......:" \
 					| awk -F'[()]' '{print $2}')
 	fi
