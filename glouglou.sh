@@ -728,6 +728,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 			tag_system="Super Nintendo / Super Famicom"
 
 		# Tracker (uade)
+		elif [[ "${file##*.}" = "ahx" ]]; then
+			tag_system="Abyss Highest eXperience"
 		elif [[ "${file##*.}" = "bp" ]]; then
 			tag_system="SoundMon 2.0"
 		elif [[ "${file##*.}" = "cm" ]] || [[ "${file##*.}" = "rk" ]]; then
@@ -736,6 +738,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 			tag_system="DeliTracker Custom"
 		elif [[ "${file##*.}" = "dw" ]]; then
 			tag_system="David Whittaker"
+		elif [[ "${file##*.}" = "fc13" ]] || [[ "${file##*.}" = "fc14" ]]; then
+			tag_system="Future Composer"
 		elif [[ "${file##*.}" = "gmc" ]]; then
 			tag_system="Game Music Creator"
 		elif [[ "${file##*.}" = "np3" ]]; then
@@ -1244,7 +1248,7 @@ Usage: glouglou [options]
   -p|--publish_tags                Publish tags in text file > $glouglou_tags.
 
  Playlist manipulation:
-  -c|--classic                     Playlist in alphabetical order
+  -c|--classic                     Playlist in alphabetical order.
   -e|--exclude "pattern"           Exclude files contain pattern.
   --exclude_conf_add "pattern"     Add exclude pattern in config.
   --exclude_conf_replace "pattern" Replace all exclude pattern in config.
@@ -1259,7 +1263,7 @@ Usage: glouglou [options]
    -i is cumulative: -i <dir0> -i <dir1> ...
 
  VGM Files Database for tags:
-  --vgmfdb                         Use vgmfdb tag instead glouglou extract
+  --vgmfdb                         Use vgmfdb tag instead glouglou extract.
 
  Beets database in playlist:
   -b|--beet "pattern"              Select only a pattern in Beets database.

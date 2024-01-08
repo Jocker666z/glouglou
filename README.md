@@ -8,7 +8,7 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
   -p|--publish_tags                Publish tags in text file > $glouglou_tags.
 
  Playlist manipulation:
-  -c|--classic                     Playlist in alphabetical order
+  -c|--classic                     Playlist in alphabetical order.
   -e|--exclude "pattern"           Exclude files contain pattern.
   --exclude_conf_add "pattern"     Add exclude pattern in config.
   --exclude_conf_replace "pattern" Replace all exclude pattern in config.
@@ -23,7 +23,7 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
    -i is cumulative: -i <dir0> -i <dir1> ...
 
  VGM Files Database for tags:
-  --vgmfdb                         Use vgmfdb tag instead glouglou extract
+  --vgmfdb                         Use vgmfdb tag instead glouglou extract.
 
  Beets database in playlist:
   -b|--beet "pattern"              Select only a pattern in Beets database.
