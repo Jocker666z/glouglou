@@ -1223,7 +1223,9 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 || [[ -n "$publish_tags" ]] \
 && [[ -z "$vgmfdb_id" ]]; then
 
-	strings -e S "$file" | sed -n '/TAG/,$p' > "$glouglou_cache_tags"
+	strings -e S "$file" \
+		| tr -cd '\11\12\15\40-\176' \
+		| sed -n '/TAG/,$p' > "$glouglou_cache_tags"
 
 	tag_title=$(< "$glouglou_cache_tags" grep -i -a title= | awk -F'=' '$0=$NF')
 	tag_artist=$(< "$glouglou_cache_tags" grep -i -a artist= | awk -F'=' '$0=$NF')
