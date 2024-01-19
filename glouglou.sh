@@ -1858,15 +1858,21 @@ player_dependency=(
 cover_name=(
 	'cover.jpg'
 	'cover.png'
+	'cover.webp'
 	'folder.jpg'
 	'folder.png'
+	'folder.webp'
 	'front.jpg'
 	'front.png'
+	'front.webp'
 	'thumb.jpg'
 	'thumb.png'
+	'thumb.webp'
 	'AlbumArt.jpg'
 	'AlbumArt.png'
+	'AlbumArt.webp'
 	'AlbumArtSmall.jpg'
+	'AlbumArtSmall.webp'
 	'AlbumArtSmall.png'
 	)
 
