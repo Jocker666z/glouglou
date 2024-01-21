@@ -1580,7 +1580,7 @@ if (( "${#lst_vgm[@]}" )); then
 				&& [[ "${#vgmstream_test_result}" = "0" ]]; then
 					zxtune_test_result=$("$zxtune123_bin" "$files" --null 2>&1)
 					if [[ "${#zxtune_test_result}" -gt "0" ]]; then
-						tag_default "${lst_vgm[i]}"
+						tag_sap "${lst_vgm[i]}"
 						publish_tags "ZXTune" "${lst_vgm[i]}"
 						"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 						listenbrainz_submit "ZXTune"
@@ -1802,8 +1802,6 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_zxtune}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$zxtune123_bin" ]]; then
 				if echo "|${ext_zxtune_xsf}|" | grep -i "|${ext}|" &>/dev/null; then
 					tag_xsf "${lst_vgm[i]}"
-				elif [[ "${ext}" = "sap" ]]; then
-					tag_sap "${lst_vgm[i]}"
 				else
 					tag_default "${lst_vgm[i]}"
 				fi
