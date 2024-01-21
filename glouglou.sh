@@ -1484,6 +1484,7 @@ local i
 local ext
 local uade_test_result
 local vgmstream_test_result
+local zxtune_test_result
 
 # For debug
 #set -x
@@ -1565,6 +1566,26 @@ if (( "${#lst_vgm[@]}" )); then
 
 			# Play
 			if echo "|${ext_multi_filter}|" | grep -i "|${ext}|" &>/dev/null; then
+				# SAP files
+				if [[ "$ext" = "sap" ]] && [[ -n "$vgmstream_cli_bin" ]]; then
+					vgmstream_test_result=$("$vgmstream_cli_bin" -m "${lst_vgm[i]}" 2>/dev/null)
+					if [[ "${#vgmstream_test_result}" -gt "0" ]]; then
+						tag_vgmstream "${lst_vgm[i]}"
+						publish_tags "vgmstream" "${lst_vgm[i]}"
+						"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
+						listenbrainz_submit "vgmstream"
+					fi
+				fi
+				if [[ "$ext" = "sap" ]] && [[ -n "$zxtune123_bin" ]] \
+				&& [[ "${#vgmstream_test_result}" = "0" ]]; then
+					zxtune_test_result=$("$zxtune123_bin" "$files" --null 2>&1)
+					if [[ "${#zxtune_test_result}" -gt "0" ]]; then
+						tag_default "${lst_vgm[i]}"
+						publish_tags "ZXTune" "${lst_vgm[i]}"
+						"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
+						listenbrainz_submit "ZXTune"
+					fi
+				fi
 				# SFX files
 				if [[ "$ext" = "sfx" ]] && [[ -n "$uade123_bin" ]]; then
 					uade_test_result=$("$uade123_bin" -g "${lst_vgm[i]}" 2>/dev/null)
@@ -1894,7 +1915,7 @@ ext_sidplayfp="sid|prg"
 ext_simple_mdx2wav="mdx"
 ext_snes="spc"
 ext_midi="mid"
-ext_multi_filter="sfx|snd"
+ext_multi_filter="sap|sfx|snd"
 ext_tracker="it|mod|mo3|mptm|s3m|stm|stp|plm|umx|xm"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|gmc|hot|fc13|fc14|med|mug|np3|okt|pru2|rk|s7g|smus|soc|p4x|tiny|tw"
 ext_vgmstream_0_c="22k|8svx|acb|acm|ad|ads|adp|adpcm|adx|aix|akb|asf|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|bik|brstm|bwav|cfn|ckd|cmp|csb|csmp|cps"
@@ -1903,7 +1924,7 @@ ext_vgmstream_o_z="oma|ras|rsd|rsnd|rws|sad|scd|sgd|ss2|str|strm|svag|p04|p16|pc
 ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
 ext_vgmplay="s98|vgm|vgz"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
-ext_zxtune_various="ay|ams|dmf|dtt|hvl|rmt|sap|v2m|vt2|vtx|xrns|ym"
+ext_zxtune_various="ay|ams|dmf|dtt|hvl|rmt|v2m|vt2|vtx|xrns|ym"
 ext_zxtune_xsf="2sf|dsf|psf|psf2|mini2sf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_zx_spectrum="asc|psc|pt1|pt2|pt3|sqt|stc|stp|tap|zxs"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
