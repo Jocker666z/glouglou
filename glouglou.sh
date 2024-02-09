@@ -535,9 +535,9 @@ if [[ -n "$curl_bin" ]] \
 		unix_date=$(date +%s)
 
 		# clean tag
-		tag_artist=$(echo "$tag_artist" | sed "s/\"/'/g")
-		tag_title=$(echo "$tag_title" | sed "s/\"/'/g")
-		tag_album=$(echo "$tag_album" | sed "s/\"/'/g")
+		tag_artist="${tag_artist//\"/\'}"
+		tag_title="${tag_title//\"/\'}"
+		tag_album="${tag_album//\"/\'}"
 		tag_brainz_artist_id=$(echo "$tag_brainz_artist_id" | awk -F/ '{sub(FS,x); $1=$1}1')
 		tag_brainz_artist_id=$(printf '"%s"\n' $tag_brainz_artist_id|paste -sd, -)
 
@@ -835,13 +835,13 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 		tag_title=$(< "$glouglou_cache_tags" \
 					grep -E -i -a "^title=|^TIT2=" \
-					| sed 's/^.*=//')
+					| cut -f2- -d'=')
 		tag_artist=$(< "$glouglou_cache_tags" \
 					grep -E -i -a "^artist=|^TPE1=" \
-					| sed 's/^.*=//')
+					| cut -f2- -d'=')
 		tag_album=$(< "$glouglou_cache_tags" \
 					grep -E -i -a "^album=|^TALB=" \
-					| sed 's/^.*=//')
+					| cut -f2- -d'=')
 		tag_total_duration=$(< "$glouglou_cache_tags" \
 							grep "seconds" \
 							| head -1 \
@@ -850,19 +850,19 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 							| awk -F"." '{print $1}')
 		tag_brainz_album_id=$(< "$glouglou_cache_tags" \
 								grep -E -i -a "^MUSICBRAINZ_ALBUMID=|^TXXX:MusicBrainz Artist Id=" \
-								| sed 's/^.*=//')
+								| cut -f2- -d'=')
 		tag_brainz_artist_id=$(< "$glouglou_cache_tags" \
 								grep -E -i -a "^MUSICBRAINZ_ARTISTID=|^TXXX:MusicBrainz Artist Id=" \
-								| sed 's/^.*=//')
+								| cut -f2- -d'=')
 		tag_brainz_recording_id=$(< "$glouglou_cache_tags" \
 								grep -E -i -a "^MUSICBRAINZ_TRACKID=" \
-								| sed 's/^.*=//')
+								| cut -f2- -d'=')
 		tag_brainz_releasegroupid_id=$(< "$glouglou_cache_tags" \
 								grep -E -i -a "^MUSICBRAINZ_RELEASEGROUPID=|^TXXX:MusicBrainz Release Group Id" \
-								| sed 's/^.*=//')
+								| cut -f2- -d'=')
 		tag_brainz_track_id=$(< "$glouglou_cache_tags" \
 								grep -E -i -a "^MUSICBRAINZ_RELEASETRACKID=|^TXXX:MusicBrainz Release Track Id" \
-								| sed 's/^.*=//')
+								| cut -f2- -d'=')
 
 		# tag_system type
 		file_type="${file##*.}"
@@ -978,6 +978,10 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		tag_system=$(< "$glouglou_cache_tags" grep "Type.......:" \
 					| awk -F'[()]' '{print $2}')
 	fi
+	tag_system="${tag_system// or compatible}"
+	tag_system="${tag_system//-compatible Tracker}"
+	tag_system="${tag_system// (compatibility export)}"
+	tag_system="${tag_system// (test build)}"
 	# Duration
 	duration_record=$(< "$glouglou_cache_tags" grep "Duration." \
 						| awk '{print $2}')
