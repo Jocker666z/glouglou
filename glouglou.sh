@@ -525,7 +525,7 @@ if [[ -n "$curl_bin" ]] \
 	if [[ -n "$tag_total_duration" ]]; then
 		limit_scrobb_duration=$(( tag_total_duration / 2 ))
 	else
-		limit_scrobb_duration="10"
+		limit_scrobb_duration="1"
 	fi
 
 	if [[ "$submit_diff_in_s" -gt "$limit_scrobb_duration" ]]; then
@@ -538,8 +538,8 @@ if [[ -n "$curl_bin" ]] \
 		tag_artist="${tag_artist//\"/\'}"
 		tag_title="${tag_title//\"/\'}"
 		tag_album="${tag_album//\"/\'}"
-		tag_brainz_artist_id=$(echo "$tag_brainz_artist_id" | awk -F/ '{sub(FS,x); $1=$1}1')
-		tag_brainz_artist_id=$(printf '"%s"\n' $tag_brainz_artist_id|paste -sd, -)
+		tag_brainz_artist_id=$(printf '"%s"\n' ${tag_brainz_artist_id// \/ / } \
+								| paste -sd, -)
 
 		"$curl_bin" --silent --output /dev/null \
 			-X POST -H "Authorization: token $listenbrainz_token" \
