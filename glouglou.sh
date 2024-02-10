@@ -964,20 +964,25 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		> "$glouglou_cache_tags"
 
 	tag_title=$(< "$glouglou_cache_tags" grep "Title." \
-				| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
+				| awk -F'.: ' '{print $NF}' \
+				| awk '{$1=$1};1')
 	tag_artist=$(< "$glouglou_cache_tags" grep "Artist." \
-				| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
+				| awk -F'.: ' '{print $NF}' \
+				| awk '{$1=$1};1')
 	# Special trick, many mod not have artist
-	if [[ -n "$tag_title" ]] && [[ -z "$tag_artist" ]]; then
+	if [[ -n "$tag_title" ]] \
+	&& [[ -z "$tag_artist" ]]; then
 		tag_artist=$(basename "${file%.*}")
 	fi
 	tag_system=$(< "$glouglou_cache_tags" grep "Tracker....:" \
-				| awk -F'.: ' '{print $NF}' | awk '{$1=$1};1')
+				| awk -F'.: ' '{print $NF}' \
+				| awk '{$1=$1};1')
 	if [[ "${tag_system}" = "Unknown" ]] \
 	|| [[ "${tag_system}" = "..converted.." ]]; then
 		tag_system=$(< "$glouglou_cache_tags" grep "Type.......:" \
 					| awk -F'[()]' '{print $2}')
 	fi
+	# Remove useless extra
 	tag_system="${tag_system// or compatible}"
 	tag_system="${tag_system//-compatible Tracker}"
 	tag_system="${tag_system// (compatibility export)}"
@@ -986,9 +991,11 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	duration_record=$(< "$glouglou_cache_tags" grep "Duration." \
 						| awk '{print $2}')
 	if [[ "$duration_record" == *":"* ]]; then
-		minute=$(echo "$duration_record" | awk -F ":" '{print $1}' \
+		minute=$(echo "$duration_record" \
+				| awk -F ":" '{print $1}' \
 				| sed 's/^0*//' )
-		second=$(echo "$duration_record" | awk -F ":" '{print $2}' \
+		second=$(echo "$duration_record" \
+				| awk -F ":" '{print $2}' \
 				| awk '{print int($1+0.5)}' | sed 's/^0*//')
 		if [[ -n "$minute" ]]; then
 			minute=$((minute*60))
@@ -1011,11 +1018,13 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 	strings -e S "$file" | head -15 > "$glouglou_cache_tags"
 
-	tag_artist=$(< "$glouglou_cache_tags" grep -i -a "AUTHOR" | awk -F'"' '$0=$2')
+	tag_artist=$(< "$glouglou_cache_tags" grep -i -a "AUTHOR" \
+				| awk -F'"' '$0=$2')
 	if [[ "$tag_artist" = "<?>" ]]; then
 		unset tag_artist
 	fi
-	tag_album=$(< "$glouglou_cache_tags" grep -i -a "NAME" | awk -F'"' '$0=$2')
+	tag_album=$(< "$glouglou_cache_tags" grep -i -a "NAME" \
+				| awk -F'"' '$0=$2')
 	if [[ "$tag_album" = "<?>" ]]; then
 		unset tag_album
 	fi
@@ -1036,14 +1045,16 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 
 		"$info68_bin" -A "$file" > "$glouglou_cache_tags"
 
-		tag_title=$(< "$glouglou_cache_tags" grep -i -a title: | sed 's/^.*: //' | head -1)
-		if [[ -z "$tag_title" ]] \
-		|| [[ "$tag_title" = "N/A" ]]; then
+		tag_title=$(< "$glouglou_cache_tags" grep -i -a title: \
+					| sed 's/^.*: //' \
+					| head -1)
+		if [[ "$tag_title" = "N/A" ]]; then
 			unset tag_title
 		fi
-		tag_artist=$(< "$glouglou_cache_tags" grep -i -a artist: | sed 's/^.*: //' | head -1)
-		if [[ -z "$tag_artist" ]] \
-		|| [[ "$tag_artist" = "N/A" ]]; then
+		tag_artist=$(< "$glouglou_cache_tags" grep -i -a artist: \
+					| sed 's/^.*: //' \
+					| head -1)
+		if [[ "$tag_artist" = "N/A" ]]; then
 			unset tag_artist
 		fi
 
@@ -1067,16 +1078,16 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	if [[ -n "$xxd_bin" ]] && [[ "$ext" = "sid" ]]; then
 
 		tag_artist=$("$xxd_bin" -ps -s 0x36 -l 32 "$file" \
-				| tr -d '[:space:]' | xxd -r -p | tr -d '\0' \
-				| iconv -f latin1 -t ascii//TRANSLIT \
-				| awk '{$1=$1}1')
+					| tr -d '[:space:]' | xxd -r -p | tr -d '\0' \
+					| iconv -f latin1 -t ascii//TRANSLIT \
+					| awk '{$1=$1}1')
 		if [[ "$tag_artist" = "<?>" ]]; then
 			unset tag_artist
 		fi
 		tag_album=$("$xxd_bin" -ps -s 0x16 -l 32 "$file" \
-				| tr -d '[:space:]' | xxd -r -p | tr -d '\0' \
-				| iconv -f latin1 -t ascii//TRANSLIT \
-				| awk '{$1=$1}1')
+					| tr -d '[:space:]' | xxd -r -p | tr -d '\0' \
+					| iconv -f latin1 -t ascii//TRANSLIT \
+					| awk '{$1=$1}1')
 		if [[ "$tag_album" = "<?>" ]]; then
 			unset tag_album
 		fi
@@ -1173,8 +1184,10 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		sample_duration=$(< "$glouglou_cache_tags" grep "play duration:" \
 							| awk '{print $3}')
 		samplerate=$(< "$glouglou_cache_tags" grep "sample rate:" \
-							| awk '{print $3}')
-		tag_total_duration=$(echo "scale=4;$sample_duration/$samplerate" | bc | awk '{print int($1+0.5)}')
+					| awk '{print $3}')
+		tag_total_duration=$(echo "scale=4;$sample_duration/$samplerate" \
+							| bc \
+							| awk '{print int($1+0.5)}')
 
 	fi
 
@@ -1197,19 +1210,24 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		&> "$glouglou_cache_tags"
 
 	tag_title=$(< "$glouglou_cache_tags" grep "Module name" \
-				| awk -F': ' '{print $NF}' | awk '{$1=$1};1')
+				| awk -F': ' '{print $NF}' \
+				| awk '{$1=$1};1')
 	tag_system=$(< "$glouglou_cache_tags" grep "Module type" \
-				| awk -F': ' '{print $NF}' | awk '{$1=$1};1')
+				| awk -F': ' '{print $NF}' \
+				| awk '{$1=$1};1')
 
 	# Duration
 	duration_record=$(< "$glouglou_cache_tags" grep "Duration" \
 						| awk -F ":" '{print $2}')
 	duration_record="${duration_record//s/}"
 	if [[ "$duration_record" == *"min"* ]]; then
-		minute=$(echo "$duration_record" | awk -F "min" '{print $1}' \
+		minute=$(echo "$duration_record" \
+				| awk -F "min" '{print $1}' \
 				| sed 's/^0*//' )
-		second=$(echo "$duration_record" | awk -F "min" '{print $2}' \
-				| awk '{print int($1+0.5)}' | sed 's/^0*//')
+		second=$(echo "$duration_record" \
+				| awk -F "min" '{print $2}' \
+				| awk '{print int($1+0.5)}' \
+				| sed 's/^0*//')
 		if [[ -n "$minute" ]]; then
 			minute=$((minute*60))
 		fi
@@ -1234,10 +1252,11 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	tag_title=$(< "$glouglou_cache_tags" grep -i -a title= | awk -F'=' '$0=$NF')
 	tag_artist=$(< "$glouglou_cache_tags" grep -i -a artist= | awk -F'=' '$0=$NF')
 	tag_album=$(< "$glouglou_cache_tags" grep -i -a game= | awk -F'=' '$0=$NF')
-	tag_total_duration=$(< "$glouglou_cache_tags" grep -i -a length= | awk -F'=' '$0=$NF' \
-					| awk -F '.' 'NF > 1 { printf "%s", $1; exit } 1' \
-					| awk -F":" '{ print ($1 * 60) + $2 }' \
-					| tr -d '[:space:]')
+	tag_total_duration=$(< "$glouglou_cache_tags" grep -i -a length= \
+						| awk -F'=' '$0=$NF' \
+						| awk -F '.' 'NF > 1 { printf "%s", $1; exit } 1' \
+						| awk -F":" '{ print ($1 * 60) + $2 }' \
+						| tr -d '[:space:]')
 
 	tag_default "$file"
 
@@ -1582,7 +1601,7 @@ if (( "${#lst_vgm[@]}" )); then
 				fi
 				if [[ "$ext" = "sap" ]] && [[ -n "$zxtune123_bin" ]] \
 				&& [[ "${#vgmstream_test_result}" = "0" ]]; then
-					zxtune_test_result=$("$zxtune123_bin" "$files" --null 2>&1)
+					zxtune_test_result=$("$zxtune123_bin" "${lst_vgm[i]}" --null 2>&1)
 					if [[ "${#zxtune_test_result}" -gt "0" ]]; then
 						tag_sap "${lst_vgm[i]}"
 						publish_tags "ZXTune" "${lst_vgm[i]}"
