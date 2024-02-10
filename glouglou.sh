@@ -525,7 +525,7 @@ if [[ -n "$curl_bin" ]] \
 	if [[ -n "$tag_total_duration" ]]; then
 		limit_scrobb_duration=$(( tag_total_duration / 2 ))
 	else
-		limit_scrobb_duration="1"
+		limit_scrobb_duration="10"
 	fi
 
 	if [[ "$submit_diff_in_s" -gt "$limit_scrobb_duration" ]]; then
