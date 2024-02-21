@@ -1359,7 +1359,10 @@ if [[ -n "$exclude_conf_replace" ]] \
 
 	# Remove duplicate pattern & sort
 	play_blacklist=$(echo "$play_blacklist" \
-								 |  tr '|' '\n' | sort -u | grep . | tr '\n' '|')
+						|  tr '|' '\n' \
+						| sort -u \
+						| grep . \
+						| tr '\n' '|')
 
 	# If exist remove lead |
 	if [[ "${play_blacklist::1}" = "|" ]]; then
@@ -1373,7 +1376,7 @@ if [[ -n "$exclude_conf_replace" ]] \
 
 	# Write in config if different
 	if [[ "$old_play_blacklist" != "$play_blacklist" ]]; then
-		sed -i "s/\(play_blacklist *= *\).*/\1${play_blacklist}/" "$glouglou_config_file"
+		sed -i "s/\(play_blacklist *= *\).*/\1${play_blacklist//\\/\\\\}/" "$glouglou_config_file"
 		echo "The entry has been registered in your play/search blacklist, containt:"
 	else
 		echo "The entry is identical to the current pattern:"
