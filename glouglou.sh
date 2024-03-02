@@ -1280,6 +1280,7 @@ Usage: glouglou [options]
   --exclude_conf_replace "pattern" Replace all exclude pattern in config.
   --exclude_conf_list              See exclude pattern in config.
   --exclude_conf_remove            Remove all exclude pattern in config.
+  --exclude_ignore                 Ignore exclude in config.
   -f|--filter "pattern"            Select only files contain pattern.
   -i|--input <directory>           Target search directory.
   -r|--repeat_off                  No repeat.
@@ -1449,6 +1450,11 @@ if (( "${#lst_vgm[@]}" )); then
 		sort_type=('sort' '-V')
 	else
 		sort_type=('shuf')
+	fi
+
+	# Unset play_blacklist if exclude_ignore=1
+	if [[ -n "$exclude_ignore" ]]; then
+		unset play_blacklist
 	fi
 
 	# Use exclude pattern list from config
@@ -2040,6 +2046,9 @@ while [[ $# -gt 0 ]]; do
 			sed -i "s/\(play_blacklist *= *\).*/\1/" "$glouglou_config_file"
 			echo "Your play/search blacklist has been deleted."
 			exit
+		;;
+		--exclude_ignore)
+			exclude_ignore="1"
 		;;
 		-f|--filter)
 			shift

@@ -14,6 +14,7 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
   --exclude_conf_replace "pattern" Replace all exclude pattern in config.
   --exclude_conf_list              See exclude pattern in config.
   --exclude_conf_remove            Remove all exclude pattern in config.
+  --exclude_ignore                 Ignore exclude in config.
   -f|--filter "pattern"            Select only files contain pattern.
   -i|--input <directory>           Target search directory.
   -r|--repeat_off                  No repeat.
