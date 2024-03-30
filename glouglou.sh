@@ -1672,6 +1672,7 @@ if (( "${#lst_vgm[@]}" )); then
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--rebase-start-time=no \
 						--volume=100 \
+						--replaygain=album \
 						--display-tags=Album,Date,Year,Artist,Artists,Composer,Track,Title,Genre
 					listenbrainz_submit "MPV"
 				elif [[ -n "$cvlc_bin" ]]; then
