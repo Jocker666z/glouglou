@@ -102,6 +102,9 @@ The list of players is in the order that glouglou selects for the file. If one i
 * `s98|vgm|vgz`
 	* vgmplay
 
+* `hmi|hmp|xmi`
+	* wildmidi
+
 * `669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm`
 	* xmp
 
@@ -271,6 +274,11 @@ mkdir build && cd build && cmake ..
 make -j"$(nproc)"
 cp vgm_tag /home/$USER/.local/bin
 ```
+
+### WildMIDI
+https://github.com/Mindwerks/wildmidi
+
+WildMIDI is present in many official repositories for most GNU/Linux distributions. 
 
 ### xmp
 https://xmp.sourceforge.net/

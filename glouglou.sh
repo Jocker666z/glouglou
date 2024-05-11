@@ -182,6 +182,19 @@ else
 	unset ext_uade
 fi
 }
+vgmstream123_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="vgmstream123"
+system_bin_location=$(command -v $bin_name)
+
+if [[ -n "$system_bin_location" ]]; then
+	vgmstream123_bin="$system_bin_location"
+else
+	unset ext_vgmstream
+fi
+}
 vgmplay_bin() {
 local bin_name
 local system_bin_location
@@ -193,6 +206,19 @@ if [[ -n "$system_bin_location" ]]; then
 	vgmplay_bin="$system_bin_location"
 else
 	unset ext_vgmplay
+fi
+}
+wildmidi_bin() {
+local bin_name
+local system_bin_location
+
+bin_name="wildmidi"
+system_bin_location=$(command -v $bin_name)
+
+if [[ -n "$system_bin_location" ]]; then
+	wildmidi_bin="$system_bin_location"
+else
+	unset ext_wildmidi
 fi
 }
 xmp_bin() {
@@ -219,19 +245,6 @@ if [[ -n "$system_bin_location" ]]; then
 	zxtune123_bin="$system_bin_location"
 else
 	unset ext_zxtune
-fi
-}
-vgmstream123_bin() {
-local bin_name
-local system_bin_location
-
-bin_name="vgmstream123"
-system_bin_location=$(command -v $bin_name)
-
-if [[ -n "$system_bin_location" ]]; then
-	vgmstream123_bin="$system_bin_location"
-else
-	unset ext_vgmstream
 fi
 }
 multi_depend() {
@@ -706,6 +719,14 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		# MIDI
 		elif [[ "${file##*.}" = "mid" ]]; then
 			tag_system="MIDI"
+
+		# MIDI-like
+		elif [[ "${file##*.}" = "hmi" ]]; then
+			tag_system="Human Machine Interfaces MIDI"
+		elif [[ "${file##*.}" = "hmp" ]]; then
+			tag_system="Human Machine Interfaces MIDI P"
+		elif [[ "${file##*.}" = "xmi" ]]; then
+			tag_system="Extended Multiple Instrument Digital Interface"
 
 		# s98
 		elif [[ "${file##*.}" = "s98" ]]; then
@@ -1826,6 +1847,12 @@ if (( "${#lst_vgm[@]}" )); then
 				"$vgmplay_bin" "${lst_vgm[i]}"
 				listenbrainz_submit "VGMPlay"
 
+			elif echo "|${ext_wildmidi}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$wildmidi_bin" ]]; then
+				tag_default "${lst_vgm[i]}"
+				publish_tags "WildMIDI" "${lst_vgm[i]}"
+				"$wildmidi_bin" -s -b "${lst_vgm[i]}"
+				listenbrainz_submit "WildMIDI"
+
 			elif echo "|${ext_xmp}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
 				tag_xmp "${lst_vgm[i]}"
 				publish_tags "XMP" "${lst_vgm[i]}"
@@ -1954,6 +1981,7 @@ ext_vgmstream_d_n="dsm|dsp|dvi|fsb|gcm|genh|h4m|hca|hps|ifs|imc|int|isd|ivs|kma|
 ext_vgmstream_o_z="oma|ras|rsd|rsnd|rws|sad|scd|sgd|ss2|str|strm|stx|svag|p04|p08|p16|pcm|psb|thp|trk|trs|txtp|ulw|vag|vas|vig|vgmstream|voi|wem|xa|xai|xma|xnb|xwv"
 ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
 ext_vgmplay="s98|vgm|vgz"
+ext_wildmidi="hmi|hmp|xmi"
 ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
 ext_zxtune_various="ay|ams|dmf|dtt|hvl|rmt|v2m|vt2|vtx|xrns|ym"
 ext_zxtune_xsf="2sf|dsf|psf|psf2|mini2sf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
@@ -1977,6 +2005,7 @@ timidity_bin
 uade123_bin
 vgmstream123_bin
 vgmplay_bin
+wildmidi_bin
 xmp_bin
 zxtune123_bin
 multi_depend
@@ -2128,6 +2157,7 @@ ext_allplay_raw="${ext_adplay}| \
 				 ${ext_vgmplay}| \
 				 ${ext_vgmstream}| \
 				 ${ext_vgmplay}| \
+				 ${ext_wildmidi}| \
 				 ${ext_xmp}| \
 				 ${ext_zxtune}"
 ext_allplay=$(echo "${ext_allplay_raw//[[:blank:]]/}" | tr -s '|')
