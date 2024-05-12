@@ -780,6 +780,24 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 		elif [[ "${file##*.}" = "tw" ]]; then
 			tag_system="Sound Images"
 
+		# Tracker (xmp)
+		elif [[ "${file##*.}" = "669" ]]; then
+			tag_system="Composer 669 Module"
+		elif [[ "${file##*.}" = "amf" ]]; then
+			tag_system="Advanced Module Format"
+		elif [[ "${file##*.}" = "dbm" ]] || [[ "${file##*.}" = "digi" ]]; then
+			tag_system="DigiBooster Module"
+		elif [[ "${file##*.}" = "dsym" ]]; then
+			tag_system="Digital Symphony Module"
+		elif [[ "${file##*.}" = "far" ]]; then
+			tag_system=" Farandole Composer Module"
+		elif [[ "${file##*.}" = "mdl" ]]; then
+			tag_system="Digitrakker Module"
+		elif [[ "${file##*.}" = "musx" ]]; then
+			tag_system="Archimedes Tracker Module"
+		elif [[ "${file##*.}" = "psm" ]]; then
+			tag_system="ProTracker Studio Module"
+
 		# Tracker (zxtune)
 		elif [[ "${file##*.}" = "rmt" ]]; then
 			tag_system="Raster Music Tracker"
@@ -1978,15 +1996,15 @@ ext_simple_mdx2wav="mdx"
 ext_snes="spc"
 ext_midi="mid"
 ext_multi_filter="sap|sfx|snd"
-ext_tracker="it|mod|mo3|mptm|s3m|stm|stp|plm|umx|xm"
+ext_tracker="it|dsm|mod|mo3|mptm|s3m|stm|stp|plm|umx|xm"
 ext_uade="aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|gmc|hot|fc13|fc14|med|mug|np3|okt|pru2|rk|s7g|smus|soc|p4x|tiny|tw"
 ext_vgmstream_0_c="22k|8svx|acb|acm|ad|ads|adp|adpcm|adx|aix|akb|asf|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|bik|brstm|bwav|cfn|ckd|cmp|csb|csmp|cps"
-ext_vgmstream_d_n="dsm|dsp|dvi|fsb|gcm|genh|h4m|hca|hps|ifs|imc|int|isd|ivs|kma|ks|kvs|lac3|lbin|lmp3|logg|lopus|lstm|lwav|mab|mca|mic|msf|mus|musx|nlsd|nop|npsf"
+ext_vgmstream_d_n="dsp|dvi|fsb|gcm|genh|h4m|hca|hps|ifs|imc|int|isd|ivs|kma|ks|kvs|lac3|lbin|lmp3|logg|lopus|lstm|lwav|mab|mca|mic|msf|mus|musx|nlsd|nop|npsf"
 ext_vgmstream_o_z="oma|ras|rsd|rsnd|rws|sad|scd|sgd|ss2|str|strm|stx|svag|p04|p08|p16|pcm|psb|thp|trk|trs|txtp|ulw|vag|vas|vig|vgmstream|voi|wem|xa|xai|xma|xnb|xwv"
 ext_vgmstream="${ext_vgmstream_0_c}|${ext_vgmstream_d_n}|${ext_vgmstream_o_z}"
 ext_vgmplay="s98|vgm|vgz"
 ext_wildmidi="hmi|hmp|xmi"
-ext_xmp="669|amf|dbm|digi|dsm|dsym|far|gz|mdl|musx|psm"
+ext_xmp="669|amf|dbm|digi|dsym|far|gz|mdl|musx|psm"
 ext_zxtune_various="ay|ams|dmf|dtt|hvl|rmt|v2m|vt2|vtx|xrns|ym"
 ext_zxtune_xsf="2sf|dsf|psf|psf2|mini2sf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_zx_spectrum="asc|psc|pt1|pt2|pt3|sqt|stc|stp|tap|zxs"
