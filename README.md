@@ -5,7 +5,7 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
 ```
                                    Without option inplace recursively search/play files.
   -h|--help                        Display this help.
-  -p|--publish_tags                Publish tags in text file > $glouglou_tags.
+  -p|--publish_tags                Publish tags in text file > /tmp/glouglou-tags.
 
  Playlist manipulation:
   -c|--classic                     Playlist in alphabetical order.
