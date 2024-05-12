@@ -53,7 +53,7 @@ Stop it by true proper command: `ctrl+c`.
 ## Supported Files
 The list of players is in the order that glouglou selects for the file. If one is not available, it moves to the next one.
 
-* `adl|amd|bam|cff|cmf|d00|dfm|ddt|dmo|dtm|got|hsc|hsq|imf|laa|ksm|m|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm`
+* `adl|amd|bam|cff|cmf|d00|dfm|ddt|dmo|dtm|got|hsc|hsq|imf|laa|ksm|m|mdi|mtk|rad|rol|sdb|sqx|tm|wlf|xms|xsm`
 	* adplay
 
 * `gsf|minigsf`

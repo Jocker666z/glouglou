@@ -696,8 +696,8 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 			tag_system="LucasArts AdLib Module"
 		elif [[ "${file##*.}" = "ksm" ]]; then
 			tag_system="Ken's AdLib"
-		elif [[ "${file##*.}" = "m" ]]; then
-			tag_system="Ultima 6"
+		elif [[ "${file##*.}" = "m" ]] || [[ "${file##*.}" = "tm" ]]; then
+			tag_system="M Format"
 		elif [[ "${file##*.}" = "mdi" ]]; then
 			tag_system="AdLib MIDIPlay Format"
 		elif [[ "${file##*.}" = "mtk" ]]; then
@@ -1969,7 +1969,7 @@ glouglou_cover="/tmp/glouglou-cover.png"
 vgmfdb_database="/home/$USER/.config/vgmfdb/vgm.db"
 
 # Type of files allowed by player
-ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dmo|dtm|got|hsc|hsq|imf|laa|ksm|m|mdi|mtk|rad|rol|sdb|sqx|wlf|xms|xsm"
+ext_adplay="adl|amd|bam|cff|cmf|d00|dfm|ddt|dmo|dtm|got|hsc|hsq|imf|laa|ksm|m|mdi|mtk|rad|rol|sdb|sqx|tm|wlf|xms|xsm"
 ext_gba="gsf|minigsf"
 ext_common="aac|ac3|aif|aiff|ape|flac|m4a|mp3|mpc|ogg|opus|wav|wv|wma"
 ext_sc68="sc68|sndh"
