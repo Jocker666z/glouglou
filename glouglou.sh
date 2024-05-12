@@ -1532,7 +1532,6 @@ local _elapsed_time_formated
 local _progress
 local _done
 local _left
-local Player_PID
 local i
 local ext
 local uade_test_result
@@ -1850,7 +1849,9 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_wildmidi}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$wildmidi_bin" ]]; then
 				tag_default "${lst_vgm[i]}"
 				publish_tags "WildMIDI" "${lst_vgm[i]}"
-				"$wildmidi_bin" -s -b "${lst_vgm[i]}"
+				"$wildmidi_bin" -s -b "${lst_vgm[i]}" &
+				Player_PID="$!"
+				force_quit
 				listenbrainz_submit "WildMIDI"
 
 			elif echo "|${ext_xmp}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$xmp_bin" ]]; then
@@ -1889,6 +1890,9 @@ fi
 # Kill stat
 kill_stat () {
 local time_formated
+
+# Special case for ugly kill
+kill -9 "$Player_PID" &>/dev/null
 
 # Duration fomarted
 time_formated="$((SECONDS/3600))h$((SECONDS%3600/60))m$((SECONDS%60))s"
