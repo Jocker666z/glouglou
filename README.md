@@ -96,7 +96,7 @@ The list of players is in the order that glouglou selects for the file. If one i
 * `aam|abk|ahx|amc|aon|ast|bss|bp|bp3|cm|cus|dm|dm2|dmu|dss|dw|ea|ex|gmc|hot|fc13|fc14|med|mug|np3|okt|pru2|rk|s7g|sfx|smus|soc|p4x|tiny|tw`
 	* uade
 
-* `22k|8svx|acb|acm|ads|adp|adpcm|ad|adx|aix|akb|asf|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|bik|brstm|bwav|cfn|ckd|csb|cmp|csmp|cps|dsp|dvi|fsb|gcm|genh|h4m|hca|hps|ifs|imc|int|isd|ivs|kma|ks|kvs|lac3|lbin|lmp3|logg|lopus|lrmh|lstm|lwav|mab|mca|mic|msf|mus|musx|nlsd|nop|npsf|oma|ras|rsd|rsnd|rws|sad|sap|scd|sfx|sgd|snd|ss2|str|strm|stx|svag|p04|p08|p16|pcm|psb|thp|trk|trs|txtp|ulw|vag|vas|vig|vgmstream|voi|way|wem|xa|xai|xma|xnb|xwv`
+* `22k|8svx|acb|acm|ads|adp|adpcm|ad|adx|aix|akb|asf|apc|at3|at9|awb|bcstm|bcwav|bfstm|bfwav|bik|brstm|bwav|cfn|ckd|csb|cmp|csmp|cps|dsp|dvi|fsb|gcm|genh|h4m|hca|hps|ifs|imc|int|isd|ivs|kma|ks|kvs|lac3|lbin|lmp3|logg|lopus|lrmh|lstm|lwav|mab|mca|mic|msf|mus|musx|nlsd|nop|npsf|oma|ras|rsd|rsnd|rws|sad|sap|scd|sfx|sgd|snd|ss2|str|strm|stx|svag|p04|p08|p16|pcm|psb|thp|trk|trs|txtp|ulw|vag|vas|vig|vgmstream|voi|way|wem|xa|xai|xma|xmd|xnb|xwv`
 	* vgmstream
 
 * `s98|vgm|vgz`
