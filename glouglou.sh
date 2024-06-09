@@ -1157,9 +1157,13 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 					| tr -d '[:space:]' | xxd -r -p | tr -d '\0')
 
 		spc_duration=$(xxd -ps -s 0x000A9h -l 3 "$file" \
-						| xxd -r -p | tr -d '\0')
+						| xxd -r -p \
+						| tr -d '\0' \
+						| sed 's/^0*//')
 		spc_fading=$(xxd -ps -s 0x000ACh -l 5 "$file" \
-					| xxd -r -p | tr -d '\0')
+					| xxd -r -p \
+					| tr -d '\0' \
+					| sed 's/^0*//')
 		# Correction if empty, or not an integer
 		if [[ -z "$spc_duration" ]] || ! [[ "$spc_duration" =~ ^[0-9]*$ ]]; then
 			spc_duration="0"
