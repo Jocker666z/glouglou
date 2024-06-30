@@ -494,6 +494,11 @@ if [[ -n "$publish_tags" ]] \
 fi
 }
 # ListenBrainz
+listenbrainz_status() {
+if nc -zw1 api.listenbrainz.org 443; then
+	listenbrainz_status="1"
+fi
+}
 listenbrainz_token() {
 local token_test
 
@@ -2037,6 +2042,7 @@ zxtune123_bin
 multi_depend
 player_dependency_test
 glouglou_config
+listenbrainz_status
 listenbrainz_token
 search_blacklist
 various_bin
@@ -2137,7 +2143,7 @@ while [[ $# -gt 0 ]]; do
 				echo_error "glouglou was breaked."
 				echo_error "ListenBrainz token must be registered for use ListenBrainz scrobber"
 				exit
-			else
+			elif [[ -n "$listenbrainz_status" ]]; then
 				listenbrainz_scrobb="1"
 				new_submit_time=$(date +%s)
 			fi
@@ -2147,8 +2153,13 @@ while [[ $# -gt 0 ]]; do
 		;;
 		-t|--token)
 			shift
-			listenbrainz_register="$1"
-			listenbrainz_token
+			if [[ -n "$listenbrainz_status" ]]; then
+				listenbrainz_register="$1"
+				listenbrainz_token
+			else
+				echo_error "glouglou was breaked."
+				echo_error "ListenBrainz server is unreachable"
+			fi
 			exit
 		;;
 		--vgmfdb)
