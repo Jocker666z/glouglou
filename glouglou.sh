@@ -832,7 +832,7 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 			tag_system="Nintendo GBA"
 		elif [[ "${file##*.}" = "usf" || "${file##*.}" = "miniusf" ]]; then
 			tag_system="Nintendo 64"
-		elif [[ "${file##*.}" = "dsf" ]]; then
+		elif [[ "${file##*.}" = "dsf" || "${file##*.}" = "minidsf" ]]; then
 			tag_system="Sega Dreamcast"
 
 		elif [[ "${file##*.}" = "ym" ]]; then
@@ -2015,7 +2015,7 @@ ext_vgmplay="s98|vgm|vgz"
 ext_wildmidi="hmi|hmp|xmi"
 ext_xmp="669|amf|dbm|digi|dsym|far|gz|mdl|musx|psm"
 ext_zxtune_various="ay|ams|dmf|dtt|hvl|rmt|v2m|vt2|vtx|xrns|ym"
-ext_zxtune_xsf="2sf|dsf|psf|psf2|mini2sf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
+ext_zxtune_xsf="2sf|dsf|psf|psf2|mini2sf|minidsf|minipsf|minipsf2|minissf|miniusf|minincsf|ncsf|ssf|usf"
 ext_zxtune_zx_spectrum="asc|psc|pt1|pt2|pt3|sqt|stc|stp|tap|zxs"
 ext_zxtune="${ext_zxtune_various}|${ext_zxtune_xsf}|${ext_zxtune_zx_spectrum}"
 
