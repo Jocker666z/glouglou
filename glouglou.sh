@@ -495,7 +495,7 @@ fi
 }
 # ListenBrainz
 listenbrainz_status() {
-if nc -zw1 api.listenbrainz.org 443; then
+if nc -zw1 api.listenbrainz.org 443 &>/dev/null; then
 	listenbrainz_status="1"
 fi
 }
