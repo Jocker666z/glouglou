@@ -1007,10 +1007,10 @@ if [[ -n "$listenbrainz_scrobb" ]] \
 	"$openmpt123_bin" --info "$file" \
 		> "$glouglou_cache_tags"
 
-	tag_title=$(< "$glouglou_cache_tags" grep "Title." \
+	tag_title=$(< "$glouglou_cache_tags" grep "Title......:" \
 				| awk -F'.: ' '{print $NF}' \
 				| awk '{$1=$1};1')
-	tag_artist=$(< "$glouglou_cache_tags" grep "Artist." \
+	tag_artist=$(< "$glouglou_cache_tags" grep "Artist.....:" \
 				| awk -F'.: ' '{print $NF}' \
 				| awk '{$1=$1};1')
 	# Special trick, many mod not have artist
