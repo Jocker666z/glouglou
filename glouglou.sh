@@ -1387,6 +1387,7 @@ play_blacklist=$(< "$glouglou_config_file" grep "play_blacklist=" \
 print_blacklist() {
 echo "${play_blacklist}" \
 	| tr "|" "\n" \
+	| tr --delete '\\' \
 	| awk '{print " * " $0}'
 }
 
@@ -1404,9 +1405,10 @@ if [[ -n "$exclude_conf_replace" ]] \
 		play_blacklist="${exclude_conf_replace}"
 	elif [[ -n "$exclude_conf_add" ]]; then
 
+		# Add antislash to ()
 		exclude_conf_add="${exclude_conf_add//\(/\\\(}"
 		exclude_conf_add="${exclude_conf_add//\)/\\\)}"
-	
+
 		play_blacklist="${play_blacklist}|${exclude_conf_add}"
 	fi
 
