@@ -1402,9 +1402,12 @@ if [[ -n "$exclude_conf_replace" ]] \
 
 	# Merge current & Input
 	if [[ -n "$exclude_conf_replace" ]]; then
+		# Add antislash to ()
+		exclude_conf_replace="${exclude_conf_replace//\(/\\\(}"
+		exclude_conf_replace="${exclude_conf_replace//\)/\\\)}"
+
 		play_blacklist="${exclude_conf_replace}"
 	elif [[ -n "$exclude_conf_add" ]]; then
-
 		# Add antislash to ()
 		exclude_conf_add="${exclude_conf_add//\(/\\\(}"
 		exclude_conf_add="${exclude_conf_add//\)/\\\)}"
@@ -2088,6 +2091,10 @@ while [[ $# -gt 0 ]]; do
 				echo_error "glouglou was breaked."
 				echo_error "Exclude pattern must be filled."
 				exit
+			elif [[ "$exclude_conf_add" == *\\* ]]; then
+				echo_error "glouglou was breaked."
+				echo_error "Exclude pattern must not contain a backslash."
+				exit
 			else
 				search_blacklist
 			fi
@@ -2099,6 +2106,10 @@ while [[ $# -gt 0 ]]; do
 			if [[ -z "$exclude_conf_replace" ]]; then
 				echo_error "glouglou was breaked."
 				echo_error "Exclude pattern must be filled."
+				exit
+			elif [[ "$exclude_conf_replace" == *\\* ]]; then
+				echo_error "glouglou was breaked."
+				echo_error "Exclude pattern must not contain a backslash."
 				exit
 			else
 				search_blacklist
