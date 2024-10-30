@@ -1403,12 +1403,16 @@ if [[ -n "$exclude_conf_replace" ]] \
 	if [[ -n "$exclude_conf_replace" ]]; then
 		play_blacklist="${exclude_conf_replace}"
 	elif [[ -n "$exclude_conf_add" ]]; then
+
+		exclude_conf_add="${exclude_conf_add//\(/\\\(}"
+		exclude_conf_add="${exclude_conf_add//\)/\\\)}"
+	
 		play_blacklist="${play_blacklist}|${exclude_conf_add}"
 	fi
 
 	# Remove duplicate pattern & sort
 	play_blacklist=$(echo "$play_blacklist" \
-						|  tr '|' '\n' \
+						| tr '|' '\n' \
 						| sort -u \
 						| grep . \
 						| tr '\n' '|')
