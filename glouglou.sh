@@ -316,13 +316,6 @@ if [[ -n "$system_bin_location" ]]; then
 	curl_bin="$system_bin_location"
 fi
 
-# curl
-bin_name="beet"
-system_bin_location=$(command -v $bin_name)
-if [[ -n "$system_bin_location" ]]; then
-	beet_bin="$system_bin_location"
-fi
-
 # info68
 bin_name="info68"
 system_bin_location=$(command -v $bin_name)
@@ -1340,12 +1333,6 @@ Usage: glouglou [options]
  VGM Files Database for tags:
   --vgmfdb                         Use vgmfdb tag instead glouglou extract.
 
- Beets database in playlist:
-  -b|--beet "pattern"              Select only a pattern in Beets database.
-  -be|--beet_exclusive             Use only Beets database.
-
-   -b is cumulative & multi-word: -b "pattern0" -b "pattern 1" ...
-
  ListenBrainz:
   -s|--scrobb                      Use ListenBrainz scrobber.
   -t|--token <token>               Register your ListenBrainz token.
@@ -1466,39 +1453,21 @@ local oldIFS
 oldIFS="$IFS"
 
 # Search file with find
-if [[ -z "$beet_exclusive" ]]; then
-	# If no input dir
-	if ! (( "${#input_dir[@]}" )); then
-		input_dir=( "$PWD" )
-	fi
-
-	# Change IFS
-	IFS=$'\n'
-
-	for input in "${input_dir[@]}"; do
-		input_realpath=$(realpath "$input")
-		lst_vgm+=( $(find "${input_realpath}" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$') )
-	done
-
-	# Reset IFS
-	IFS="$oldIFS"
+# If no input dir
+if ! (( "${#input_dir[@]}" )); then
+	input_dir=( "$PWD" )
 fi
 
-# Search file in beets
-if [[ -n "$beet_pattern" ]]; then
-	for input in "${beet_pattern[@]}"; do
-		mapfile -t -O "${#lst_beet[@]}" lst_beet < <("$beet_bin" ls "$input" -p)
-	done
+# Change IFS
+IFS=$'\n'
 
-	# Merge search array 
-	lst_vgm=( "${lst_vgm[@]}" "${lst_beet[@]}" )
+for input in "${input_dir[@]}"; do
+	input_realpath=$(realpath "$input")
+	lst_vgm+=( $(find "${input_realpath}" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$') )
+done
 
-	# Remove duplicate if find + beets
-	if [[ -z "$beet_exclusive" ]]; then
-		mapfile -t lst_vgm < <(printf '%s\n' "${lst_vgm[@]}" \
-								| sort -u)
-	fi
-fi
+# Reset IFS
+IFS="$oldIFS"
 
 # Filter by filename include path
 if (( "${#lst_vgm[@]}" )); then
@@ -2060,23 +2029,6 @@ various_bin
 while [[ $# -gt 0 ]]; do
 	glouglou_arg="$1"
 	case "$glouglou_arg" in
-		-b|--beet)
-			if [[ -z "$beet_bin" ]]; then
-				echo_error "glouglou was breaked."
-				echo_error "beets must be installed for use beets database."
-				exit
-			fi
-			shift
-			beet_pattern+=( "$1" )
-		;;
-		-be|--beet_exclusive)
-			if [[ -z "$beet_bin" ]]; then
-				echo_error "glouglou was breaked."
-				echo_error "beets must be installed for use beets database."
-				exit
-			fi
-			beet_exclusive="1"
-		;;
 		-c|--classic)
 			classic_player="1"
 		;;

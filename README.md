@@ -26,12 +26,6 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
  VGM Files Database for tags:
   --vgmfdb                         Use vgmfdb tag instead glouglou extract.
 
- Beets database in playlist:
-  -b|--beet "pattern"              Select only a pattern in Beets database.
-  -be|--beet_exclusive             Use only Beets database.
-
-   -b is cumulative & multi-word: -b "pattern0" -b "pattern 1" ...
-
  ListenBrainz:
   -s|--scrobb                      Use ListenBrainz scrobber.
   -t|--token <token>               Register your ListenBrainz token.
@@ -142,20 +136,11 @@ By default the tags are taken with the filename and the directory that contains 
 * `s98|vgm|vgz`: vgm_tag https://github.com/vgmrips/vgmtools
 * vgmstream files: vgmstream-cli (installed with vgmstream123)
 
-## Beets
-* With Beets option `-b` `-be`, you must have installed and configured beets, glouglou doesn't check anything on this side (see: https://beets.io/).
-* Beets allows you to search in tags, of classic audio files like flac, mp3, etc... This method is more flexible because it includes file path and tags.
-
 ## Install help
 ### adplay
 https://adplug.github.io/
 
 adplay is present in many official repositories for most GNU/Linux distributions.
-
-### Beets
-https://beets.io/
-
-Beets is present in many official repositories for most GNU/Linux distributions.
 
 ### gsf2wav
 Build dependencies: `git build-essential`
