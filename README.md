@@ -5,10 +5,13 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
 ```
                                    Without option inplace recursively search/play files.
   -h|--help                        Display this help.
+  -i|--input <directory>           Target search directory.
   -p|--publish_tags                Publish tags in text file > /tmp/glouglou-tags.
 
+   -i is cumulative: -i <dir0> -i <dir1> ...
+
  Playlist manipulation:
-  -c|--classic                     Playlist in alphabetical order.
+  -c|--classic                     Playlist in numerical then alphabetical order.
   -e|--exclude "pattern"           Exclude files contain pattern.
   --exclude_conf_add "pattern"     Add exclude pattern in config.
   --exclude_conf_replace "pattern" Replace all exclude pattern in config.
@@ -16,12 +19,10 @@ glouglou just play in shuffle and repeat, all the files it found. Nothing else, 
   --exclude_conf_remove            Remove all exclude pattern in config.
   --exclude_ignore                 Ignore exclude in config.
   -f|--filter "pattern"            Select only files contain pattern.
-  -i|--input <directory>           Target search directory.
   -r|--repeat_off                  No repeat.
 
    -e, --exclude_conf, -f are multi-word: "pattern one"
    -e, --exclude_conf, -f are also multi-pattern: "pattern0|pattern 1"
-   -i is cumulative: -i <dir0> -i <dir1> ...
 
  VGM Files Database for tags:
   --vgmfdb                         Use vgmfdb tag instead glouglou extract.
@@ -43,6 +44,7 @@ Stop it by true proper command: `ctrl+c`.
 * Filter & exclude is regex friendly, example: `glouglou -f "PS1|PS2" -e "Final Fantasy|Alundra"`.
 * Given the great difference between the types of playback, it is recommended a normalization. Use `easyeffects` with Digitalone1 preset (see: https://github.com/Digitalone1/EasyEffects-Presets).
 * `glouglou -p` may be useful to your system monitor (example: conky), so that it can obtain information about the playback in progress. [See the specifications of the file](#publish-tags-specifications).
+* Have installed `fd` & `ripgrep` dramatically improves launching time.
 
 ## Supported Files
 The list of players is in the order that glouglou selects for the file. If one is not available, it moves to the next one.

@@ -288,18 +288,22 @@ if [[ -z "$xmp_bin" ]] \
 fi
 }
 glouglou_config() {
-if [[ ! -d "$glouglou_config_dir" ]] && [[ -w "/home/$USER/.config/" ]]; then
+if [[ ! -d "$glouglou_config_dir" ]] \
+&& [[ -w "$glouglou_config_dir" ]]; then
 	mkdir "$glouglou_config_dir"
-elif [[ ! -d "$glouglou_config_dir" ]] && [[ ! -w "/home/$USER/.config/" ]]; then
+elif [[ ! -d "$glouglou_config_dir" ]] \
+  && [[ ! -w "/home/$USER/.config/" ]]; then
 	echo_error "glouglou was breaked."
 	echo_error "Impossible to create ${glouglou_config_dir}, not writable."
 	exit
 fi
 
-if [[ ! -f "$glouglou_config_file" ]] && [[ -w "$glouglou_config_dir" ]]; then
+if [[ ! -f "$glouglou_config_file" ]] \
+&& [[ -w "$glouglou_config_dir" ]]; then
 	echo "listenbrainz_token=" > "$glouglou_config_file"
 	echo "play_blacklist=" >> "$glouglou_config_file"
-elif [[ ! -f "$glouglou_config_file" ]] && [[ ! -w "$glouglou_config_dir" ]]; then
+elif [[ ! -f "$glouglou_config_file" ]] \
+  && [[ ! -w "$glouglou_config_dir" ]]; then
 	echo_error "glouglou was breaked."
 	echo_error "Impossible to create ${glouglou_config_file}, not writable."
 	exit
@@ -330,11 +334,32 @@ if [[ -n "$system_bin_location" ]]; then
 	ffmpeg_bin="$system_bin_location"
 fi
 
+# fd find
+bin_name="fd"
+system_bin_location=$(command -v $bin_name)
+if [[ -n "$system_bin_location" ]]; then
+	fd_bin="$system_bin_location"
+fi
+if [[ -z "$fd_bin" ]]; then
+	bin_name="fdfind"
+	system_bin_location=$(command -v $bin_name)
+	if [[ -n "$system_bin_location" ]]; then
+		fd_bin="$system_bin_location"
+	fi
+fi
+
 # mutagen-inspect
 bin_name="mutagen-inspect"
 system_bin_location=$(command -v $bin_name)
 if [[ -n "$system_bin_location" ]]; then
 	mutagen_inspect_bin="$system_bin_location"
+fi
+
+#ripgrep
+bin_name="rg"
+system_bin_location=$(command -v $bin_name)
+if [[ -n "$system_bin_location" ]]; then
+	rg_bin="$system_bin_location"
 fi
 
 # vgm_tag
@@ -1312,10 +1337,13 @@ Bad bash script for no brain, also play audio/vgm/chiptune in shuffle.
 Usage: glouglou [options]
                                    Without option inplace recursively search/play files.
   -h|--help                        Display this help.
+  -i|--input <directory>           Target search directory.
   -p|--publish_tags                Publish tags in text file > $glouglou_tags.
 
+   -i is cumulative: -i <dir0> -i <dir1> ...
+
  Playlist manipulation:
-  -c|--classic                     Playlist in alphabetical order.
+  -c|--classic                     Playlist in numerical then alphabetical order.
   -e|--exclude "pattern"           Exclude files contain pattern.
   --exclude_conf_add "pattern"     Add exclude pattern in config.
   --exclude_conf_replace "pattern" Replace all exclude pattern in config.
@@ -1323,12 +1351,10 @@ Usage: glouglou [options]
   --exclude_conf_remove            Remove all exclude pattern in config.
   --exclude_ignore                 Ignore exclude in config.
   -f|--filter "pattern"            Select only files contain pattern.
-  -i|--input <directory>           Target search directory.
   -r|--repeat_off                  No repeat.
 
    -e, --exclude_conf, -f are multi-word: "pattern one"
    -e, --exclude_conf, -f are also multi-pattern: "pattern0|pattern 1"
-   -i is cumulative: -i <dir0> -i <dir1> ...
 
  VGM Files Database for tags:
   --vgmfdb                         Use vgmfdb tag instead glouglou extract.
@@ -1449,8 +1475,10 @@ set_play_blacklist
 search_vgm() {
 local input_realpath
 local oldIFS
+local temp_file_list
 
 oldIFS="$IFS"
+temp_file_list="$(mktemp)"
 
 # Search file with find
 # If no input dir
@@ -1460,11 +1488,16 @@ fi
 
 # Change IFS
 IFS=$'\n'
-
 for input in "${input_dir[@]}"; do
 	input_realpath=$(realpath "$input")
-	lst_vgm+=( $(find "${input_realpath}" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$') )
+	if [[ -z "$fd_bin" ]]; then
+		find "${input_realpath}" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' >> "$temp_file_list"
+	else
+		"$fd_bin" --color never --unrestricted '.*\.('$ext_allplay')$' "${input_realpath}" >> "$temp_file_list"
+	fi
 done
+# Populate array
+mapfile -t lst_vgm < "$temp_file_list"
 
 # Reset IFS
 IFS="$oldIFS"
@@ -1501,24 +1534,43 @@ if (( "${#lst_vgm[@]}" )); then
 	## If -f = select only files pattern
 	elif [[ -n "$input_filter" ]] && [[ -z "$exclude_filter" ]]; then
 		input_filter="${input_filter//||/|}"
-		lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
-								| grep -E -i "$input_filter" \
-								| "${sort_type[@]}") )
+		if [[ -z "$rg_bin" ]]; then
+			lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
+									| grep -i -E "$input_filter" \
+									| "${sort_type[@]}") )
+		else
+			lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
+									| rg -i -e "$exclude_filter" \
+									| "${sort_type[@]}") )
+		fi
 	## If -e = exclude files pattern
 	elif [[ -z "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 		exclude_filter="${exclude_filter//||/|}"
-		lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
-								| grep --text -E -i -v "$exclude_filter" \
-								| "${sort_type[@]}") )
+		if [[ -z "$rg_bin" ]]; then
+			lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
+									| grep --text -i -v -E "$exclude_filter" \
+									| "${sort_type[@]}") )
+		else
+			lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
+									| rg --text -i -v -e "$exclude_filter" \
+									| "${sort_type[@]}") )
+		fi
 
 	## If -f -e = select & exclude pattern
 	elif [[ -n "$input_filter" ]] && [[ -n "$exclude_filter" ]]; then
 		exclude_filter="${exclude_filter//||/|}"
 		input_filter="${input_filter//||/|}"
-		lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
-								| grep -E -i -v "$exclude_filter" \
-								| grep -E -i "$input_filter" \
-								| "${sort_type[@]}") )
+		if [[ -z "$rg_bin" ]]; then
+			lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
+									| grep --text -i -v -E "$exclude_filter" \
+									| grep -i -E "$input_filter" \
+									| "${sort_type[@]}") )
+		else
+			lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
+									| rg --text -i -v -e "$exclude_filter" \
+									| rg -i -e "$input_filter" \
+									| "${sort_type[@]}") )
+		fi
 	fi
 
 	# Reset IFS
@@ -1911,6 +1963,7 @@ echo "The duration of your crazy listening was ${time_formated}".
 
 # Proper exit
 listenbrainz_submit "glouglou"
+rm "$temp_file_list" &>/dev/null
 rm "$glouglou_cache_tags" &>/dev/null
 rm "$glouglou_tags" &>/dev/null
 rm "$glouglou_cover" &>/dev/null
