@@ -1643,13 +1643,13 @@ while true; do
 	fi
 done
 }
-print_tag() {
+print_player() {
 player="$1"
 
-tput bold sitm
-echo -e "$player"
-tput sgr0
-echo
+echo "${player^^}"
+printf "%*s" "${#player}" "" | tr ' ' "-"; echo
+}
+print_tag() {
 if [[ -n "$tag_title" ]]; then
 	echo "Title: $tag_title"
 fi
@@ -1689,6 +1689,7 @@ if (( "${#lst_vgm[@]}" )); then
 					if [[ "${#vgmstream_test_result}" -gt "0" ]]; then
 						tag_vgmstream "${lst_vgm[i]}"
 						publish_tags "vgmstream" "${lst_vgm[i]}"
+						print_player "vgmstream"
 						"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 						listenbrainz_submit "vgmstream"
 					fi
@@ -1699,6 +1700,7 @@ if (( "${#lst_vgm[@]}" )); then
 					if [[ "${#zxtune_test_result}" -gt "0" ]]; then
 						tag_sap "${lst_vgm[i]}"
 						publish_tags "ZXTune" "${lst_vgm[i]}"
+						print_player "zxtune"
 						"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 						listenbrainz_submit "ZXTune"
 					fi
@@ -1719,6 +1721,7 @@ if (( "${#lst_vgm[@]}" )); then
 					if [[ "${#vgmstream_test_result}" -gt "0" ]]; then
 						tag_vgmstream "${lst_vgm[i]}"
 						publish_tags "vgmstream" "${lst_vgm[i]}"
+						print_player "vgmstream"
 						"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 						listenbrainz_submit "vgmstream"
 					fi
@@ -1729,6 +1732,7 @@ if (( "${#lst_vgm[@]}" )); then
 					if [[ "${#vgmstream_test_result}" -gt "0" ]]; then
 						tag_vgmstream "${lst_vgm[i]}"
 						publish_tags "vgmstream" "${lst_vgm[i]}"
+						print_player "vgmstream"
 						"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 						listenbrainz_submit "vgmstream"
 					elif [[ -n "$sc68_bin" ]]; then
@@ -1754,6 +1758,7 @@ if (( "${#lst_vgm[@]}" )); then
 				tag_common "${lst_vgm[i]}"
 				if [[ -n "$mpv_bin" ]]; then
 					publish_tags "MPV" "${lst_vgm[i]}"
+					print_player "mpv"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--rebase-start-time=no \
 						--volume=100 \
@@ -1762,6 +1767,7 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "MPV"
 				elif [[ -n "$cvlc_bin" ]]; then
 					publish_tags "VLC" "${lst_vgm[i]}"
+					print_player "vlc"
 					print_tag "VLC"
 					"$cvlc_bin" --play-and-exit -q "${lst_vgm[i]}" &>/dev/null &
 					Player_PID="$!"
@@ -1769,6 +1775,7 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "VLC"
 				elif [[ -n "$ffplay_bin" ]]; then
 					publish_tags "ffplay" "${lst_vgm[i]}"
+					print_player "ffplay"
 					"$ffplay_bin" -hide_banner -showmode 0 \
 						-vn -autoexit -volume 100 "${lst_vgm[i]}" &
 					Player_PID="$!"
@@ -1780,6 +1787,7 @@ if (( "${#lst_vgm[@]}" )); then
 				tag_xsf "${lst_vgm[i]}"
 				if [[ -n "$gsf2wav_bin" ]]; then
 					publish_tags "gsf2wav" "${lst_vgm[i]}"
+					print_player "gsf2wav"
 					print_tag "gsf2wav"
 					"$gsf2wav_bin" "${lst_vgm[i]}" /dev/stdout 2>/dev/null \
 						| "$aplay_bin" --quiet  &>/dev/null &
@@ -1788,6 +1796,7 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "gsf2wav"
 				elif [[ -n "$zxtune123_bin" ]]; then
 					publish_tags "ZXTune" "${lst_vgm[i]}"
+					print_player "zxtune"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
 				fi
@@ -1809,6 +1818,7 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "sidplayfp"
 				elif [[ -n "$zxtune123_bin" ]] && [[ "$ext" = "sid" ]]; then
 					publish_tags "ZXTune" "${lst_vgm[i]}"
+					print_player "zxtune"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
 				fi
@@ -1829,6 +1839,7 @@ if (( "${#lst_vgm[@]}" )); then
 				tag_spc "${lst_vgm[i]}"
 				if [[ -n "$spc2wav_bin" ]]; then
 					publish_tags "spc2wav" "${lst_vgm[i]}"
+					print_player "spc2wav"
 					"$spc2wav_bin" "${lst_vgm[i]}" /dev/stdout \
 						| "$aplay_bin" --quiet  &>/dev/null &
 					Player_PID="$!"
@@ -1836,10 +1847,12 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "spc2wav"
 				elif [[ -n "$zxtune123_bin" ]]; then
 					publish_tags "ZXTune" "${lst_vgm[i]}"
+					print_player "zxtune"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
 				elif [[ -n "$mpv_bin" ]]; then
 					publish_tags "MPV" "${lst_vgm[i]}"
+					print_player "$mpv_title"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--rebase-start-time=no \
 						--volume=100 \
@@ -1876,11 +1889,13 @@ if (( "${#lst_vgm[@]}" )); then
 				elif [[ -n "$zxtune123_bin" ]]; then
 					tag_default "${lst_vgm[i]}"
 					publish_tags "ZXTune" "${lst_vgm[i]}"
+					print_player "zxtune"
 					"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 					listenbrainz_submit "ZXTune"
 				elif [[ -n "$mpv_bin" ]]; then
 					tag_default "${lst_vgm[i]}"
 					publish_tags "MPV" "${lst_vgm[i]}"
+					print_player "$mpv_title"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--rebase-start-time=no \
 						--volume=100 \
@@ -1892,12 +1907,14 @@ if (( "${#lst_vgm[@]}" )); then
 			elif echo "|${ext_uade}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$uade123_bin" ]]; then
 				tag_default "${lst_vgm[i]}"
 				publish_tags "UADE" "${lst_vgm[i]}"
+				print_player "uade"
 				"$uade123_bin" "${lst_vgm[i]}"
 				listenbrainz_submit "UADE"
 
 			elif echo "|${ext_vgmstream}|" | grep -i "|${ext}|" &>/dev/null && [[ -n "$vgmstream123_bin" ]]; then
 				tag_vgmstream "${lst_vgm[i]}"
 				publish_tags "vgmstream" "${lst_vgm[i]}"
+				print_player "vgmstream"
 				"$vgmstream123_bin" -D alsa -m "${lst_vgm[i]}"
 				listenbrainz_submit "vgmstream"
 
@@ -1931,6 +1948,7 @@ if (( "${#lst_vgm[@]}" )); then
 				else
 					tag_default "${lst_vgm[i]}"
 				fi
+				print_player "zxtune"
 				publish_tags "ZXTune" "${lst_vgm[i]}"
 				"$zxtune123_bin" --alsa --file "${lst_vgm[i]}"
 				listenbrainz_submit "ZXTune"
