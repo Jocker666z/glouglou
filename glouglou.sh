@@ -1540,7 +1540,7 @@ if (( "${#lst_vgm[@]}" )); then
 									| "${sort_type[@]}") )
 		else
 			lst_vgm=( $(printf '%s\n' "${lst_vgm[@]}" \
-									| rg -i -e "$exclude_filter" \
+									| rg -i -e "$input_filter" \
 									| "${sort_type[@]}") )
 		fi
 	## If -e = exclude files pattern
