@@ -1612,6 +1612,11 @@ if [[ "$_progress_bar" = "progress" ]] && [[ -n "$tag_total_duration" ]]; then
 	_total_time_formated=$(printf '%02d:%02d\n' $((tag_total_duration%3600/60)) $((tag_total_duration%60)))
 fi
 
+if [[ "$_progress_bar" = "progress" ]] \
+&& [[ -n "$tag_total_duration" ]]; then
+	echo
+fi
+
 while true; do
 	read -t0.1 -rsn1 k
 	if [[ "$k" = "q" ]]; then
@@ -1641,7 +1646,10 @@ done
 print_tag() {
 player="$1"
 
-echo "$1"
+tput bold sitm
+echo -e "$player"
+tput sgr0
+echo
 if [[ -n "$tag_title" ]]; then
 	echo "Title: $tag_title"
 fi
