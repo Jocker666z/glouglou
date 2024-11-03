@@ -455,6 +455,48 @@ error_label="$1"
 
 echo "${error_label}" >&2
 }
+start_loading() {
+loading_task="$1"
+loading_msg="$2"
+
+# hide cursor
+tput civis
+loading "start" "${loading_task}" &
+# spinner pid
+_sp_pid=$!
+disown
+}
+loading() {
+local loading_delay=0.13
+local loading_spinstr="▉░"
+
+case $1 in
+	start)
+		while :
+		do
+			local loading_temp="${loading_spinstr#?}"
+			printf "\e[2K%s %s %s\r" "$loading_spinstr" "${loading_task}" "${loading_msg}"
+			local loading_spinstr="${loading_temp}${loading_spinstr%"$loading_temp"}"
+			sleep "$loading_delay"
+			printf "\b\b\b\b\b\b"
+		done
+		printf "    \b\b\b\b"
+		printf "\e[2K ✓ %s %s\n" "${loading_task}" "${loading_msg}"
+		;;
+	stop)
+		kill "$_sp_pid" > /dev/null 2>&1
+		printf "\e[2K ✓ %s %s\n" "${loading_task}" "${loading_msg}"
+		;;
+esac
+}
+stop_loading() {
+# normal cursor
+tput cnorm
+loading "stop" "${loading_task}" "${loading_msg}" $_sp_pid
+unset _sp_pid
+unset loading_task
+unset loading_msg
+}
 # Publish tags
 publish_tags() {
 local player
@@ -1489,13 +1531,18 @@ fi
 # Change IFS
 IFS=$'\n'
 for input in "${input_dir[@]}"; do
+	start_loading "find" "files in > $input"
+
 	input_realpath=$(realpath "$input")
 	if [[ -z "$fd_bin" ]]; then
 		find "${input_realpath}" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' >> "$temp_file_list"
 	else
 		"$fd_bin" --color never --unrestricted '.*\.('$ext_allplay')$' "${input_realpath}" >> "$temp_file_list"
 	fi
+
+	stop_loading
 done
+
 # Populate array
 mapfile -t lst_vgm < "$temp_file_list"
 
@@ -1525,6 +1572,11 @@ if (( "${#lst_vgm[@]}" )); then
 
 	# Change IFS
 	IFS=$'\n'
+
+	# Progress
+	if [[ -n "$input_filter" ]] || [[ -n "$exclude_filter" ]]; then
+		start_loading "Construct playlist"
+	fi
 
 	# Final playlist array
 	## If no patern
@@ -1571,6 +1623,12 @@ if (( "${#lst_vgm[@]}" )); then
 									| rg -i -e "$input_filter" \
 									| "${sort_type[@]}") )
 		fi
+	fi
+
+
+	# Progress stop
+	if [[ -n "$input_filter" ]] || [[ -n "$exclude_filter" ]]; then
+		stop_loading
 	fi
 
 	# Reset IFS
