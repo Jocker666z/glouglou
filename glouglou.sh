@@ -1910,7 +1910,7 @@ if (( "${#lst_vgm[@]}" )); then
 					listenbrainz_submit "ZXTune"
 				elif [[ -n "$mpv_bin" ]]; then
 					publish_tags "MPV" "${lst_vgm[i]}"
-					print_player "$mpv_title"
+					print_player "mpv"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--rebase-start-time=no \
 						--volume=100 \
@@ -1953,7 +1953,7 @@ if (( "${#lst_vgm[@]}" )); then
 				elif [[ -n "$mpv_bin" ]]; then
 					tag_default "${lst_vgm[i]}"
 					publish_tags "MPV" "${lst_vgm[i]}"
-					print_player "$mpv_title"
+					print_player "mpv"
 					"$mpv_bin" "${lst_vgm[i]}" --terminal --no-video \
 						--rebase-start-time=no \
 						--volume=100 \
