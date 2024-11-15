@@ -1537,7 +1537,7 @@ for input in "${input_dir[@]}"; do
 	if [[ -z "$fd_bin" ]]; then
 		find "${input_realpath}" -type f -regextype posix-egrep -iregex '.*\.('$ext_allplay')$' >> "$temp_file_list"
 	else
-		"$fd_bin" --color never --unrestricted '.*\.('$ext_allplay')$' "${input_realpath}" >> "$temp_file_list"
+		"$fd_bin" --type file --color never --unrestricted '.*\.('$ext_allplay')$' "${input_realpath}" >> "$temp_file_list"
 	fi
 
 	stop_loading
